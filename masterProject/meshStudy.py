@@ -7,31 +7,40 @@ Created on Mon 12 February 2018
 import numpy as np, matplotlib.pyplot as plt
 
 #------------------------------------------------------------------------------
-#fnam="data.csv" # data from handbook of chemistry and physics at 1bar
-#
-#names=('Substance','T','rho','H','S','cv','cp','u','mu','k')
-#data2=np.genfromtxt(fnam,names=names,usecols=('rho','mu'),delimiter=',')
-#
-#file=open(fnam,'r') 
-#
-#rows=file.readlines()
-#
-#data={}
-#for idx,row in enumerate(rows):
-#    data[idx]=row.split(',')
-#    for n, item in enumerate(data[idx]):
-#        if item.isdigit():
-#            data[idx][n]=float(item)
-#file.close()
+fnam="data.csv" # data from handbook of chemistry and physics at 1bar
+
+file=open(fnam,'r') 
+
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        pass
+    
+    return False 
+
+rows=file.readlines()
+
+data={}
+for idx,row in enumerate(rows):
+    row=row.translate({ord(c): None for c in '"'})
+    data[idx]=row.split(',')
+    for n, item in enumerate(data[idx]):
+        if is_number(item):
+            data[idx][n]=float(item)
+file.close()
 
 # -------Luftegenskaper------------------------
 # data from handbook of chemistry and physics at 1bar
-Trange=[400,500]
-murange=[23.06e-6, 27.09e-6]
-rhorange=[0.8706, 0.6964]
+Trange=[data[0][1],data[1][1]]
+murange=[data[0][8],data[1][8]]
+rhorange=[data[0][2],data[1][2]]
 
-mu=np.interp(473.15,Trange,murange)
-rho=np.interp(473.15,Trange,rhorange)
+T_air=200 + 273.15
+
+mu=np.interp(T_air,Trange,murange)*1e-6
+rho=np.interp(T_air,Trange,rhorange)
 
 #------------Geometry--------------------
 L=7.4 
@@ -41,6 +50,8 @@ D=L*W/(L+W) # Hydraulic diameter
 Hbed=1.0 # @ bubbling fluidisation
 Abed=L*W
 Vbed=Abed*Hbed
+
+N_or=28*11*3
 
 #----- Partikelegenskaper ----------------------------------------------------
 dp=0.95e-3
@@ -80,10 +91,18 @@ eps=(Ububbling/ui)**(1/n)
 epsbar=Ububbling*epsmf/(1.05*Ububbling*epsmf+(1-epsmf)*U_mf)
 
 
+
 # Estimation of total mass of sand
 Vsand=(1-epsbar)*Vbed
 Hbedmf=Vsand/((1-epsmf)*L*W)
 msand=Vsand*rhop
+
+# other approach
+Lmf=Hbedmf*1.3
+dbo=1.38/(g**(0.2))*(Abed*(Ububbling-U_mf)/N_or)**(0.4)
+db=1.4*rhop*dp*Ububbling/U_mf*Lmf/2+dbo
+
+xL=(Ububbling-U_mf)/(0.711*(g*db)**(0.5))
 
 #-- Uppskattning av relaxationstid------------------------
 
@@ -129,6 +148,7 @@ print('voidage @ minimum fluidisation = {:.3} -> alpha_mf = {:.3}'.format(epsmf,
 print('voidage @ bubbling fluidisation = {:.3} -> alpha = {:.3}\n'.format(eps,(1-eps)))
 print('Height @ fluidisation = {:.3} m'.format(Hbed))
 print('Height @ minimum fluidisation = {:.3} m\n'.format(Hbedmf))
+print('resulting Height @ fluidisation = {:.3} m'.format(xL*Lmf+Lmf))
 
 
 
