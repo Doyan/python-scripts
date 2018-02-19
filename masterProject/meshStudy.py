@@ -59,6 +59,7 @@ rhop=2.65e3
 g=9.82
 vT=7.425 # from mpflow assignment 1 code
 phi=0.9 # sphericity
+shift=1.34
 
 epsmf=(14*phi)**(-1/3) # voidage at minimum fluidisation
 
@@ -73,23 +74,23 @@ Rec=1.24*Ar**0.45
 # Estimation of suitable velocity for bubbling fluidisation
 Ustar_mf=Remf/(Ar**(1/3))
 Ustar_c=Rec/(Ar**(1/3))
-
-Ustar_mid=np.sqrt(Ustar_mf*Ustar_c)
+Ustar_mid=np.sqrt(Ustar_mf*Ustar_c)*shift
 
 Ububbling=Ustar_mid*Ar**(1/3)*mu/(rho*dp)
-U_mf=Ustar_mf*Ar**(1/3)*mu/(rho*dp)
-U_c=Ustar_c*Ar**(1/3)*mu/(rho*dp)
+U_mf=Remf*mu/(rho*dp)
+U_c=Rec*mu/(rho*dp)
 uc=3.0*(rhop*dp)**(1/2)-0.17
-# Estimation of bed voidage at fluidised state
-
+Ums=U_mf+0.07*np.sqrt(g*D)
+# Estimation of bed voidage at fluidised state - particulate regime.
 ReT=vT*rho*dp/mu
 n=4.4*ReT**(-0.1)
 
 ui=vT-10**(dp/D)
 
 eps=(Ububbling/ui)**(1/n)
-epsbar=Ububbling*epsmf/(1.05*Ububbling*epsmf+(1-epsmf)*U_mf)
 
+# Correlation for estimation of overall voidage in bubbling fluidisation
+epsbar=Ububbling*epsmf/(1.05*Ububbling*epsmf+(1-epsmf)*U_mf)
 
 
 # Estimation of total mass of sand
@@ -97,12 +98,16 @@ Vsand=(1-epsbar)*Vbed
 Hbedmf=Vsand/((1-epsmf)*L*W)
 msand=Vsand*rhop
 
-# other approach
-Lmf=Hbedmf*1.3
-dbo=1.38/(g**(0.2))*(Abed*(Ububbling-U_mf)/N_or)**(0.4)
-db=1.4*rhop*dp*Ububbling/U_mf*Lmf/2+dbo
+Hres=1.0
 
-xL=(Ububbling-U_mf)/(0.711*(g*db)**(0.5))
+
+
+# other approach
+# Lmf=Hbedmf*1.3
+# dbo=1.38/(g**(0.2))*(Abed*(Ububbling-U_mf)/N_or)**(0.4)
+# db=1.4*rhop*dp*Ububbling/U_mf*Lmf/2+dbo
+
+# xL=(Ububbling-U_mf)/(0.711*(g*db)**(0.5))
 
 #-- Uppskattning av relaxationstid------------------------
 
@@ -137,18 +142,24 @@ print("vT/Umf = {:.3} -> somewhat large particle".format(vT/U_mf))
 print("Ar = {:.3E}".format(Ar))
 print("tau_p = {:.2E}s\n".format(tau))
 
-
 print("Re_p @ minimum fluidisation = {:.3}".format(Remf))
 print("Re_p @ terminal velocity = {:.3}\n".format(ReT))
 
-
 print('----------------Bed Properties------------')
 print('total mass of sand = {:.3} kg\n'.format(msand))
+print('air velocity @ minimum fluidisation = {:.3}'.format(U_mf))
+print('air velocity @ turbulent fluidisation = {:.3}'.format(U_c))
+print('air velocity @ bubbling fluidisation = {:.3}\n'.format(Ububbling))
+
+print('air velocity @ slugging fluidisation = {:.3}'.format(Ums))
+print('condition for slugging fluidisation: H > {:.3}\n'.format(3.5*D*(1-1/np.sqrt(N_or))))
+
+
 print('voidage @ minimum fluidisation = {:.3} -> alpha_mf = {:.3}'.format(epsmf,(1-epsmf)))
 print('voidage @ bubbling fluidisation = {:.3} -> alpha = {:.3}\n'.format(eps,(1-eps)))
 print('Height @ fluidisation = {:.3} m'.format(Hbed))
 print('Height @ minimum fluidisation = {:.3} m\n'.format(Hbedmf))
-print('resulting Height @ fluidisation = {:.3} m'.format(xL*Lmf+Lmf))
+#print('resulting Height @ fluidisation = {:.3} m'.format(Hres))
 
 
 
