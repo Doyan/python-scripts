@@ -61,6 +61,9 @@ vT=7.425 # from mpflow assignment 1 code
 phi=0.9 # sphericity
 shift=1.34
 
+
+
+
 epsmf=(14*phi)**(-1/3) # voidage at minimum fluidisation
 
 BDcrit=(rhop-rho)*dp**2
@@ -68,8 +71,6 @@ Ar=rho*(rhop-rho)*g*dp**3/(mu**2)
 
 Remf=np.sqrt(27.2**2 + 0.0408*Ar) - 27.2
 Rec=1.24*Ar**0.45
-
-
 
 # Estimation of suitable velocity for bubbling fluidisation
 Ustar_mf=Remf/(Ar**(1/3))
@@ -100,14 +101,50 @@ msand=Vsand*rhop
 
 Hres=1.0
 
+# --------------- Plot of Re and Ar^1/3---------------------
+
+def ReC(Ar):
+    return 1.24*Ar**(0.45)
+
+def ReMf(Ar):
+    return np.sqrt(27.2**2 + 0.0408*Ar) - 27.2
+
+def Umid(Ar):
+    return np.sqrt(ReMf(Ar)*ReC(Ar)*Ar**(-2/3))
 
 
-# other approach
-# Lmf=Hbedmf*1.3
-# dbo=1.38/(g**(0.2))*(Abed*(Ububbling-U_mf)/N_or)**(0.4)
-# db=1.4*rhop*dp*Ububbling/U_mf*Lmf/2+dbo
 
-# xL=(Ububbling-U_mf)/(0.711*(g*db)**(0.5))
+
+
+Arr=np.linspace(0.001,100**(3),100)
+Ar13=Arr**(1/3)
+
+
+plt.figure(1)
+plt.loglog(Ar13,ReMf(Arr)/Ar13,label='$U^*_{mf}$')
+plt.loglog(Ar13,ReC(Arr)/Ar13,label='$U^*_{c}$')
+plt.loglog([Ar**(1/3),Ar**(1/3)],[1e-4,1e3],'--k',label='$Current\; Ar$')
+plt.loglog(Ar13,Umid(Arr),'--m',label='$U^*_{mid}$')
+
+plt.legend(loc='best')
+plt.xlabel('$Ar^{1/3}$')
+plt.ylabel('$Re(Ar)/Ar^{1/3}$')
+
+plt.figure(2)
+plt.plot(Ar13,ReMf(Arr)/Ar13,label='$U^*_{mf}$')
+plt.plot(Ar13,ReC(Arr)/Ar13,label='$U^*_{c}$')
+plt.plot([Ar**(1/3),Ar**(1/3)],[1e-4,1e3],'--k',label='$Current\; Ar$')
+plt.plot(Ar13,Umid(Arr),'--m',label='$U^*_{mid}$')
+
+
+
+
+plt.legend(loc='best')
+plt.xlabel('$Ar^{1/3}$')
+plt.ylabel('$Re(Ar)/Ar^{1/3}$')
+plt.xlim(0,40)
+plt.ylim(0,5)
+
 
 #-- Uppskattning av relaxationstid------------------------
 
@@ -126,6 +163,28 @@ f=Cd*Rep*alphag/(nu_rs**2)
 
 tau=tau_stokes/f
 
+#------------- Tuning syamlal o brien
+epsMf=epsmf
+epsmf=(1-0.63)
+
+U_Mf=dp**2*(rhop-rho)*g/(150*mu)*epsmf**3/(1-epsmf)
+
+Re_ts=(((4.8**2+2.52*(4*Ar/3)**(1/2))**(1/2)-4.8)/1.26)**2
+Re_t=rho*U_Mf*dp/(mu*epsmf)
+
+V_r=Re_t/Re_ts
+A=epsmf**4.14
+
+K=0.06*Re_t
+
+B= (((2*V_r-A+K**2)**2-K**2-A**2)/(2*K))/2
+
+C2=B/(epsmf**1.28)
+
+C1=1.28+np.log(C2)/np.log(0.85)
+
+
+epsmf=epsMf
 #-------------Printing---------------------------------
 print('--------------Air-data--------------')
 print('rho= '+ str(rho) + ' kg/m3')
@@ -161,7 +220,7 @@ print('Height @ fluidisation = {:.3} m'.format(Hbed))
 print('Height @ minimum fluidisation = {:.3} m\n'.format(Hbedmf))
 #print('resulting Height @ fluidisation = {:.3} m'.format(Hres))
 
-
+print('C1 = {:.3}, C2 = {:.3}'.format(C1,C2))
 
 
 
