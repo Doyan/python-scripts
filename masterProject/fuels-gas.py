@@ -40,7 +40,7 @@ X_cg = ni_cg/ni_cg.sum()
 
 
 MW_cg = np.sum(X_cg * MWi) # kg / mol gas
-LHV_cg_mole = np.sum(X_cg*LHVi) # kj/mol
+LHV_cg_mole = np.sum(X_cg*LHVi)/1000 # MJ/mol
 
 LHV_cg_mass = LHV_cg_mole/MW_cg
 
