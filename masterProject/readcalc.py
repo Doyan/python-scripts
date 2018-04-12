@@ -25,11 +25,11 @@ def readCase(fnam):
 # ---------------------------------------------------------------------
 # Input variables
 xH2O_G = 0.1     # Moisture content in Gasification feedstock
-xH2O_C = 0.2     # Moisture content in Combustion fuel
+xH2O_C = 0.5     # Moisture content in Combustion fuel
 
-Xch=0.8      # char conversion
+Xch=0.7      # char conversion
 
-partAir = 0.6 #  60 percent of total air useda as primary air
+partAir = 0.6 #  60 percent of total air used as primary air
 
 # Effects in the gasifier and combustor
 Pgas = 15 # MW
@@ -48,6 +48,7 @@ TC = 850     # Same temp in both chambers ... Unreasonable...?
 Ts = 200     # steam temp                    -- check sensitivity
 Tf = 80      # fuel temp, total guess        -- check sensitivity
 Tair = 200   # air temp,                     -- check sensitivity
+Tsteam = 200 # steam temp
 
 Tevap=100   # Boiling point of water
 Tpyro=500   # Temp at which fuel dissociates
@@ -170,7 +171,7 @@ yGas_mass = np.sum(ni_cg * MWi)
 
 # mass flows 
 
-Pfuel_c = (Pgas+Pheat)/nboil
+Pfuel_c = (Pheat+5)/nboil
 
 m_cg = Pgas / LHV_cg
 
@@ -233,10 +234,30 @@ sink_c = (mf_c*qfuel + mm_c*qh2o + mchar_c*qchar)/1e3
 sink_g = (mf_g*qfuel + mm_g*qh2o + mchar_g*qchar)/1e3
 
 
-data = [1, Sm_g, Sm_c, nR, Sq_c*1e6, Sq_g*1e6, sink_c*1e6, sink_g*1e6]
-head = 'row, Sm_g, Sm_c, nR, Sq_c, Sq_g, sink_c, sink_g'
 
 
+# BC values
+
+# density of air
+rho_air = p_atm*1e6*mixtureMW(X_air,comps_air)/(8.314*(Tair+TK))
+rho_s = 8.3
+
+Stot = Sq_c+Sq_g+sink_c+sink_g
+
+print(Stot)
+
+print('\n\n===================================================================\n')
+print('Final input terms:\n')
+
+print('QG = {:.5} MW'.format(Sq_g))
+print('QC = {:.5} MW\n'.format(Sq_c))
+print('sink_c = {:.5} MW'.format(sink_c))
+print('sink_g = {:.5} MW\n'.format(sink_g))
+print('Total = {:.5} MW'.format(Stot))
+
+
+data = [1, Sm_g, Sm_c, nR, Sq_c*1e6, Sq_g*1e6, sink_c*1e6, sink_g*1e6, m_air/rho_air, m_steam*2.2,Tsteam+TK,Tair+TK]
+head = 'row, Sm_g, Sm_c, nR, Sq_c, Sq_g, sink_c, sink_g, Vdot_air, Vdot_steam, Tsteam, Tair'
 
 with open('source.csv', 'w') as f:
     f.write(head)

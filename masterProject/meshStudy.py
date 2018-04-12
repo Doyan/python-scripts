@@ -41,7 +41,8 @@ T_air=200 + 273.15
 
 mu=np.interp(T_air,Trange,murange)*1e-6
 rho=np.interp(T_air,Trange,rhorange)
-
+#mu=18.6e-6
+#rho=7.86
 #------------Geometry--------------------
 L=7.4 
 W=5.9
@@ -69,6 +70,7 @@ epsmf=(14*phi)**(-1/3) # voidage at minimum fluidisation
 BDcrit=(rhop-rho)*dp**2
 Ar=rho*(rhop-rho)*g*dp**3/(mu**2)
 
+# from 
 Remf=np.sqrt(27.2**2 + 0.0408*Ar) - 27.2
 Rec=1.24*Ar**0.45
 
