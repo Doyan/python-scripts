@@ -34,6 +34,8 @@ partAir = 0.6 #  60 percent of total air used as primary air
 # Effects in the gasifier and combustor
 Pgas = 15 # MW
 Pheat = 85 # MW
+gasheat = 5 # MW heat needed per kgdaf gasifier fuel. 
+
 nboil= 0.89 # boiler efficiency
 
 # Feed composition, dry ash free basis, phyllis id #1269
@@ -171,12 +173,15 @@ yGas_mass = np.sum(ni_cg * MWi)
 
 # mass flows 
 
-Pfuel_c = (Pheat+5)/nboil
-
 m_cg = Pgas / LHV_cg
 
 mf_g = m_cg / yGas_mass
 m_steam = mf_g*case['SB']
+
+mchar_g = mf_g*case['yield_char'] 
+
+# fuel energy needed - bonus energy from nonconverted char. assumes 100% efficient heat transfer to gasifier... 
+Pfuel_c = (Pheat)/nboil + mf_g*gasheat - mchar_g*(1-Xch)*LHV_ch
 
 
 mf_c = Pfuel_c/case['LHV_fuel']
@@ -190,7 +195,6 @@ mm_c = xH2O_C*mf_c
 mm_g = xH2O_G*mf_g
 
 mchar_c = mf_c*case['yield_char'] 
-mchar_g = mf_g*case['yield_char'] 
 
 
 # -------------------------------------------------------------------------
