@@ -28,19 +28,22 @@ Fukt = np.resize([0,1],N)
 char = np.resize([0,0,1,1],N)
 height = np.resize([0,0,0,0,1,1,1,1],N)
 
+imatrix = np.column_stack((Fukt,char,height))
+
 Fukt = np.choose(Fukt,[0.08,0.7])
 char = np.choose(char,[0,1])
-height =  0.5 # np.choose(height,[0.1,0.7])
+height = np.choose(height,[0.1,0.7])
 
-matrix = np.column_stack((Fukt,char))#height))
+matrix = np.column_stack((Fukt,char,height))
 
 
+    
 # ---------------------------------------------------------------------
 # Input variables
-xH2O_G = 0.08   # Moisture content in Gasification feedstock
+xH2O_G = 0.08     # Moisture content in Gasification feedstock
 xH2O_C = 0.5     # Moisture content in Combustion fuel
 
-Xch=0.0      # char conversion
+Xch=1.0      # char conversion
 
 partAir = 0.6 #  60 percent of total air used as primary air
 
@@ -178,137 +181,128 @@ def senseHmix(comps,X,T):
     return sum(h)
 
 # -------------------------------------------------------------------------    
-# char conversion effects on gas
+directory = '/scratch/gabgus/geometry/present/sourcefiles/'
+
+for i in np.arange(N):
+    xH2O_G = matrix[i][0]
+    xH2O_C = 0.5
+    
+    Xch = matrix[i][1]
+    height = matrix[i][2]
+    
+    casestring = str(imatrix[i][0]) + str(imatrix[i][1]) + str(imatrix[i][2])
+    fnam = directory + 'source' + casestring + '.csv'
     # Convert wet basis moisture content to dry basis
-xH2O_C = makeDryBasis(xH2O_C)
-xH2O_G = makeDryBasis(xH2O_G)
-
-# char conversion effects on gas
-ni_char = charGas(case['yield_char'],Xch)
-ni_cg = case['ni'] + ni_char
-
-X_cg = ni_cg/ni_cg.sum()    
-
-LHV_cg = LHVgas(ni_cg/ni_cg.sum())
-
-yGas_mass = np.sum(ni_cg * MWi) 
+    xH2O_C = makeDryBasis(xH2O_C)
+    xH2O_G = makeDryBasis(xH2O_G)
     
-
-# mass flows 
-
-m_cg = Pgas / LHV_cg
-
-mf_g = m_cg / yGas_mass
-m_steam = mf_g*case['SB']
-mchar_g = mf_g*case['yield_char'] 
-mm_g = xH2O_G*mf_g
-  
-# ------------------------------------------------------------------------
-# Heat sinks 
-
-# Cp for fuel 
-Cp_f = (5.46*(Tf+Tref+2*TK)/2 - 524.77)/1000 # kj/kgK fuel Gupta 2003 https://doi.org/10.1016/S0016-2361(02)00398-8
-
-# Cp for gas
-Cp_g = meanCpmix(comps_gas,X_cg,Tref,TG)
-
-# Cp for char j/kgK fuel Gupta 2003
-Cp_ch = -0.0038*((Tpyro + TG +2*TK)/2)**2 + 5.98*(Tpyro + TG + 2*TK)/2 - 795.28
-Cp_ch = Cp_ch/1000 # kj/kgK
-
-# needed to heat 1kg of daf fuel to dissociation
-qfuel = Cp_f*(Tf - Tref) - Cp_f * (Tpyro -Tref) #kj/kg
-
-# needed heat to heat 1kg char to Bed temp
-qchar = Cp_ch*(Tpyro - Tref) - Cp_ch*(TG - Tref) #kj/kg
-
-# needed to heat and evaporate 1kg moisture 
-qh2o= (sensHeat(h2ol,Tf) - sensHeat(h2ol,Tevap) - dHvap/MW_h2o/1e3) #kj/kg
-
-qsteam= (sensHeat(h2o,Tsteam) - sensHeat(h2o,TG))
-
-
-# Source terms gas
-
-Sm_g = mchar_g*Xch
-
-n_added =  mchar_g*Xch/C.molecular_weight
-nR = n_added * 8.314 # * T/P / Ag
-
-# Reaction enthalpy per kg daf fuel
-dHr = 131.48 # kJ/mol  reaction: C(s) + H2O -> CO + H2
-Sq_g = -n_added * dHr / 1e3 # MW 
-
-# heating and drying
-sink_g = (mf_g*qfuel + mm_g*qh2o + mchar_g*qchar)/1e3  
-
-# Massflows combustor
-
-gasheat = sink_g + m_steam*qsteam/1e3 + Sq_g
-
-
-# fuel energy needed - bonus energy from nonconverted char. assumes 100% efficient heat transfer to gasifier... 
-
-Pfuel_c = (Pheat)/nboil
-
-mf_c_corr = 0
-if compensate:
-    mf_c_corr = (-gasheat/LHV_ch) /case["yield_char"]
-if bonus:
-    mf_c_corr = (-gasheat/LHV_ch - mchar_g*(1-Xch)) /case["yield_char"]
-
-mf_c = Pfuel_c/case['LHV_fuel'] + mf_c_corr
-m_air = partAir*mf_c*case['AFR']
-
-mm_c = xH2O_C*mf_c
-
-mchar_c = mf_c*case['yield_char'] 
-
-
-# Source terms Combustor
-Sm_c = mchar_c
-
-if bonus:
-    Sm_c += mchar_g*(1-Xch)
-
-Sq_c = Sm_c * LHV_ch # MW
-
-sink_c = (mf_c*qfuel + mm_c*qh2o + mchar_c*qchar)/1e3
-
-# BC values
-
-
-# BC values
-
-# density of air
-rho_air = p_atm*1e6*mixtureMW(X_air,comps_air)/(8.314*(Tair+TK))
-rho_s = 8.3
-
-Stot = Sq_c+Sq_g+sink_c+sink_g
-
-
-
-
-print('\n\n===================================================================\n')
-print('Final input terms:\n')
-
-print('QG = {:.5} MW'.format(Sq_g))
-print('QC = {:.5} MW\n'.format(Sq_c))
-print('sink_c = {:.5} MW'.format(sink_c))
-print('sink_g = {:.5} MW\n'.format(sink_g))
-print('Total = {:.5} MW\n'.format(Stot))
-
-print('Total fuel = {:.5} MW'.format(Pfuel_c))
-print('Total mass char = {:.5} kg'.format(Sm_c))
-
-data = [1, Sm_g, Sm_c, nR, Sq_c*1e6, Sq_g*1e6, sink_c*1e6, sink_g*1e6, m_air/rho_air, m_steam*2.2,Tsteam+TK,Tair+TK]
-head = 'row, Sm_g, Sm_c, nR, Sq_c, Sq_g, sink_c, sink_g, Vdot_air, Vdot_steam, Tsteam, Tair'
-
-with open(fnam, 'w') as f:
-    f.write(head)
-    f.write('\n')
-    for i,val in enumerate(data):    
-        f.write(str(val) + ',')
-    f.close()
+    # char conversion effects on gas
+    ni_char = charGas(case['yield_char'],Xch)
+    ni_cg = case['ni'] + ni_char
     
-Sq_c/3.892070e+01
+    X_cg = ni_cg/ni_cg.sum()    
+    
+    LHV_cg = LHVgas(ni_cg/ni_cg.sum())
+    
+    yGas_mass = np.sum(ni_cg * MWi) 
+        
+    
+    # mass flows 
+    
+    m_cg = Pgas / LHV_cg
+    
+    mf_g = m_cg / yGas_mass
+    m_steam = mf_g*case['SB']
+    mchar_g = mf_g*case['yield_char'] 
+    mm_g = xH2O_G*mf_g
+      
+    # ------------------------------------------------------------------------
+    # Heat sinks 
+    
+    # Cp for fuel 
+    Cp_f = (5.46*(Tf+Tref+2*TK)/2 - 524.77)/1000 # kj/kgK fuel Gupta 2003 https://doi.org/10.1016/S0016-2361(02)00398-8
+    
+    # Cp for gas
+    Cp_g = meanCpmix(comps_gas,X_cg,Tref,TG)
+    
+    # Cp for char j/kgK fuel Gupta 2003
+    Cp_ch = -0.0038*((Tpyro + TG +2*TK)/2)**2 + 5.98*(Tpyro + TG + 2*TK)/2 - 795.28
+    Cp_ch = Cp_ch/1000 # kj/kgK
+    
+    # needed to heat 1kg of daf fuel to dissociation
+    qfuel = Cp_f*(Tf - Tref) - Cp_f * (Tpyro -Tref) #kj/kg
+    
+    # needed heat to heat 1kg char to Bed temp
+    qchar = Cp_ch*(Tpyro - Tref) - Cp_ch*(TG - Tref) #kj/kg
+    
+    # needed to heat and evaporate 1kg moisture 
+    qh2o= (sensHeat(h2ol,Tf) - sensHeat(h2ol,Tevap) - dHvap/MW_h2o/1e3) #kj/kg
+    
+    qsteam= (sensHeat(h2o,Tsteam) - sensHeat(h2o,TG))
+    
+    
+    # Source terms gas
+    
+    Sm_g = mchar_g*Xch
+    
+    n_added =  mchar_g*Xch/C.molecular_weight
+    nR = n_added * 8.314 # * T/P / Ag
+    
+    # Reaction enthalpy per kg daf fuel
+    dHr = 131.48 # kJ/mol  reaction: C(s) + H2O -> CO + H2
+    Sq_g = -n_added * dHr / 1e3 # MW 
+    
+    # heating and drying
+    sink_g = (mf_g*qfuel + mm_g*qh2o + mchar_g*qchar)/1e3  
+    
+    # Massflows combustor
+    
+    gasheat = sink_g + m_steam*qsteam/1e3 + Sq_g
+
+
+    # fuel energy needed - bonus energy from nonconverted char. assumes 100% efficient heat transfer to gasifier... 
+
+    Pfuel_c = (Pheat)/nboil
+
+    mf_c_corr = 0
+    if compensate:
+        mf_c_corr = (-gasheat/LHV_ch) /case["yield_char"]
+    if bonus:
+        mf_c_corr = (-gasheat/LHV_ch - mchar_g*(1-Xch)) /case["yield_char"]
+
+    mf_c = Pfuel_c/case['LHV_fuel'] + mf_c_corr
+    m_air = partAir*mf_c*case['AFR']
+
+    mm_c = xH2O_C*mf_c
+    
+    mchar_c = mf_c*case['yield_char'] 
+    
+    
+    # Source terms Combustor
+    Sm_c = mchar_c
+    
+    if bonus:
+        Sm_c += mchar_g*(1-Xch)
+    
+    Sq_c = Sm_c * LHV_ch # MW
+    
+    sink_c = (mf_c*qfuel + mm_c*qh2o + mchar_c*qchar)/1e3
+    
+    # BC values
+    
+    # density of air
+    rho_air = p_atm*1e6*mixtureMW(X_air,comps_air)/(8.314*(Tair+TK))
+    rho_s = 8.3
+    
+    data = [1, int(casestring), Sm_g, Sm_c, nR, Sq_c*1e6, Sq_g*1e6, sink_c*1e6, sink_g*1e6, m_air/rho_air, m_steam*2.2,Tsteam+TK,Tair+TK, height,mf_c,mf_g, LHV_f]
+    head = 'row, case, Sm_g, Sm_c, nR, Sq_c, Sq_g, sink_c, sink_g, Vdot_air, Vdot_steam, Tsteam, Tair, height, mf_c, mf_g, LHV_fuel'
+
+    with open(fnam, 'w') as f:
+        f.write(head)
+        f.write('\n')
+        for i,val in enumerate(data):    
+            f.write(str(val) + ',')
+        f.close()
+
+
+
