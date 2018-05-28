@@ -23,18 +23,18 @@ def readCase(fnam):
     return data, header
 
 # Test matrix formulation
-N = 2**2
+N = 2**3
 Fukt = np.resize([0,1],N)
 char = np.resize([0,0,1,1],N)
-height = np.resize([0,0,0,0,1,1,1,1],N)
+D = np.resize([0,0,0,0,1,1,1,1],N)
 
-imatrix = np.column_stack((Fukt,char,height))
+imatrix = np.column_stack((Fukt,char,D))
 
 Fukt = np.choose(Fukt,[0.08,0.7])
 char = np.choose(char,[0,1])
-height = np.choose(height,[0.1,0.7])
+D = np.choose(D,[20,100])
 
-matrix = np.column_stack((Fukt,char,height))
+matrix = np.column_stack((Fukt,char,D))
 
 
     
@@ -54,6 +54,8 @@ gasheat = 3 # MW heat needed per kgdaf gasifier fuel.
 
 compensate = True
 bonus = True
+
+Fudgecorr = -3
 
 fnam = "test.csv"
 
@@ -78,10 +80,12 @@ Tpyro=500   # Temp at which fuel dissociates
 
 
 Tref = 25   # Reference temp
-TK=273.15   # for conversion to Kelvin
+TK = 273.15   # for conversion to Kelvin
 
 
 case,header = readCase('case_chalmers.npy')
+
+ychar = case["yield_char"] 
 
 # -------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -182,15 +186,29 @@ def senseHmix(comps,X,T):
 
 # -------------------------------------------------------------------------    
 directory = '/scratch/gabgus/geometry/present/sourcefiles/'
+print('\n============================= Start of run ===============================\n')
 
+
+
+D_array = np.array([5,10,30,100]) # matrix[:,2]
+moist_array = np.ones_like(D_array)*0.4
+char_array = np.ones_like(D_array)*0.2 # matrix[:,1]
+
+name_array=[]
 for i in np.arange(N):
-    xH2O_G = matrix[i][0]
+    name_array.append(str(imatrix[i][0]) + str(imatrix[i][1]) + str(imatrix[i][2]))
+    
+name_array=['5', '10', '30', '100']
+
+N = len(name_array)
+for i in np.arange(N):
+    xH2O_G = moist_array[i]
     xH2O_C = 0.5
     
-    Xch = matrix[i][1]
-    height = matrix[i][2]
+    Xch = char_array[i]
+    height = 0.5
     
-    casestring = str(imatrix[i][0]) + str(imatrix[i][1]) + str(imatrix[i][2])
+    casestring = name_array[i]
     fnam = directory + 'source' + casestring + '.csv'
     # Convert wet basis moisture content to dry basis
     xH2O_C = makeDryBasis(xH2O_C)
@@ -253,26 +271,37 @@ for i in np.arange(N):
     Sq_g = -n_added * dHr / 1e3 # MW 
     
     # heating and drying
-    sink_g = (mf_g*qfuel + mm_g*qh2o + mchar_g*qchar)/1e3  
+    qsink_g = qfuel + xH2O_G*qh2o + ychar*qchar
     
-    # Massflows combustor
-    
-    gasheat = sink_g + m_steam*qsteam/1e3 + Sq_g
-
+    sink_g = mf_g*qsink_g/1e3  
 
     # fuel energy needed - bonus energy from nonconverted char. assumes 100% efficient heat transfer to gasifier... 
-
+    qsink_c = qfuel + xH2O_C*qh2o + ychar*qchar
+    qair = senseHmix(comps_air,X_air,Tair) - senseHmix(comps_air,X_air,TC) 
+    
     Pfuel_c = (Pheat)/nboil
-
-    mf_c_corr = 0
+    mfc0 = Pfuel_c/LHV_f
+    
+    bonusheat = 0
+    bonusmass = 0
+    gasheat = 0
     if compensate:
-        mf_c_corr = (-gasheat/LHV_ch) /case["yield_char"]
+        gasheat = -(sink_g + m_steam*qsteam/1e3 + Sq_g)
     if bonus:
-        mf_c_corr = (-gasheat/LHV_ch - mchar_g*(1-Xch)) /case["yield_char"]
-
-    mf_c = Pfuel_c/case['LHV_fuel'] + mf_c_corr
+        bonusmass = mchar_g*(1-Xch)
+        bonusair = bonusmass*(32/12) + 3.76*bonusmass*(28/12)
+        bonusheat = bonusmass*LHV_ch
+    
+    net_correction =  (gasheat - bonusmass*LHV_ch)
+    
+    if net_correction < 0:
+        mf_c = mfc0
+    else:
+        mf_c = mfc0 + net_correction/LHV_ch/ychar
+        
+    
     m_air = partAir*mf_c*case['AFR']
-
+    
     mm_c = xH2O_C*mf_c
     
     mchar_c = mf_c*case['yield_char'] 
@@ -281,21 +310,21 @@ for i in np.arange(N):
     # Source terms Combustor
     Sm_c = mchar_c
     
-    if bonus:
-        Sm_c += mchar_g*(1-Xch)
+    Sq_c = mchar_c * LHV_ch + bonusheat + Fudgecorr # MW
     
-    Sq_c = Sm_c * LHV_ch # MW
+    sink_c = mf_c * qsink_c/1e3 
     
-    sink_c = (mf_c*qfuel + mm_c*qh2o + mchar_c*qchar)/1e3
-    
+    Stot = Sq_c+Sq_g+sink_c+sink_g
     # BC values
     
     # density of air
     rho_air = p_atm*1e6*mixtureMW(X_air,comps_air)/(8.314*(Tair+TK))
     rho_s = 8.3
     
-    data = [1, int(casestring), Sm_g, Sm_c, nR, Sq_c*1e6, Sq_g*1e6, sink_c*1e6, sink_g*1e6, m_air/rho_air, m_steam*2.2,Tsteam+TK,Tair+TK, height,mf_c,mf_g, LHV_f]
-    head = 'row, case, Sm_g, Sm_c, nR, Sq_c, Sq_g, sink_c, sink_g, Vdot_air, Vdot_steam, Tsteam, Tair, height, mf_c, mf_g, LHV_fuel'
+    
+    
+    data = [1, int(casestring), Sm_g, Sm_c, nR, Sq_c*1e6, Sq_g*1e6, sink_c*1e6, sink_g*1e6, m_air/rho_air, m_steam*2.2,Tsteam+TK,Tair+TK, height,mf_c,mf_g, LHV_f,D_array[i]]
+    head = 'row, case, Sm_g, Sm_c, nR, Sq_c, Sq_g, sink_c, sink_g, Vdot_air, Vdot_steam, Tsteam, Tair, height, mf_c, mf_g, LHV_fuel,D'
 
     with open(fnam, 'w') as f:
         f.write(head)
@@ -303,6 +332,25 @@ for i in np.arange(N):
         for i,val in enumerate(data):    
             f.write(str(val) + ',')
         f.close()
+    
+    print('\n\n===================================================================\n')
+    print('Final input terms ' + casestring + ':\n')
+
+    print('QG = {:.5} MW'.format(Sq_g))
+    print('QC = {:.5} MW\n'.format(Sq_c))
+    print('sink_c = {:.5} MW'.format(sink_c))
+    print('sink_g = {:.5} MW\n'.format(sink_g))
+    
+    print('Correction = {:.5}'.format(net_correction))
+    print('Total = {:.5} MW\n'.format(Stot))
+
+    print('Total fuel = {:.4} + {:.4} = {:.5} kg'.format(mf_c,mf_g,mf_c + mf_g))
+    print('Total fuel energy for heat = {:.5} MW'.format(mf_c*LHV_f*nboil))
+
+    print('Total mass char = {:.5} kg'.format(Sm_c))
+
+    print('Air speed : {:.4} m/s'.format(m_air/rho_air/39))
+    print('Steam speed : {:.4} m/s'.format(m_steam*2.2/4.5))
 
 
 

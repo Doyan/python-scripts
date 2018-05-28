@@ -1,0 +1,112 @@
+Report Name, Value, Unit, 
+heat out c, 1.9386289162184343E7, W
+heat out g, 1178464.4353560572, W
+heat in c, -8190750.931131323, W
+heat in g, -425934.2128082828, W
+Total Heat source, 1.2008108648733329E7, W
+Net heat source, 1.1948068453600796E7, W
+T_G_avg, 842.3383522458317, C
+T_C_avg, 852.6773872538853, C
+T_G_max, 847.9397216796875, C
+T_G_min, 839.3694091796875, C
+T_C_max, 855.94375, C
+T_C_min, 843.5932861328125, C
+V_C, 38.96090774282493, m^3
+V_G, 4.556005702965194, m^3
+Vdot_air, 31.5944917607, m^3/s
+Vdot_steam, 1.77746334795, m^3/s
+T_air, 200.0, C
+T_steam, 200.0, C
+case, 100.0, 
+mf_g, 1.15419697919, kg/s
+mf_c, 5.420296139473785, kg/s
+LHV_f, 1.762E7, J/kg
+height, 0.5, m
+A_C_r, 38.920700000000004, m^2
+A_G_r, 4.5, m^2
+K_eff, 180000.0, W/m-K
+convergence, 0.9950000289896722, 
+Report Name, Value, Unit, 
+heat out c, 1.953649353774628E7, W
+heat out g, 1095291.1005994768, W
+heat in c, -8196290.843818388, W
+heat in g, -425390.9655622052, W
+Total Heat source, 1.2008108648733329E7, W
+Net heat source, 1.2010102828965161E7, W
+T_G_avg, 762.7825625491981, C
+T_C_avg, 860.5854912771027, C
+T_G_max, 816.3860107421875, C
+T_G_min, 734.3113647460938, C
+T_C_max, 889.1740966796875, C
+T_C_min, 775.88857421875, C
+V_C, 38.96090774282493, m^3
+V_G, 4.556005702965194, m^3
+Vdot_air, 31.5944917607, m^3/s
+Vdot_steam, 1.77746334795, m^3/s
+T_air, 200.0, C
+T_steam, 200.0, C
+case, 10.0, 
+mf_g, 1.15419697919, kg/s
+mf_c, 5.420296139473785, kg/s
+LHV_f, 1.762E7, J/kg
+height, 0.5, m
+A_C_r, 38.920700000000004, m^2
+A_G_r, 4.5, m^2
+K_eff, 18000.0, W/m-K
+convergence, 1.0001660694694032, 
+Report Name, Value, Unit, 
+heat out c, 1.9439554590361807E7, W
+heat out g, 1156711.9372335777, W
+heat in c, -8192733.014694212, W
+heat in g, -425791.70858313644, W
+Total Heat source, 1.2008108648733329E7, W
+Net heat source, 1.1977741804318037E7, W
+T_G_avg, 821.5385767694241, C
+T_C_avg, 855.4851073035899, C
+T_G_max, 839.985009765625, C
+T_G_min, 811.7578369140625, C
+T_C_max, 865.989404296875, C
+T_C_min, 825.77529296875, C
+V_C, 38.96090774282493, m^3
+V_G, 4.556005702965194, m^3
+Vdot_air, 31.5944917607, m^3/s
+Vdot_steam, 1.77746334795, m^3/s
+T_air, 200.0, C
+T_steam, 200.0, C
+case, 30.0, 
+mf_g, 1.15419697919, kg/s
+mf_c, 5.420296139473785, kg/s
+LHV_f, 1.762E7, J/kg
+height, 0.5, m
+A_C_r, 38.920700000000004, m^2
+A_G_r, 4.5, m^2
+K_eff, 54000.0, W/m-K
+convergence, 0.9974711384362352, 
+Report Name, Value, Unit, 
+heat out c, 1.9624716858429678E7, W
+heat out g, 1009074.8116357388, W
+heat in c, -8199453.513214996, W
+heat in g, -424833.8496731585, W
+Total Heat source, 1.2008108648733329E7, W
+Net heat source, 1.2009504307177264E7, W
+T_G_avg, 680.0436172749536, C
+T_C_avg, 865.2126750709436, C
+T_G_max, 782.7839599609375, C
+T_G_min, 625.3529296875, C
+T_C_max, 915.144921875, C
+T_C_min, 707.176904296875, C
+V_C, 38.96090774282493, m^3
+V_G, 4.556005702965194, m^3
+Vdot_air, 31.5944917607, m^3/s
+Vdot_steam, 1.77746334795, m^3/s
+T_air, 200.0, C
+T_steam, 200.0, C
+case, 5.0, 
+mf_g, 1.15419697919, kg/s
+mf_c, 5.420296139473785, kg/s
+LHV_f, 1.762E7, J/kg
+height, 0.5, m
+A_C_r, 38.920700000000004, m^2
+A_G_r, 4.5, m^2
+K_eff, 9000.0, W/m-K
+convergence, 1.000116226333785, 

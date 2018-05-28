@@ -37,7 +37,7 @@ matrix = np.column_stack((Fukt,char))#height))
 
 # ---------------------------------------------------------------------
 # Input variables
-xH2O_G = 0.08   # Moisture content in Gasification feedstock
+xH2O_G = 0.08     # Moisture content in Gasification feedstock
 xH2O_C = 0.5     # Moisture content in Combustion fuel
 
 Xch=0.0      # char conversion
@@ -80,6 +80,8 @@ TK=273.15   # for conversion to Kelvin
 
 case,header = readCase('case_chalmers.npy')
 
+ychar = case["yield_char"] 
+LHV_f = case["LHV_fuel"] 
 # -------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 # Table values
@@ -240,24 +242,34 @@ dHr = 131.48 # kJ/mol  reaction: C(s) + H2O -> CO + H2
 Sq_g = -n_added * dHr / 1e3 # MW 
 
 # heating and drying
-sink_g = (mf_g*qfuel + mm_g*qh2o + mchar_g*qchar)/1e3  
-
-# Massflows combustor
-
-gasheat = sink_g + m_steam*qsteam/1e3 + Sq_g
-
+qsink_g = qfuel + xH2O_G*qh2o + ychar*qchar
+    
+sink_g = mf_g*qsink_g/1e3  
 
 # fuel energy needed - bonus energy from nonconverted char. assumes 100% efficient heat transfer to gasifier... 
+qsink_c = qfuel + xH2O_C*qh2o + ychar*qchar
+qair = senseHmix(comps_air,X_air,Tair) - senseHmix(comps_air,X_air,TC) 
 
 Pfuel_c = (Pheat)/nboil
+mfc0 = Pfuel_c/LHV_f
 
-mf_c_corr = 0
+bonusheat = 0
+bonusmass = 0
+gasheat = 0
 if compensate:
-    mf_c_corr = (-gasheat/LHV_ch) /case["yield_char"]
+    gasheat = -(sink_g + m_steam*qsteam/1e3 + Sq_g)
 if bonus:
-    mf_c_corr = (-gasheat/LHV_ch - mchar_g*(1-Xch)) /case["yield_char"]
+    bonusmass = mchar_g*(1-Xch)
+    bonusair = bonusmass*(32/12) + 3.76*bonusmass*(28/12)
+    bonusheat = bonusmass*LHV_ch
 
-mf_c = Pfuel_c/case['LHV_fuel'] + mf_c_corr
+net_correction =  (gasheat - bonusmass*LHV_ch)
+
+if net_correction < 0:
+    mf_c = mfc0
+else:
+    mfc = mfc0 + net_correction/LHV_ch/ychar
+        
 m_air = partAir*mf_c*case['AFR']
 
 mm_c = xH2O_C*mf_c
@@ -268,15 +280,10 @@ mchar_c = mf_c*case['yield_char']
 # Source terms Combustor
 Sm_c = mchar_c
 
-if bonus:
-    Sm_c += mchar_g*(1-Xch)
+Sq_c = mchar_c * LHV_ch + bonusheat # MW
 
-Sq_c = Sm_c * LHV_ch # MW
-
-sink_c = (mf_c*qfuel + mm_c*qh2o + mchar_c*qchar)/1e3
-
+sink_c = mf_c * qsink_c/1e3 
 # BC values
-
 
 # BC values
 
@@ -285,9 +292,6 @@ rho_air = p_atm*1e6*mixtureMW(X_air,comps_air)/(8.314*(Tair+TK))
 rho_s = 8.3
 
 Stot = Sq_c+Sq_g+sink_c+sink_g
-
-
-
 
 print('\n\n===================================================================\n')
 print('Final input terms:\n')
@@ -298,11 +302,17 @@ print('sink_c = {:.5} MW'.format(sink_c))
 print('sink_g = {:.5} MW\n'.format(sink_g))
 print('Total = {:.5} MW\n'.format(Stot))
 
-print('Total fuel = {:.5} MW'.format(Pfuel_c))
+print('Total fuel = {:.4} + {:.4} = {:.5} kg'.format(mf_c,mf_g,mf_c + mf_g))
+print('Total fuel energy for heat = {:.5} MW'.format(mf_c*LHV_f*nboil))
+
 print('Total mass char = {:.5} kg'.format(Sm_c))
 
-data = [1, Sm_g, Sm_c, nR, Sq_c*1e6, Sq_g*1e6, sink_c*1e6, sink_g*1e6, m_air/rho_air, m_steam*2.2,Tsteam+TK,Tair+TK]
-head = 'row, Sm_g, Sm_c, nR, Sq_c, Sq_g, sink_c, sink_g, Vdot_air, Vdot_steam, Tsteam, Tair'
+print('Air speed : {:.4} m/s'.format(m_air/rho_air/39))
+print('Steam speed : {:.4} m/s'.format(m_steam*2.2/4.5))
+
+
+data = [1,'000', Sm_g, Sm_c, nR, Sq_c*1e6, Sq_g*1e6, sink_c*1e6, sink_g*1e6, m_air/rho_air, m_steam*2.2,Tsteam+TK,Tair+TK, height,mf_c,mf_g, LHV_f]
+head = 'row, case, Sm_g, Sm_c, nR, Sq_c, Sq_g, sink_c, sink_g, Vdot_air, Vdot_steam, Tsteam, Tair, height, mf_c, mf_g, LHV_fuel'
 
 with open(fnam, 'w') as f:
     f.write(head)

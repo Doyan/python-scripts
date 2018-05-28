@@ -5,7 +5,7 @@ Created on Mon 12 February 2018
 @author: Gabriel
 """
 import numpy as np, matplotlib.pyplot as plt
-
+import pandas as pd
 #------------------------------------------------------------------------------
 fnam="data.csv" # data from handbook of chemistry and physics at 1bar
 
@@ -30,6 +30,9 @@ for idx,row in enumerate(rows):
         if is_number(item):
             data[idx][n]=float(item)
 file.close()
+
+
+
 
 # -------Luftegenskaper------------------------
 # data from handbook of chemistry and physics at 1bar
@@ -224,8 +227,6 @@ print('Height @ minimum fluidisation = {:.3} m\n'.format(Hbedmf))
 
 print('C1 = {:.3}, C2 = {:.3}'.format(C1,C2))
 
-
-
-
-
+air = pd.read_csv('air_1bar.csv',index_col=False)
+steam = pd.read_csv('steam_1bar.csv', index_col=False)
 
