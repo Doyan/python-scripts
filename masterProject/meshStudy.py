@@ -124,7 +124,6 @@ def Umid(Ar):
 Arr=np.linspace(0.001,100**(3),100)
 Ar13=Arr**(1/3)
 
-
 plt.figure(1)
 plt.loglog(Ar13,ReMf(Arr)/Ar13,label='$U^*_{mf}$')
 plt.loglog(Ar13,ReC(Arr)/Ar13,label='$U^*_{c}$')
@@ -140,9 +139,6 @@ plt.plot(Ar13,ReMf(Arr)/Ar13,label='$U^*_{mf}$')
 plt.plot(Ar13,ReC(Arr)/Ar13,label='$U^*_{c}$')
 plt.plot([Ar**(1/3),Ar**(1/3)],[1e-4,1e3],'--k',label='$Current\; Ar$')
 plt.plot(Ar13,Umid(Arr),'--m',label='$U^*_{mid}$')
-
-
-
 
 plt.legend(loc='best')
 plt.xlabel('$Ar^{1/3}$')

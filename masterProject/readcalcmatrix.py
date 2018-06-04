@@ -55,7 +55,7 @@ gasheat = 3 # MW heat needed per kgdaf gasifier fuel.
 compensate = True
 bonus = True
 
-Fudgecorr = -3
+Fudgecorr = -1.78
 
 fnam = "test.csv"
 
@@ -190,15 +190,15 @@ print('\n============================= Start of run ============================
 
 
 
-D_array = np.array([5,10,30,100]) # matrix[:,2]
-moist_array = np.ones_like(D_array)*0.4
-char_array = np.ones_like(D_array)*0.2 # matrix[:,1]
+D_array = np.array([5,10,15,20,30,40,60,80,100]) # matrix[:,2]
+moist_array = np.ones_like(D_array)*0.6
+char_array = np.ones_like(D_array)*0.1 # matrix[:,1]
 
 name_array=[]
 for i in np.arange(N):
     name_array.append(str(imatrix[i][0]) + str(imatrix[i][1]) + str(imatrix[i][2]))
     
-name_array=['5', '10', '30', '100']
+name_array=['5','10','15','20','30','40','60','80','100']
 
 N = len(name_array)
 for i in np.arange(N):

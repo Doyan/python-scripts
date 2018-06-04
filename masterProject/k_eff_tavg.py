@@ -9,21 +9,19 @@ Created on Mon May 28 11:15:27 2018
 
 import numpy as np, matplotlib.pyplot as plt
 import pandas as pd
+
 # -------------------------------------------------------------------------
 
-fnam = 'Qbed.csv' 
+fnam = 'Qbed_monitor.csv' 
 
 data = pd.read_csv(fnam)
 
-t = data.Time[1000:-1]
-q = data.Q_bed[1000:-1]
-
-
+t = data.Time
+q = data.Q_bed
+#%%
 N = len(t)
 
-
-window = 5000
-
+window = N
 
 Qavg = []
 qdiff = []
@@ -45,7 +43,6 @@ for i in np.arange(N):
         qdiff.append((Qavg[i] - Qavg[i-1]) / (20 * 1800))
     
     
-
 Qsum = []
 for i in np.arange(N):
     qsum=q[0:i].sum()
@@ -77,7 +74,7 @@ def q100(t,q0):
 
 
 
-
+#%%
 
 plt.figure(1)    
 plt.plot(data.Time,data.Q_bed)
@@ -85,13 +82,13 @@ plt.plot(data.Time,data.Q_bed)
 
 plt.figure(2)
 plt.plot(t,Qavg)
-plt.ylim(-0.5e7,0.5e7)
-plt.xlim(12.5, 19)
+plt.ylim(-1.5e7,0.5e7)
+plt.xlim(8, 24)
 
 plt.figure(3)
 plt.plot(t,k_avg/1800)
 plt.plot([0,19],[20,20],'--')
-plt.xlim(8,19)
+plt.xlim(8,24)
 plt.ylim(-500,200)
 
 
