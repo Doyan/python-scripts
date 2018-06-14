@@ -83,7 +83,7 @@ Tref = 25   # Reference temp
 TK = 273.15   # for conversion to Kelvin
 
 
-case,header = readCase('case_chalmers.npy')
+case, header = readCase('Anton_high.npy')
 
 ychar = case["yield_char"] 
 
@@ -105,7 +105,7 @@ n2 = db.set_compound('n2')
 o2 = db.set_compound('o2')
 C = db.set_compound('c(gr)')
 
-comps_gas = [co, h2, co2, ch4, c2h4, h2o]
+comps_gas = [co, h2, co2, ch4, c2h4, c2h2, c2h6, c3h6, h2o]
 comps_air = [o2, n2]
 comps_flue = [co2, h2o, o2, n2]
 
@@ -116,19 +116,20 @@ MW_h2o = h2ol.molecular_weight  # kg / mol
 
 # Heating values
 LHV_ch = 32.0                 # MJ/kg Heating value of char
-LHVi = [283.0, 286.0, 0, 891.0, 1411.0, 0]     # kj/mol gas components
+#co h2 co2 ch4 c2h4 c2h2 c2h6 c3h6 h2o
+LHVi = [282.9, 241.79, 0, 802.71, 1323.2, 1256.9, 1428.83, 1926.1, 0]     # kj/mol gas components
 
 # Molar masses
-MWi  = [28.01, 2.016, 44.01, 16.043, 28.053, 18.015] # g/mol
-MWi = np.array(MWi) / 1000 # kg / mol
-
+MWi =[]
+for comp in comps_gas:
+    MWi.append(comp.molecular_weight)
 
 #--------------functions for dealing with composition and conversions----------
 def charGas(mchar,Xchar):
     nchar = mchar/C.molecular_weight
     nco = nchar*Xchar
     nh2 = nchar*Xchar
-    ni_char = np.array([nco, nh2, 0, 0, 0, 0])
+    ni_char = np.array([nco, nh2, 0, 0, 0, 0, 0, 0, 0])
     return ni_char
 
 

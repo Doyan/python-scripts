@@ -6,14 +6,58 @@ Created on Tue Apr  3 11:39:15 2018
 @author: gabgus
 """
 import numpy as np
+from thermopy import nasa9polynomials as nasa9
+db=nasa9.Database()
+p_atm = 0.101325 # MPa
+
 # -------------------------
 # Collection of fuels and corresponding gas yields
+#------------------------------------------------------------------------------
 
-LHVi = np.array([283.0, 286.0, 0, 891.0, 1411.0, 0])     # kj/mol gas components
-MWi  = [28.01, 2.016, 44.01, 16.043, 28.053, 18.015] # g/mol
-MWi = np.array(MWi) / 1000 # kg / mol
+# Table values
 
+h2o = db.set_compound('h2o')
+h2ol = db.set_compound('h2o(l)')
+h2 = db.set_compound('h2') 
+co = db.set_compound('carbon monoxide')
+co2 = db.set_compound('carbon dioxide')
+ch4 = db.set_compound('ch4')
+c2h2 = db.set_compound('C2H2,acetylene')
+c2h4 = db.set_compound('c2h4')
+c2h6 = db.set_compound('c2h6')
+c3h6 = db.set_compound('c3h6,propylene')
+n2 = db.set_compound('n2')
+o2 = db.set_compound('o2')
+C = db.set_compound('c(gr)')
+
+comps_gas = [co, h2, co2, ch4, c2h4, c2h2, c2h6, c3h6, h2o]
+comps_air = [o2, n2]
+comps_flue = [co2, h2o, o2, n2]
+
+X_air = np.array([1, 3.76])/4.76
+
+dHvap = h2o.enthalpy(373.15) - h2ol.enthalpy(373.15) # J/mol
+MW_h2o = h2ol.molecular_weight  # kg / mol
+
+# Heating values
+LHV_ch = 32.0                 # MJ/kg Heating value of char
+#co h2 co2 ch4 c2h4 c2h2 c2h6 c3h6 h2o
+LHVi = [282.9, 241.79, 0, 802.71, 1323.2, 1256.9, 1428.83, 1926.1, 0]     # kj/mol gas components
+
+# Molar masses
+MWi =[]
+for comp in comps_gas:
+    MWi.append(comp.molecular_weight)
+
+# molar weight of elements
 MW_CHO = np.array([12.01, 1.007, 15.998])/1e3 # kg/mol
+
+def mixtureMW(X,gcomps):
+    MWmid = []
+    for i, comps in enumerate(gcomps):
+        MWmid.append(X[i] * comps.molecular_weight)
+    return sum(MWmid)
+
 
 
 def saveCase(casedict,fnam):
@@ -47,8 +91,8 @@ case_chalmers = {}
 
 # Input
 
-# [co, h2, co2, ch4, c2h4, h2o]
-ni_cg =  np.array([12.1, 7.5, 4.05, 4.1, 1.6, 0])
+# [co, h2, co2, ch4, c2h4, c2h2 c2h6 c3h6 h2o]
+ni_cg =  np.array([12.1, 7.5, 4.05, 4.1, 1.6, 0, 0, 0, 0])
 CHO = np.array([50.55,6.13,43.22]) / 100
 SB = 0.7
 ER = 1.2
@@ -105,8 +149,6 @@ case_chalmers['SB'] = SB
 case_chalmers['ER'] = ER
 case_chalmers['AFR'] = m_air
 case_chalmers['LHV_fuel'] = LHV_fuel
-case_chalmers['LHV_cg_mass'] = LHV_cg_mass
-case_chalmers['LHV_cg_mole'] = LHV_cg_mole   
 
 saveCase(case_chalmers,'case_chalmers')
 
@@ -131,6 +173,10 @@ Xi = [[40.58, 16.03, 31.54, 8.31, 0.38, 2.88, 0.13, 0.16],
 ]
 
 
+
+
+
+
 # kg gas (no tar)/kg fuel
 yield_gas = [0.88, 0.7, 0.53] 
 
@@ -145,14 +191,32 @@ yash = 0.0391125 # yield ash kg/kgdaf
 HHVfuel = 20.50125 # MJ/kg
 LHVfuel = 19.25125 # MJ/kg
 
-# shoehorn in the heavier compounds as ethene
-xi=[[],[],[]]
+mixMW = []
+ngas=[]
+ni_cg=[]
+
 for i in range(3):
-    xi[i] = Xi[i][0:4]
-    xi[i].append(sum(Xi[i][4:])) 
-    xi[i].append(0.0) # add spot for water
-    xi[i] = np.array(xi[i]) # make array
-    xi[i] = xi[i]/xi[i].sum() #  normalise
+    Xi[i].append(0.0) # add spot for water
+    Xi[i] = np.array(Xi[i])/100
+    mixMW.append(mixtureMW(Xi[i],comps_gas))
+    ngas.append(yield_gas[i]/mixMW[i]) 
+    ni_cg.append(ngas[i]*Xi[i])
+
+
+# flue and air really dirty code
+ni_fuel = CHO / MW_CHO
+
+co2 = ni_fuel[0]
+h2o = ni_fuel[1] / 2
+o2 = co2 + h2o/2 - ni_fuel[2]/2
+
+ni_fg = np.array([co2, h2o, o2*(ER-1), o2*ER*3.76])
+ni_air = o2*ER + o2*ER*3.76
+
+MW_O2 = 15.998*2/1000
+MW_N2 = 14.0067*2/1000
+
+m_air = o2*ER*MW_O2 + o2*ER*3.76*MW_N2
 
 
 
@@ -160,11 +224,24 @@ for i in range(3):
 
 
 
+dicts = [case_anton_high, case_anton_mid, case_anton_low]
+names = ['Anton_high','Anton_mid','Anton_low']
 
 
+for i,case in enumerate(dicts):
+    case['name'] = names[i]
+    case['ni'] = ni_cg[i]
+    case['X_cg'] = Xi[i]
+    case['yGas_mass'] = yield_gas[i]
+    case['yGas_mole'] = ngas[i]
+    case['CHO'] = CHO
+    case['yield_char'] = ychar
+    case['SB'] = SB
+    case['ER'] = ER
+    case['AFR'] = m_air
+    case['LHV_fuel'] = LHVfuel 
+    saveCase(case,names[i])
 
-
-case_anton_high['name'] = 'Anton_high'
 
 
 
