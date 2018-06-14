@@ -18,8 +18,8 @@ data = pd.read_csv(path+fnam,sep=',',skiprows=1, names=['time','q'] )
 #%%
 # Config
 N = data.shape[0]
-tstart=10
-Rx = 0.7
+tstart=9
+Rx = 0.5
 
 
 # Index generation

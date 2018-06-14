@@ -92,10 +92,16 @@ h2 = db.set_compound('h2')
 co = db.set_compound('carbon monoxide')
 co2 = db.set_compound('carbon dioxide')
 ch4 = db.set_compound('ch4')
+c2h2 = db.set_compound('C2H2,acetylene')
 c2h4 = db.set_compound('c2h4')
+c2h6 = db.set_compound('c2h6')
+c3h6 = db.set_compound('c3h6,propylene')
 n2 = db.set_compound('n2')
 o2 = db.set_compound('o2')
 C = db.set_compound('c(gr)')
+
+
+
 
 comps_gas = [co, h2, co2, ch4, c2h4, h2o]
 comps_air = [o2, n2]
