@@ -194,7 +194,6 @@ LHVfuel = 19.25125 # MJ/kg
 mixMW = []
 ngas=[]
 ni_cg=[]
-
 for i in range(3):
     Xi[i].append(0.0) # add spot for water
     Xi[i] = np.array(Xi[i])/100
@@ -217,11 +216,6 @@ MW_O2 = 15.998*2/1000
 MW_N2 = 14.0067*2/1000
 
 m_air = o2*ER*MW_O2 + o2*ER*3.76*MW_N2
-
-
-
-
-
 
 
 dicts = [case_anton_high, case_anton_mid, case_anton_low]
