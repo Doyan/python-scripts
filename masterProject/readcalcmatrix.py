@@ -83,7 +83,7 @@ Tref = 25   # Reference temp
 TK = 273.15   # for conversion to Kelvin
 
 
-case, header = readCase('Anton_high.npy')
+case, header = readCase('case_chalmers.npy')
 
 ychar = case["yield_char"] 
 
@@ -199,6 +199,10 @@ moist_array = np.ones_like(D_array)*0.6
 char_array = np.ones_like(D_array)*0.1 # matrix[:,1]
 
 name_array=[]
+
+
+
+
 for i in np.arange(N):
     name_array.append(str(imatrix[i][0]) + str(imatrix[i][1]) + str(imatrix[i][2]))
     
@@ -314,11 +318,11 @@ for i in np.arange(N):
     # Source terms Combustor
     Sm_c = mchar_c
     
-    Sq_c = mchar_c * LHV_ch + bonusheat + Fudgecorr # MW
+    Sq_c = mchar_c * LHV_ch #+ bonusheat + Fudgecorr # MW
     
     sink_c = mf_c * qsink_c/1e3 
     
-    Stot = Sq_c+Sq_g+sink_c+sink_g
+    Stot = Sq_c+sink_c#+Sq_g+sink_g
     # BC values
     
     # density of air
