@@ -81,8 +81,6 @@ plt.plot(trev,qavgr,label='Reverse expanding average')
 plt.plot(t,qroll,label='Rolling average')
 #plt.plot(trev,qrollr,label='Reverse rolling average')
 
-
-
 plt.plot([t[0],t[-1]+0.1],[555000,555000],'--',color=(0.5,0.5,0.5),label='Expected lower bound')
 plt.plot([t[0],t[-1]+0.1],[2777000,2777000],'-.',color=(0.5,0.5,0.5),label='Expected higher bound')
 

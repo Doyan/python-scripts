@@ -45,7 +45,7 @@ Xch=0.0      # char conversion
 partAir = 0.6 #  60 percent of total air used as primary air
 
 # Effects in the gasifier and combustor
-Pgas = 15 # MW
+Pgas = 10 # MW
 Pheat = 85 # MW
 gasheat = 3 # MW heat needed per kgdaf gasifier fuel. 
 
