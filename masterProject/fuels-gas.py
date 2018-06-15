@@ -10,6 +10,8 @@ from thermopy import nasa9polynomials as nasa9
 db=nasa9.Database()
 p_atm = 0.101325 # MPa
 
+path = 'datafiles/'
+
 # -------------------------
 # Collection of fuels and corresponding gas yields
 #------------------------------------------------------------------------------
@@ -166,7 +168,7 @@ case_anton_low = {}
 # low aght high T
 # low act low T
 
-# H2	CO	CO2	CH4	C2H2	C2H4	C2H6	C3H6
+# H2	CO  CO2	CH4	C2H2	C2H4	C2H6	C3H6
 Xi = [[40.58, 16.03, 31.54, 8.31, 0.38, 2.88, 0.13, 0.16],
       [36.32, 20.48, 28.65, 9.94, 0.5, 3.62, 0.21, 0.27],
       [27.51, 25.92, 28.25, 12.16, 0.73, 4.45, 0.26, 0.73]
@@ -178,28 +180,28 @@ Xi = [[40.58, 16.03, 31.54, 8.31, 0.38, 2.88, 0.13, 0.16],
 
 
 # kg gas (no tar)/kg fuel
-yield_gas = [0.88, 0.7, 0.53] 
+y_gas = [0.88, 0.7, 0.53] 
 
 # elements CHO
 CHO =np.array([52.675, 5.7375, 37.625]) / 100
 
 
-ychar= 0.2622875 # yield char kg/kgdaf
-yvol = 0.703075 # yield volatiles kg/kgdaf	
-yash = 0.0391125 # yield ash kg/kgdaf
+y_char= 0.2622875 # yield char kg/kgdaf
+y_vol = 0.703075 # yield volatiles kg/kgdaf	
+y_ash = 0.0391125 # yield ash kg/kgdaf
 
-HHVfuel = 20.50125 # MJ/kg
-LHVfuel = 19.25125 # MJ/kg
+HHV_fuel = 20.50125 # MJ/kg
+LHV_fuel = 19.25125 # MJ/kg
 
 mixMW = []
-ngas=[]
+n_gas=[]
 ni_cg=[]
 for i in range(3):
     Xi[i].append(0.0) # add spot for water
     Xi[i] = np.array(Xi[i])/100
     mixMW.append(mixtureMW(Xi[i],comps_gas))
-    ngas.append(yield_gas[i]/mixMW[i]) 
-    ni_cg.append(ngas[i]*Xi[i])
+    n_gas.append(y_gas[i]/mixMW[i]) 
+    ni_cg.append(n_gas[i]*Xi[i])
 
 
 # flue and air really dirty code
@@ -226,14 +228,14 @@ for i,case in enumerate(dicts):
     case['name'] = names[i]
     case['ni'] = ni_cg[i]
     case['X_cg'] = Xi[i]
-    case['yGas_mass'] = yield_gas[i]
-    case['yGas_mole'] = ngas[i]
+    case['yGas_mass'] = y_gas[i]
+    case['yGas_mole'] = n_gas[i]
     case['CHO'] = CHO
-    case['yield_char'] = ychar
+    case['yield_char'] = y_char
     case['SB'] = SB
     case['ER'] = ER
     case['AFR'] = m_air
-    case['LHV_fuel'] = LHVfuel 
+    case['LHV_fuel'] = LHV_fuel 
     saveCase(case,names[i])
 
 

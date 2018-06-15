@@ -10,7 +10,7 @@ Created on Fri Apr 27 14:08:18 2018
 import numpy as np, matplotlib.pyplot as plt
 import pandas as pd
 
-
+# https://aip.scitation.org/doi/pdf/10.1063/1.1285884
 air = pd.read_csv('air_1bar.csv',index_col=False)
 steam = pd.read_csv('steam_1bar.csv', index_col=False)
 

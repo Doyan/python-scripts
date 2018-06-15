@@ -55,7 +55,7 @@ gasheat = 3 # MW heat needed per kgdaf gasifier fuel.
 compensate = True
 bonus = True
 
-Fudgecorr = -1.78
+Fudgecorr = [-21,-22,-23]
 
 fnam = "test.csv"
 
@@ -63,8 +63,6 @@ nboil= 0.89 # boiler efficiency
 
 # Feed composition, dry ash free basis, phyllis id #1269
 #CHONS = np.array([50.7, 6.12, 42.93, 0.20, 0.03])
-pa_f = np.array([0.86, 0.14])  # daf, Vol, fC -- ash 0.4% dry basis
-LHV_f = 17.62                 # MJ/kg
 
 # Temperatures, in deg C
 TG = 850
@@ -81,11 +79,6 @@ Tpyro=500   # Temp at which fuel dissociates
 
 Tref = 25   # Reference temp
 TK = 273.15   # for conversion to Kelvin
-
-
-case, header = readCase('case_chalmers.npy')
-
-ychar = case["yield_char"] 
 
 # -------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -194,22 +187,25 @@ print('\n============================= Start of run ============================
 
 
 
-D_array = np.array([5,10,15,20,30,40,60,80,100]) # matrix[:,2]
+D_array = np.array([30,30,30]) # matrix[:,2]
 moist_array = np.ones_like(D_array)*0.6
 char_array = np.ones_like(D_array)*0.1 # matrix[:,1]
+case_list = ['Anton_high.npy', 'Anton_mid.npy', 'Anton_low.npy']
 
 name_array=[]
-
-
-
-
 for i in np.arange(N):
     name_array.append(str(imatrix[i][0]) + str(imatrix[i][1]) + str(imatrix[i][2]))
     
-name_array=['5','10','15','20','30','40','60','80','100']
+    
+name_array=['1','2','3']
 
 N = len(name_array)
 for i in np.arange(N):
+    
+    case, header = readCase(case_list[i])
+    ychar = case['yield_char']
+    LHV_f = case['LHV_fuel']
+    
     xH2O_G = moist_array[i]
     xH2O_C = 0.5
     
@@ -318,7 +314,7 @@ for i in np.arange(N):
     # Source terms Combustor
     Sm_c = mchar_c
     
-    Sq_c = mchar_c * LHV_ch #+ bonusheat + Fudgecorr # MW
+    Sq_c = mchar_c * LHV_ch + bonusheat + Fudgecorr[i] # MW
     
     sink_c = mf_c * qsink_c/1e3 
     
@@ -355,7 +351,7 @@ for i in np.arange(N):
     print('Total fuel = {:.4} + {:.4} = {:.5} kg'.format(mf_c,mf_g,mf_c + mf_g))
     print('Total fuel energy for heat = {:.5} MW'.format(mf_c*LHV_f*nboil))
 
-    print('Total mass char = {:.5} kg'.format(Sm_c))
+    print('Total mass char = {:.5} kg'.format(Sm_c+mchar_g))
 
     print('Air speed : {:.4} m/s'.format(m_air/rho_air/39))
     print('Steam speed : {:.4} m/s'.format(m_steam*2.2/4.5))
