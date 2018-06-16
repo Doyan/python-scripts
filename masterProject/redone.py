@@ -98,14 +98,14 @@ def mixtureMW(comps,X):
 
 
 # Lower heating value of mixture
-# (thermopy compound list, molar fraction list,) -> kj/kg    
+# (thermopy compound list, molar fraction list,) -> MJ/kg    
 
-def lhvMix(comps,X):
+def mixtureLHV(comps,X):
     lhv = []
     X= X / sum(X)
     for i, comp in enumerate(comps):
-        lhv.append(X[i] * comp.lhv / comp.molecular_weight)
-    return sum(lhv)
+        lhv.append(X[i] * comp.lhv )
+    return sum(lhv) / mixtureMW(comps,X)/1000
 
 # Mean specific heat capacity of thermopy compund over interval 
 # (thermopy compound, start temp in deg C, end temp in deg C) -> kj/kgK    
@@ -148,10 +148,11 @@ class Case(object):
     # Corresponding gas yields in kg/kgdaf      
     gas_yields = {'Anton_high': 0.88, 'Anton_mid': 0.7, 'Anton_low': 0.53}
     
+    # -------------------------------------------------------------------------
     # Inputs 
     gascombo='Anton_mid'    # namestring for chosen gas comp and yield
     
-    comp_gas = np.array(gas_comps[gascombo])/100    # molar fraction, gas composition
+    X_gas = np.array(gas_comps[gascombo])/100    # molar fraction, gas composition
     yield_gas = gas_yields[gascombo]                # kg gas/kgdaf
     
     # Fuel properties, change all at once!
@@ -169,6 +170,10 @@ class Case(object):
     TC = 850        # deg C
     Tair = 200      # deg C
     Tsteam = 200    # deg C
+    
+    # Loads
+    P_gas = 10      # MW
+    P_heat = 85     # MW
     
     # Velocities
     u_air = 1.2     # m/s
@@ -196,6 +201,15 @@ class Case(object):
 # Source term calculation (enclose in loop or make function?)
 # --------------------------------------------------------------------------
 case = Case()
+
+lhv_cg = mixtureLHV(comps_gas,case.X_gas)   #  MJ/kg, lhv of produced gas
+
+m_cg = case.P_gas / lhv_cg                  # kg/s, needed massflow cold gas    
+
+m_gfuel = m_cg / case.yield_gas         # kg/s, needed massflow gasifier fuel
+
+
+
 
 
 
