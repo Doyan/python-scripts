@@ -220,7 +220,7 @@ Cp_f = (5.46*(Tf+Tref+2*TK)/2 - 524.77)/1000 # kj/kgK fuel Gupta 2003 https://do
 # Cp for gas
 Cp_g = meanCpmix(comps_gas,X_cg,Tref,TG)
 
-# Cp for char j/kgK fuel Gupta 2003
+# Cp for char kj/kgK fuel Gupta 2003
 Cp_ch = -0.0038*((Tpyro + TG +2*TK)/2)**2 + 5.98*(Tpyro + TG + 2*TK)/2 - 795.28
 Cp_ch = Cp_ch/1000 # kj/kgK
 
