@@ -18,7 +18,7 @@ data = pd.read_csv(path+fnam,sep=',',skiprows=1, names=['time','q'] )
 #%%
 # Config
 N = data.shape[0]
-tstart=9
+tstart=15
 Rx = 0.5
 
 

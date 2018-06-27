@@ -4,7 +4,7 @@ Created on Wed Jun 13 18:45:19 2018
 
 @author: Gabriel
 """
-import numpy as np, matplotlib.pyplot as plt
+import numpy as np
 
 import pandas as pd
 
@@ -12,7 +12,8 @@ from thermopy import nasa9polynomials as nasa9
 db=nasa9.Database()
 
 datapath = 'datafiles/'
-p_atm = 101325 # Pa
+sourcepath = './'
+
 
 # -------------------------------------------------------------------------
 # Table values
@@ -42,6 +43,9 @@ comps_flue = [co2, h2o, o2, n2]
 TK= 273.15 # K
 Tref = 25 # deg C
 
+# Pressure at one atm
+p_atm = 101325 # Pa
+
 # molar composition of air 
 x_air = np.array([0, 0, 1, 3.76])/4.76
 
@@ -64,6 +68,19 @@ dHr_g = 131.48 # kJ/mol  reaction: C(s) + H2O -> CO + H2
 names_gas = ['h2', 'co', 'co2', 'ch4', 'c2h2', 'c2h4', 'c2h6', 'c3h6']
 lhv_gas = [241.79, 282.9, 0, 802.71, 1256.9, 1323.2, 1428.83, 1926.1]     # kj/mol
 
+
+# https://doi.org/10.1063/1.1285884
+# units: K, mol/dm3, J/mol, J/mol, J/(mol K), J/(mol K), J/(mol K), m/s 
+air_props = pd.read_csv(datapath + 'air_1atm_molar.csv',index_col=False)
+
+
+# from handbook of chemistry and physics at 1bar
+# Units: K, kg/m3, kj/kg, kj/(kgK),kj/(kg K),kj/(kg K),m/s, microPa s,mW/(m K) 
+steam_props = pd.read_csv(datapath + 'steam_1bar.csv', index_col=False)
+
+# molar weight of elements
+MW_CHO = np.array([12.01, 1.007, 15.998])/1e3 # kg/mol
+
 # add lhv to thermopy objects for convenience
 for i,comp in enumerate(comps_gas):
     comp.lhv = lhv_gas[i]
@@ -72,19 +89,6 @@ for i,comp in enumerate(comps_gas):
 mw_gas =[]
 for comp in comps_gas:
     mw_gas.append(comp.molecular_weight)
-
-# kg / mol molar mass of water
-mw_h2o = h2ol.molecular_weight  
-
-# molar weight of elements
-MW_CHO = np.array([12.01, 1.007, 15.998])/1e3 # kg/mol
-
-# https://doi.org/10.1063/1.1285884
-air_props = pd.read_csv(datapath + 'air_1atm_molar.csv',index_col=False)
-
-
-# from handbook of chemistry and physics at 1bar
-steam_props = pd.read_csv(datapath + 'steam_1bar.csv', index_col=False)
 
 # -------------------------------------------------------------------------
 # Helper functions
@@ -199,7 +203,7 @@ class Case(object):
     # Corresponding gas yields in kg/kgdaf      
     gas_yields = {'Anton_high': 0.88, 'Anton_mid': 0.7, 'Anton_low': 0.53}
     
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     # Inputs 
     gascombo='Anton_mid'    # namestring for chosen gas comp and yield
     
@@ -231,8 +235,8 @@ class Case(object):
     nboil = 0.89
    
      # Moisture content, wet basis
-    xh2o_g = 0.55
-    xh2o_c = 0.55
+    #xh2o_g_wet = 0.55
+    #xh2o_c_wet = 0.55
     
     # Equivalence ratio
     ER = 1.2
@@ -242,50 +246,56 @@ class Case(object):
     u_steam = 1.2   # m/s
     
     # Dimensions
-    L = 7.398
-    W = 5.9
-    H = 2
+    L = 7.398   # m, Length of furnace
+    W = 5.9     # m, Width of furnace
+    H = 1       # m, Bed height
     
-    L_chamber = 2.6 # m, Length
-    W_chamber = 1   # m, Width
-    
+    L_chamber = 2.6             # m, Length of chamber
+    W_chamber = 1               # m, Width of chamber
+    H_gap = 0.5                 # m, Height of gap
+    wall_thickness = 0.15    # m, Thickness of chamber wall
    
     # degree of char conversion
     Xch = 0
     
-    # fraction of combustion chmbers heat demand satisfied from bed
-    frombed = 0.5
+    # fraction of combustion chambers heat demand satisfied from bed
+    frombed = 0.45
     
-    #-------------------------------------------------------------------------- 
+    # Values used to calculate k_eff
+    D = 0.02            # m2/s, Particle dispersion
+    cp_solid = 1000     # J/kgK, Heat capacity of silica sand
+    porosity = 0.525    # void fraction in bed
+    rho_solid = 2800    # kg/m3 bed marerial density 
+    
+    #----------------------------------------------------------------------
     
 
     # Initialisation method to allow passing dict or keyword arguments 
     # to change individual attributes in order to create different cases
-    def __init__(self, name='base', *change_data, **kwargs):
-        self.name=name
-        for dictionary in change_data:
-            for key in dictionary:
-                setattr(self, key, dictionary[key])
-        for key in kwargs:
-            setattr(self, key, kwargs[key])
-
-# --------------------------------------------------------------------------
+    def __init__(self, fnam='Cases_simplified_model.xlsx',index=0):
+        df = pd.read_excel(fnam,'Sheet1',header=0,skiprows=[1])
+        dictionary = df.to_dict('records')[index]
+        dictionary['index'] = int(dictionary['case_index'])
+        for key in dictionary:
+            setattr(self, key, dictionary[key])
+# -------------------------------------------------------------------------
 # Source term calculation (enclose in loop or make function?)
-# --------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 case = Case() # load case specific indata
 
 
 # ------------ Preprocess parameters --------------------------
 
 # Moisture made into dry basis
-case.xh2o_g = case.xh2o_g / (1 - case.xh2o_g)
-case.xh2o_c = case.xh2o_c / (1 - case.xh2o_c)
+case.xh2o_g = case.xH2O_G_wet / (1 - case.xH2O_G_wet)
+case.xh2o_c = case.xH2O_C_wet / (1 - case.xH2O_C_wet)
     
 # Calculate outgoing fluegas composition for this case
 x_flue, yFlue = fluegasComp(case.CHO,case.ER)   # mol fraction, mol/kg fuel
 
 
-# ---------- calculate massflows in gasifier -------
+# ---------- Calculate massflows in gasifier ------------------------------
+
 lhv_cg = mixtureLHV(comps_gas,case.X_gas)   #  MJ/kg, lhv of produced gas
 
 m_cg = case.P_gas / lhv_cg                  # kg/s, needed massflow cold gas    
@@ -333,7 +343,9 @@ Q_g = m_gfuel*(qh2o_g + qfuel_g + qsteam_g)/1000 # MW
 m_cfuel = (case.P_heat/case.nboil + Q_g - lhv_ch*(1-case.Xch)* case.y_char*m_gfuel) / case.fuel_LHV # needed massflow of fuel to combustion
 
 # Massflow of air and flue gas
-A_C = case.L * case.W - A_G
+th = case.wall_thickness
+A_wall = th*case.L_chamber + 2*(th*case.W_chamber + th*th)
+A_C = case.L * case.W - A_G - A_wall
 
 V_fm = case.u_air * A_C 
 
@@ -380,25 +392,85 @@ while diff > 1e-6:
     
     n_o2 = Qtot/dHr_c
     
+    # New value for fraction that is flue gas
     Xflue_new = 1 - n_o2/(n_fm_tot*x_air[2])
     
+    # Calculate tolerance, advance counter and set iterated variable 
     diff = np.abs(Xflue-Xflue_new)
     i += 1
     Xflue = Xflue_new
 
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------- 
+# Postprocessing
+# -------------------------------------------------------------------------
 # Formulation of the source terms
 
-S_c = Qtot
+S_c = Qtot# - 5  # MW, heat released from combustion
 
-sink_c = m_cfuel*(qfuel_c + qh2o_c)*case.frombed
+sink_c = m_cfuel*(qfuel_c + qh2o_c)*case.frombed /1e3   # MW, heat needed to dry combusting fuel
 
-S_g = m_gfuel*case.y_char*case.Xch*dHr_g
+S_g = m_gfuel*case.y_char*case.Xch*dHr_g/1e3            # MW, heat needed for char gasification
 
-sink_g = m_gfuel*(qh2o_g + qfuel_g)
+sink_g = m_gfuel*(qh2o_g + qfuel_g)/1e3                 # MW, heat needed to dry gasifying fuel
+
+S_tot = S_c - S_g - sink_g - sink_c
+
+# Calculation of k_eff from case data
+k_eff = case.D*case.rho_solid*case.cp_solid*case.porosity
+
+# Fluid properties at 800 - 850 deg C
+mu_air = 44.0e-6 # Pa s
+
+tc_air = 68.0e-3 # W/(m K)
+
+cp_air =  1160 # J/(kg K)
+
+mu_steam = np.interp(case.TG + TK,steam_props.Temp,steam_props.mu) * 1e-6 # Pa s
+
+tc_steam = np.interp(case.TG + TK,steam_props.Temp,steam_props.tc) * 1e-3 # W/(m K) 
+
+cp_steam = np.interp(case.TG + TK,steam_props.Temp,steam_props.Cp) * 1000 # J/(kg K) 
 
 
 
+# Preprocess velocities to match T = 200 C, 
+# since simulation uses ideal gas law
+
+V_fm_in= n_fm_tot / np.interp(case.Tair + TK,air_props.Temp,air_props.rho) / 1000
+v_air = V_fm_in / A_C # m/s
+
+V_steam_in =  m_steam / np.interp(case.Tsteam + TK,steam_props.Temp,steam_props.rho)
+v_steam = V_steam_in / A_G # m/s
+
+#--------------------------------------------------------------------------
+# Write sourcefile for STAR CCM+ to read
+
+data = [1, case.index, S_c, -sink_c, -S_g, -sink_g, v_air, v_steam, k_eff,
+        mu_air, mu_steam,tc_air,tc_steam, cp_air, cp_steam, case.cp_solid, case.rho_solid,
+        case.TG+TK,case.TC+TK,case.Tair+TK,case.Tsteam+TK,
+        case.porosity, case.L_chamber, case.W_chamber, case.H_gap,case.wall_thickness, case.L,
+        case.W, case.H]
+header = 'row,index,S_c,sink_c,S_g,sink_g,v_air,v_steam,k_eff,mu_air,mu_steam,tc_air,tc_steam,cp_air,cp_steam,cp_solid,rho_solid,TG,TC,Tair,Tsteam,porosity,L_chamber,W_chamber,H_gap,chamber_thickness,L,W,H'
+
+with open(sourcepath + 'source_' + str(case.index) + '.csv', 'w') as f:
+    f.write(header)
+    f.write('\n')
+    for i,val in enumerate(data):    
+        f.write(str(val) + ',')
+    f.close()
+
+# S_c, S_g sink_c sink_g v_steam v_air k_eff mu_air mu_steam cp_air cp_steam
+
+# cp_solid, rho_solid, porosity
+
+# L_chamber, W_chamber, H_chamber, thickness, L,W,H,
+
+# case_index
+
+# some kind of appending case_name -- index dict
+
+
+ 
 
 
 
