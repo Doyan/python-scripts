@@ -46,6 +46,9 @@ Tref = 25 # deg C
 # Pressure at one atm
 p_atm = 101325 # Pa
 
+# molar Gas constant 
+R=8.3144
+
 # molar composition of air 
 x_air = np.array([0, 0, 1, 3.76])/4.76
 
@@ -184,8 +187,23 @@ def fluegasComp(CHO_fuel,ER):
     h2o = X_fuel[1]/2
     o2 = co2 + h2o/2 - X_fuel[2]/2
     X = np.array([co2, h2o, o2*(ER-1), o2*ER*3.76])
+    Xair = X[2:]
+    yAir = Xair.sum()
     yFg = X.sum()
-    return X/yFg, yFg
+    return X/yFg, yFg, yAir 
+
+# Empirical relationship between total and primary air
+# total air in mol/s
+def primaryAirFraction(total_air):
+    tot=np.array([39.22408417, 69.4281724])/3.6 # Nm3/s
+    tot = tot*p_atm/(R*(Tref+TK))
+    xpr = [0.724031165, 0.4475699422]
+    
+    k = (xpr[1] - xpr[0])/(tot[1] - tot[0])
+    m = xpr[0] - k*tot[0]
+    
+    Xprimary = k*total_air + m
+    return Xprimary
 
 # -------------------------------------------------------------------------
 # Definition of base case
@@ -274,6 +292,7 @@ class Case(object):
     # to change individual attributes in order to create different cases
     def __init__(self, fnam='Cases_simplified_model.xlsx',index=0):
         df = pd.read_excel(fnam,'Sheet1',header=0,skiprows=[1])
+        df = df.fillna(value=df.iloc[0])
         dictionary = df.to_dict('records')[index]
         dictionary['index'] = int(dictionary['case_index'])
         for key in dictionary:
@@ -290,8 +309,8 @@ case = Case() # load case specific indata
 case.xh2o_g = case.xH2O_G_wet / (1 - case.xH2O_G_wet)
 case.xh2o_c = case.xH2O_C_wet / (1 - case.xH2O_C_wet)
     
-# Calculate outgoing fluegas composition for this case
-x_flue, yFlue = fluegasComp(case.CHO,case.ER)   # mol fraction, mol/kg fuel
+# Calculate outgoing fluegas composition and total air demand for this case
+x_flue, yFlue, yAir = fluegasComp(case.CHO,case.ER)   # mol fraction, mol/kg fuel
 
 
 # ---------- Calculate massflows in gasifier ------------------------------
@@ -342,6 +361,7 @@ Q_g = m_gfuel*(qh2o_g + qfuel_g + qsteam_g)/1000 # MW
 
 m_cfuel = (case.P_heat/case.nboil + Q_g - lhv_ch*(1-case.Xch)* case.y_char*m_gfuel) / case.fuel_LHV # needed massflow of fuel to combustion
 
+
 # Massflow of air and flue gas
 th = case.wall_thickness
 A_wall = th*case.L_chamber + 2*(th*case.W_chamber + th*th)
@@ -352,6 +372,17 @@ V_fm = case.u_air * A_C
 
 # Molar flow of fluidising media from ideal gas law
 n_fm_tot = V_fm * p_atm / (8.3144 * (case.TC+TK))
+
+# molar flow of air needed for this amount of fuel
+n_air = m_cfuel*yAir # mol/s
+
+n_primary = primaryAirFraction(n_air)
+
+n_flue = n_fm_tot - n_primary
+
+n_fm = n_primary*x_air + n_flue*x_flue
+
+x_fm = n_fm/n_fm_tot
 
 
 #  Initial guess for fraction of fluidising media that is flue gas
@@ -405,7 +436,7 @@ while diff > 1e-6:
 # -------------------------------------------------------------------------
 # Formulation of the source terms
 
-S_c = Qtot# - 5  # MW, heat released from combustion
+S_c = Qtot - 5  # MW, heat released from combustion
 
 sink_c = m_cfuel*(qfuel_c + qh2o_c)*case.frombed /1e3   # MW, heat needed to dry combusting fuel
 
