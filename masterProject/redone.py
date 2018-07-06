@@ -16,6 +16,9 @@ sourcepath = './'           # path for resulting sourcefiles to STAR
 
 fnam='Cases_simplified_model.xlsx' # filename for cases to read
 
+# Switch for enabling calculation of just bed with no gasification chamber
+justbed=True # for debug purpose
+
 # colnames = ['case_index', 'gas_H2', 'gas_CO', 'gas_CO2', 'gas_CH4', 'gas_C2H2', 'gas_C2H4', 'gas_C2H6', 'gas_C3H6', yield_gas, tar_conc, y_char, y_vol, y_ash, fuel_HHV, fuel_LHV, fuel_C, fuel_H, fuel_O, TG, TC, Tair, Tsteam, Tfuel, P_gas, P_heat, nboil, xH2O_G_wet, xH2O_C_wet, ER, u_air, u_steam, H_bed, L_chamber, W_chamber, 'H_gap', 'wall_thickness', 'D', 'porosity', 'rho_solid']
 cases = pd.read_excel(fnam,'Sheet1',header=0,skiprows=[1], usecols='B:AO') # read cases
 cases = cases.fillna(value=cases.iloc[0]) # fill empty values with base case values
@@ -50,11 +53,11 @@ comps_flue = [co2, h2o, o2, n2]
 
 # 0 deg C in Kelvin, for conversion purposes
 TK= 273.15 # K
-Tref = 25 # deg C
+Tref = 25# deg C
 
 # Pressure at one atm
 p_atm = 101325 # Pa
-dP = 14000
+dP = 8500 # pressure at bottom of bed
 # molar Gas constant 
 R=8.3144
 
@@ -356,7 +359,8 @@ Q_g = m_gfuel*(qh2o_g + qfuel_g + qsteam_g + qchar)/1000 # MW
 m_bonuschar=(1-X_ch)* case.y_char*m_gfuel
 m_cfuel = (case.P_heat/case.nboil + Q_g - lhv_ch*m_bonuschar) / case.fuel_LHV # needed massflow of fuel to combustion
 
-justbed=True
+
+# For generating case without gasification chamber
 if justbed:
     m_bonuschar = 0
     m_cfuel = case.P_heat/case.nboil / case.fuel_LHV
@@ -371,6 +375,7 @@ x_flue, yFlue, yAir = fluegasComp(CHO_mix,case.ER)   # mol fraction, mol/kg fuel
 
 A_C = case.L_bed * case.W_bed - A_G - A_wall
 
+# For generating case without gasification chamber
 if justbed:
     A_C = case.L_bed * case.W_bed
 
@@ -424,6 +429,7 @@ Q_c = (m_cfuel*(qfuel_c + qh2o_c) + n_fm_tot*qfm)/1000
 # ------------------ Energy balance tally ----------------
 Qtot = Q_c + Q_g
 
+# For generating case without gasification chamber
 if justbed:
     Qtot = Q_c
 
@@ -440,18 +446,27 @@ Q_corr = Qtot - Q_comb
 
 S_c = Qtot # MW, heat released to keep temperature at 850 deg C
 
-sink_c = m_cfuel*(qfuel_c + qh2o_c) /1e3 - Q_corr   # MW, heat needed to dry combusting fuel
+sink_c = m_cfuel*(qfuel_c + qh2o_c) /1e3  # MW, heat needed to dry combusting fuel
 
 S_g = m_gfuel*qchar/1e3            # MW, heat needed for char gasification
 
 sink_g = m_gfuel*(qh2o_g + qfuel_g)/1e3                 # MW, heat needed to dry gasifying fuel
 
+# For generating case without gasification chamber
 if justbed:
     S_g=0
     sink_g=0
     case.L_chamber=0
     case.W_chamber=0
     case.wall_thickness =0
+
+
+######################
+################### Temporary for DEBUG
+S_c = n_fm_tot*qfm/1000
+sink_c = 0
+#############################
+#################################
 
 S_tot = S_c - S_g - sink_g - sink_c             # summation of source terms to correspond to a volume integral over domain in star.
 
@@ -486,6 +501,7 @@ m_fm = n_fm_tot*mixtureMW(comps_flue,x_fm)
 #--------------------------------------------------------------------------
 # Write sourcefile for STAR CCM+ to read
 
+
 data = [1, case.index, S_c, -sink_c, -S_g, -sink_g, v_air, v_steam, m_fm, m_steam, k_eff,
         mu_air, mu_steam,tc_air,tc_steam, cp_air, cp_steam, case.rho_solid,
         case.TG+TK,case.TC+TK,case.Tair+TK,case.Tsteam+TK,
@@ -507,28 +523,53 @@ with open(sourcepath + 'source_' + str(case.index) + '.csv', 'w') as f:
 
 
 # scrap calculation to get loads for empiric data
-#   SEEMS WRONG, too tired
-o2conc=np.array([0.058, 0.048])
-
-Xo2=0.21/(0.21 - o2conc)
 
 
-X_CHO = case.CHO/MW_CHO
+CHONS = np.array([0.035, 0.518, 0.06, 0.381, 0.0054, 0.0009])
+CHONS_daf = CHONS[1:]/CHONS[1:].sum()
+
+lhv_fuel = 19.738 # MW/kgdaf
+
+MW_CHONS=np.array([0.01201 , 0.001007, 0.015998, 0.0140067,0.032])
 
 
-o2 = (X_CHO[0] + X_CHO[1]/4 - X_CHO[2]/2)
+X_CHONS = CHONS_daf/MW_CHONS # mol element/kgdaf 
 
-lt = (o2 + o2*3.76)* R*(Tref+TK)/p_atm
+n_co2 = X_CHONS[0] # mol co2 /kgdaf
 
-gtd = (X_CHO[0] + o2*3.76) * R*(TK)/p_atm
+n_h2o = X_CHONS[1]/2 # mol h2o/kgdaf
 
-lv = gtd*(Xo2-1) + lt
+n_so2 = X_CHONS[4]
 
-ltot = np.array([39.2241, 69.4282])
+n_o2 = (X_CHONS[0] + X_CHONS[1]/4 - X_CHONS[2]/2 + X_CHONS[4]) # mol o2 /kgdaf
 
-mfuel= ltot/lv
+n_n2 = n_o2*3.76 + X_CHONS[3]    # mol n2/kgdaf
 
-Qload = mfuel * case.fuel_LHV * case.nboil
+lt = (n_o2 + n_n2)* R*(TK+Tref)/p_atm # theoretical Nm3 air/kgdaf
+
+
+#SEEMS WRONG? need o2conc in dry fluegas -> need total amount of flue gas
+o2conc=np.array([0.058, 0.048]) # vol % o2 in moist flue gas?
+
+
+gt = (n_co2 + n_h2o + n_n2 + n_so2)* R*(TK+Tref)/p_atm # theoretical Nm3 gas / kgdaf
+
+# need to remake with dry o2conc
+m = 1.0 + gt/lt * o2conc/(0.21 - o2conc) # air factor 
+
+# skipping extra air right now.
+m=1.0
+
+
+lv = lt*m  # real Nm3 air/kgdaf 
+
+ltot = np.array([39.2241, 69.4282])/3.6 # Nm3 total air 
+
+mfuel= ltot/lv # kgdaf 
+
+Qfuel = mfuel * case.fuel_LHV
+
+Qload = Qfuel*case.nboil
 
 
 
