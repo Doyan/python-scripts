@@ -1,0 +1,12 @@
+*__pycache__
+__not_for_packaging
+~$*
+*~
+__pycache__/
+__not_for_packaging/
+*~
+__not_for_packaging*
+*personal*
+.eggs/
+.cache/
+.pylintrc

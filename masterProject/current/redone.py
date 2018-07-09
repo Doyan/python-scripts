@@ -12,12 +12,12 @@ from thermopy import nasa9polynomials as nasa9
 db=nasa9.Database()
 
 datapath = 'datafiles/'     # path to tables etc
-sourcepath = './'           # path for resulting sourcefiles to STAR
+sourcepath = '/scratch/gabgus/geometry/redone/' # path for resulting sourcefiles to STAR
 
 fnam='Cases_simplified_model.xlsx' # filename for cases to read
 
 # Switch for enabling calculation of just bed with no gasification chamber
-justbed=False # for debug purpose
+justbed=True # for debug purpose
 
 # colnames = ['case_index', 'gas_H2', 'gas_CO', 'gas_CO2', 'gas_CH4', 'gas_C2H2', 'gas_C2H4', 'gas_C2H6', 'gas_C3H6', yield_gas, tar_conc, y_char, y_vol, y_ash, fuel_HHV, fuel_LHV, fuel_C, fuel_H, fuel_O, TG, TC, Tair, Tsteam, Tfuel, P_gas, P_heat, nboil, xH2O_G_wet, xH2O_C_wet, ER, u_air, u_steam, H_bed, L_chamber, W_chamber, 'H_gap', 'wall_thickness', 'D', 'porosity', 'rho_solid']
 cases = pd.read_excel(fnam,'Sheet1',header=0,skiprows=[1], usecols='B:AO') # read cases
@@ -363,7 +363,7 @@ m_cfuel = (case.P_heat/case.nboil + Q_g - lhv_ch*m_bonuschar) / case.fuel_LHV # 
 # For generating case without gasification chamber
 if justbed:
     m_bonuschar = 0
-    m_cfuel = case.P_heat/case.nboil / case.fuel_LHV 
+    m_cfuel = case.P_heat/case.nboil / case.fuel_LHV
     
 CHO_mix = m_bonuschar* np.array([1,0,0]) + m_cfuel*case.CHO
 CHO_mix = CHO_mix / CHO_mix.sum()
@@ -378,6 +378,7 @@ A_C = case.L_bed * case.W_bed - A_G - A_wall
 # For generating case without gasification chamber
 if justbed:
     A_C = case.L_bed * case.W_bed
+
 
 V_fm = case.u_air * A_C 
 
@@ -469,7 +470,7 @@ mu_air = 44.0e-6 # Pa s
 
 tc_air = 68.0e-3 # W/(m K)
 
-cp_air =  meanCpmix(comps_flue,x_fm,case.Tair,case.TC,True) / mixtureMW(comps_flue,x_fm) * 1e3 # J/(kg K)
+cp_air =  meanCpmix(comps_flue,x_fm,case.Tair,case.TC) * 1e3 # J/(kg K)
 
 mu_steam = np.interp(case.TG + TK,steam_props.Temp,steam_props.mu) * 1e-6 # Pa s
 
@@ -489,14 +490,13 @@ v_steam = V_steam_in / A_G # m/s
 
 m_fm = n_fm_tot*mixtureMW(comps_flue,x_fm)
 
-
 ######################
 ################### Temporary for DEBUG
+m_fm = 10
+cp_air = meanCpmix(comps_flue,x_fm,case.Tair,case.TC,)
 
-cp_air = meanCpmix(comps_flue,x_fm,case.Tair,case.TC)
-S_c_steam = m_steam * cp_steam * (case.TG - case.Tsteam) /1e6
-
-S_c = m_fm * cp_air * (case.TC - case.Tair) /1e3 + sink_c + S_c_steam + S_g + sink_g
+S_c = m_fm * cp_air * (case.TC - case.Tair)
+sink_c = 0
 cp_air = cp_air * 1e3
 #############################
 #################################

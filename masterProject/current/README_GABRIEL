@@ -1,0 +1,18 @@
+Koden är skriven i python 3 och behöver därför köras därefter.
+
+
+Dependencies: scipy numpy, pandas, thermopy
+
+alla förutom thermopy går att installera vi conda med kommando:
+
+# conda install scipy numpy pandas
+
+
+thermopy installeras genom att du (i ditt valda environment om du har ett sådant) navigerar till thermopy-master/ och kör
+
+#  python3 setup.py install
+
+
+
+
+
