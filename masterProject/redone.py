@@ -12,7 +12,7 @@ from thermopy import nasa9polynomials as nasa9
 db=nasa9.Database()
 
 datapath = 'datafiles/'     # path to tables etc
-sourcepath = './'           # path for resulting sourcefiles to STAR
+sourcepath = 'sourcefiles/'           # path for resulting sourcefiles to STAR
 
 fnam='Cases_simplified_model.xlsx' # filename for cases to read
 
@@ -264,280 +264,299 @@ class Case(object):
 # -------------------------------------------------------------------------
 # Source term calculation (enclose in loop or make function?)
 # -------------------------------------------------------------------------
+
 index = 0
 case = Case(cases,index) # load case specific indata
 
-# Collection of given gas composition into numpy array
 
-case.gas_order = ['h2', 'co','co2','ch4','c2h2','c2h4','c2h6','c3h6']
-case.x_gas = np.array([case.gas_H2, case.gas_CO, case.gas_CO2, 
-                       case.gas_CH4, case.gas_C2H2, case.gas_C2H4, case.gas_C2H6, case.gas_C3H6])/100
 
-# Collection of given fuel elemental composition into numpy array
-case.CHO = np.array([case.fuel_C, case.fuel_H, case.fuel_O])/100
+def calcSource(case):
+    # Collection of given gas composition into numpy array
+    
+    case.gas_order = ['h2', 'co','co2','ch4','c2h2','c2h4','c2h6','c3h6']
+    case.x_gas = np.array([case.gas_H2, case.gas_CO, case.gas_CO2, 
+                           case.gas_CH4, case.gas_C2H2, case.gas_C2H4, case.gas_C2H6, case.gas_C3H6])/100
+    
+    # Collection of given fuel elemental composition into numpy array
+    CHO = np.array([case.fuel_C, case.fuel_H, case.fuel_O])/100
+    case.CHO = CHO#/CHO.sum()
+    
+    # make char and volatile yield into daf basis
+    pa = np.array([case.y_char, case.y_vol])
+    pa = pa/pa.sum()
+    
+    case.y_char = pa[0]
+    case.y_vol = pa[1]
+    
+    
+    # specify extra params not in excel
+    case.W_bed = 5.9
+    case.L_bed = 7.398
+    
+    # ------------ Preprocess parameters --------------------------
+    
+    # Moisture made into dry basis
+    case.xh2o_g = case.xH2O_G_wet / (1 - case.xH2O_G_wet)
+    case.xh2o_c = case.xH2O_C_wet / (1 - case.xH2O_C_wet)
+        
+    
+    # ---------- Calculate massflows in gasifier ------------------------------
+    
+    lhv_cg = mixtureLHV(comps_gas,case.x_gas)   #  MJ/kg, lhv of produced gas
+    
+    m_cg = case.P_gas / lhv_cg                  # kg/s, needed massflow cold gas    
+    
+    m_gfuel = m_cg / case.yield_gas         # kg/s, needed massflow gasifier fuel
+    
+    # Massflow of steam
+    th = case.wall_thickness
+    A_wall = th*case.L_chamber + 2*(th*case.W_chamber + th*th)
+    A_G = case.L_chamber * case.W_chamber # Crossectional area of gasifier
+    
+    V_steam = case.u_steam * (A_G + A_wall)
+    
+    #interpolate in table for density at temp = Tbed
+    rho_steam = np.interp(case.TG + TK,steam_props.Temp,steam_props.rho) # kg/m3
+    
+    # mass flow of steam  
+    m_steam = V_steam * rho_steam
+    
+    SB = m_steam / m_gfuel # steam to biomass ratio, kg steam / kg daf ### ADD steam to fuel ratio SFR
+    
+    SFR = (m_steam+ m_gfuel*case.xh2o_g) / m_gfuel
+    
+    # Calculate tar yield and degree of char conversion
+    
+    n_gas = m_cg / mixtureMW(comps_gas,case.x_gas) # mol/s, cold gas
+    
+    V_gas = n_gas*R*(Tref+TK)/p_atm # Nm3/s, cold gas
+    
+    m_tar = case.tar_conc * V_gas / 1000 # kg/s, tar
+    
+    # Carbon balance
+    gas_CHO=elemComp(comps_gas,case.x_gas)
+    
+    char_C = case.CHO[0] - case.yield_gas*gas_CHO[0] - m_tar/m_gfuel*naphtalene.CHO[0]
+    
+    steam_O = m_cg/m_gfuel*gas_CHO[2] + m_tar/m_gfuel*naphtalene.CHO[2] - case.CHO[2] 
+    
+    X_ch = (case.y_char - char_C)/case.y_char 
+    X_steam = (steam_O*m_gfuel)/(m_steam*h2o.CHO[2])
+    
+    # ---------- calculate energy demands in gasifier -------
+    
+    # Sensible heat of of char kj /kg daf
+    hchar = case.y_char * cpChar(case.TG) * (case.TG - Tref) 
+    
+    # Sensible heat of volatiles kj/kg daf
+    hvol = case.y_vol * meanCpmix(comps_gas,case.x_gas,Tref,case.TG) * (case.TG - Tref)   
+    
+    # Sensible heat of entering fuel kj/ kgdaf
+    hfuel = cpFuel(case.Tfuel) * (case.Tfuel - Tref)
+    
+    
+    cp_w_uni = case.y_char*cpChar(case.T_whole) + case.y_vol* meanCpmix(comps_gas,case.x_gas,Tref,case.T_whole)
+    cp_w_TG =  case.y_char*cpChar(case.TG,case.T_whole) + case.y_vol* meanCpmix(comps_gas,case.x_gas,case.T_whole,case.TG)
+    
+    K_fuel = m_gfuel*cp_w_TG*case.Xbed
+    const_fuel = m_gfuel*(cp_w_uni*(case.T_whole-Tref)-hfuel)- K_fuel*(case.T_whole+TK)
+    
+    K_moist= m_gfuel*case.xh2o_g*case.Xbed*meanCp(h2o,case.TG,case.T_whole)/h2o.molecular_weight
+    const_moist = m_gfuel*case.xh2o_g*(enthalpy(h2o,case.T_whole) - enthalpy(h2ol,Tref)) - K_moist*(case.T_whole+TK)
+    
+    const_g = (const_fuel + const_moist)/1e3 
+    K_g = (K_fuel+K_moist)/1e3
+    
+    sink_gnew=const_g+ K_g*(case.TG+TK)
+    
+    # energy for heating fuel kj / kgdaf
+    qfuel_g = hchar + hvol - hfuel
+    
+    # energy for heating and drying water kj/kgdaf
+    qh2o_g = case.xh2o_g*(enthalpy(h2o,case.TG) - enthalpy(h2ol,case.Tfuel))
+    
+    # energy for heating fluidising steam kj / kgdaf
+    qsteam_g = SB * (enthalpy(h2o,case.TG) - enthalpy(h2o,case.Tsteam))
+    
+    #  energy needed for char conversion reaction kj/kgdaf
+    qchar = case.y_char*X_ch*dHr_g
+    
+    # Total heat demand in gasifier
+    Q_g = sink_gnew + m_gfuel*( + qsteam_g + qchar)/1000 # MW
+    
+    # --------------- mass flows in combustion chamber ------------ 
+    
+    m_bonuschar=(1-X_ch)* case.y_char*m_gfuel
+    m_cfuel = (case.P_fuel + Q_g - lhv_ch*m_bonuschar) / case.fuel_LHV # needed massflow of fuel to combustion
+    
+    
+    # For generating case without gasification chamber
+    if justbed:
+        m_bonuschar = 0
+        m_cfuel = case.P_heat/case.nboil / case.fuel_LHV 
+        
+    CHO_mix = m_bonuschar* np.array([1,0,0]) + m_cfuel*case.CHO
+    CHO_mix = CHO_mix / CHO_mix.sum()
+    
+    # Calculate outgoing fluegas composition and total air demand for this case
+    x_flue, yFlue, yAir = fluegasComp(CHO_mix,case.ER)   # mol fraction, mol/kg fuel
+    
+    # Molar flows of air and flue gas
+    
+    A_C = case.L_bed * case.W_bed - A_G - A_wall
+    
+    # For generating case without gasification chamber
+    if justbed:
+        A_C = case.L_bed * case.W_bed
+    
+    V_fm = case.u_air * A_C 
+    
+    
+    # Molar flow of fluidising media from ideal gas law
+    n_fm_tot = V_fm * (p_atm + dP) / (8.3144 * (case.TC+TK))
+    
+    # molar flow of air needed for this amount of fuel
+    n_air_tot = (m_cfuel + m_bonuschar)*yAir # mol/s
+    
+    #  amount of primary air through empirical relationship
+    n_primary = primaryAirFraction(n_air_tot)*n_air_tot
+    
+    # amount of flue gas recirculated
+    n_flue = n_fm_tot - n_primary
+    
+    # component amounts in fluidising gas
+    n_fm = n_primary*x_air + n_flue*x_flue
+    
+    x_fm = n_fm/n_fm_tot # %-mol composition 
+    
+    # fraction of total fluidising media that is fluegas
+    Xflue = n_flue/n_fm_tot
+    
+    
+    # massflow if fluidising media
+    m_fm = n_fm_tot*mixtureMW(comps_flue,x_fm)
+    
+    # ------------------ Energy demands in combustion chamber ----------------- 
+    
+        
+    # Sensible heat of of char kj /kg daf
+    hchar = case.y_char * cpChar(case.TC) * (case.TC - Tref) 
+    
+    # Sensible heat of volatiles kj/kg daf
+    hvol = case.y_vol * meanCpmix(comps_gas,case.x_gas,Tref,case.TC) * (case.TC - Tref)   
+    
+    # Sensible heat of entering fuel kj/ kgdaf
+    hfuel = cpFuel(case.Tfuel) * (case.Tfuel - Tref)
+    
+    # energy for heating fuel kj / kgdaf
+    qfuel_c = hchar + hvol - hfuel
+    
+    # energy for heating and drying water kj/kgdaf
+    qh2o_c = case.xh2o_c*(enthalpy(h2o,case.TC) - enthalpy(h2ol,case.Tfuel))
+    
+    # Energy for heating fluidising media (kj/mol fluidising media)
+    qfm = meanCpmix(comps_flue,x_fm,case.Tair,case.TC,True) * (case.TC - case.Tair)
+    
+    Q_c = (m_cfuel*(qfuel_c + qh2o_c) + n_fm_tot*qfm)/1000 
+    
+    # ------------------ Energy balance tally ----------------
+    Qtot = Q_c + Q_g
+    
+    # For generating case without gasification chamber
+    if justbed:
+        Qtot = Q_c
+    
+    # heat released from combustion
+    Q_comb = n_fm[2]*dHr_c
+    
+    # mismatch between heat released and heat needed.
+    Q_corr = Qtot - Q_comb
+    
+    # ------------------------------------------------------------------------- 
+    # Postprocessing
+    # -------------------------------------------------------------------------
+    # Formulation of the source terms
+    S_c = Qtot
+    
+    sink_c = m_cfuel*(qfuel_c + qh2o_c) /1e3  # MW, heat needed to dry combusting fuel
+    
+    S_g = m_gfuel*qchar/1e3            # MW, heat needed for char gasification
+    
+    sink_g = m_gfuel*(qh2o_g + qfuel_g)/1e3                 # MW, heat needed to dry gasifying fuel
+    
+    # For generating case without gasification chamber
+    if justbed:
+        S_g=0
+        sink_g=0
+        case.L_chamber=0
+        case.W_chamber=0
+        case.wall_thickness =0
+    
+    S_tot = S_c - S_g - sink_g - sink_c             # summation of source terms to correspond to a volume integral over domain in star.
+    
+    # Calculation of k_eff from case data
+    k_eff = case.D*case.rho_solid*cp_solid((case.TC + case.TG)/2+TK)*(1-case.porosity)
+    
+    # Fluid properties at 800 - 850 deg C
+    mu_air = 44.0e-6 # Pa s 
+    
+    tc_air = 68.0e-3 # W/(m K)
+    
+    cp_air =  meanCpmix(comps_flue,x_fm,case.Tair,case.TC,True) / mixtureMW(comps_flue,x_fm) * 1e3 # J/(kg K)
+    
+    mu_steam = np.interp(case.TG + TK,steam_props.Temp,steam_props.mu) * 1e-6 # Pa s
+    
+    tc_steam = np.interp(case.TG + TK,steam_props.Temp,steam_props.tc) * 1e-3 # W/(m K) 
+    
+    cp_steam = np.interp(case.TG + TK,steam_props.Temp,steam_props.Cp) * 1000 # J/(kg K) 
+    
+    
+    # Formulation of heating source term based on the other source terms.
+    
+    cp_air = meanCpmix(comps_flue,x_fm,case.Tair,case.TC) * 1e3
+    S_c_steam = m_steam * cp_steam * (case.TG - case.Tsteam) /1e6
+    
+    S_c = m_fm * cp_air * (case.TC - case.Tair) /1e6 + sink_c + S_c_steam + S_g
+    
+    #############################
+    #################################
+    
+    #--------------------------------------------------------------------------
+    # Write sourcefile for STAR CCM+ to read
+    
+    
+    data = [1, case.case_index, S_c, -sink_c, -S_g, const_g, K_g, m_fm, m_steam, k_eff,
+            mu_air, mu_steam,tc_air,tc_steam, cp_air, cp_steam, case.rho_solid,
+            case.TG+TK,case.TC+TK,case.Tair+TK,case.Tsteam+TK,
+            case.porosity, case.L_chamber, case.W_chamber, case.H_gap,case.wall_thickness, case.L_bed,
+            case.W_bed, case.H_bed]
+    header = 'row,index,S_c,sink_c,S_g,const_g,K_g,m_fm,m_steam,k_eff,mu_air,mu_steam,tc_air,tc_steam,cp_air,cp_steam,rho_solid,TG,TC,Tair,Tsteam,porosity,L_chamber,W_chamber,H_gap,chamber_thickness,L,W,H'
+    
+    exceldata = [case.case_index, m_cfuel, qh2o_c*m_cfuel/1e3, qfuel_c*m_cfuel/1e3, m_fm * cp_air * (case.TC - case.Tair) /1e6, Q_c, Q_comb, Q_corr, Xflue, m_gfuel, qh2o_g*m_gfuel/1e3, qfuel_g*m_gfuel/1e3, m_steam * cp_steam * (case.TG - case.Tsteam) /1e6, qchar*m_gfuel/1e3, Q_g, m_cfuel, m_cfuel*case.fuel_LHV, SB, SFR, X_ch, S_c, sink_c, S_g, sink_g ]
+    excelheader = 'index,m_fuel_c,qh2o_c,q_fuel_c,q_fm_c,Q_c,Qcomb,Qcorr,Xflue,m_fuel_g,q_h2o_g,q_fuel_g,q_steam_g,q_charconv,Q_g,load_kg,load_MW,SB,SFR,X_ch,S_c,sink_c,S_g,sink_g'
 
-# specify extra params not in excel
-case.W_bed = 5.9
-case.L_bed = 7.398
-
-# ------------ Preprocess parameters --------------------------
-
-# Moisture made into dry basis
-case.xh2o_g = case.xH2O_G_wet / (1 - case.xH2O_G_wet)
-case.xh2o_c = case.xH2O_C_wet / (1 - case.xH2O_C_wet)
+    return data, header, exceldata, excelheader
     
 
-# ---------- Calculate massflows in gasifier ------------------------------
 
-lhv_cg = mixtureLHV(comps_gas,case.x_gas)   #  MJ/kg, lhv of produced gas
+sourcepath='/scratch/gabgus/geometry/redone/sourcefiles/' 
 
-m_cg = case.P_gas / lhv_cg                  # kg/s, needed massflow cold gas    
 
-m_gfuel = m_cg / case.yield_gas         # kg/s, needed massflow gasifier fuel
+# Function to write calculated source terms to STAR input file
+def writeSource(case,data,header,sourcepath=sourcepath):
+    with open(sourcepath + 'source_' + str(case.index) + '.csv', 'w') as f:
+        f.write(header)
+        f.write('\n')
+        for i,val in enumerate(data):    
+            f.write(str(val) + ',')
+        f.close()
 
-# Massflow of steam
-th = case.wall_thickness
-A_wall = th*case.L_chamber + 2*(th*case.W_chamber + th*th)
-A_G = case.L_chamber * case.W_chamber # Crossectional area of gasifier
+# loop to generate all cases for this batch
+for index in range(len(cases)):
+    case = Case(cases,index)
 
-V_steam = case.u_steam * (A_G + A_wall)
-
-#interpolate in table for density at temp = Tbed
-rho_steam = np.interp(case.TG + TK,steam_props.Temp,steam_props.rho) # kg/m3
-
-# mass flow of steam  
-m_steam = V_steam * rho_steam
-
-SB = m_steam / m_gfuel # steam to biomass ratio, kg steam / kg daf ### ADD steam to fuel ratio SFR
-
-SFR = (m_steam+ m_gfuel*case.xh2o_g) / m_gfuel
-
-# Calculate tar yield and degree of char conversion
-
-n_gas = m_cg / mixtureMW(comps_gas,case.x_gas) # mol/s, cold gas
-
-V_gas = n_gas*R*(Tref+TK)/p_atm # Nm3/s, cold gas
-
-m_tar = case.tar_conc * V_gas / 1000 # kg/s, tar
-
-# Carbon balance
-gas_CHO=elemComp(comps_gas,case.x_gas)
-
-char_C = case.CHO[0] - m_cg/m_gfuel*gas_CHO[0] - m_tar/m_gfuel*naphtalene.CHO[0]
-
-steam_O = m_cg/m_gfuel*gas_CHO[2] + m_tar/m_gfuel*naphtalene.CHO[2] - case.CHO[2] 
-
-X_ch = (case.y_char - char_C)/case.y_char 
-X_steam = (steam_O*m_gfuel)/(m_steam*h2o.CHO[2])
-
-# ---------- calculate energy demands in gasifier -------
-
-# Sensible heat of of char kj /kg daf
-hchar = case.y_char * cpChar(case.TG) * (case.TG - Tref) 
-
-# Sensible heat of volatiles kj/kg daf
-hvol = case.y_vol * meanCpmix(comps_gas,case.x_gas,Tref,case.TG) * (case.TG - Tref)   
-
-# Sensible heat of entering fuel kj/ kgdaf
-hfuel = cpFuel(case.Tfuel) * (case.Tfuel - Tref)
-
-
-cp_w_uni = case.y_char*cpChar(case.T_whole) + case.y_vol* meanCpmix(comps_gas,case.x_gas,Tref,case.T_whole)
-cp_w_TG =  case.y_char*cpChar(case.TG,case.T_whole) + case.y_vol* meanCpmix(comps_gas,case.x_gas,case.T_whole,case.TG)
-
-K_fuel = m_gfuel*cp_w_TG*case.Xbed
-const_fuel = m_gfuel*(cp_w_uni*(case.T_whole-Tref)-hfuel)- K_fuel*(case.T_whole+TK)
-
-K_moist= m_gfuel*case.xh2o_g*case.Xbed*meanCp(h2o,case.TG,case.T_whole)/h2o.molecular_weight
-const_moist = m_gfuel*case.xh2o_g*(enthalpy(h2o,case.T_whole) - enthalpy(h2ol,Tref)) - K_moist*(case.T_whole+TK)
-
-const_g = (const_fuel + const_moist)/1e3 
-K_g = (K_fuel+K_moist)/1e3
-
-sink_gnew=const_g+ K_g*(case.TG+TK)
-
-# energy for heating fuel kj / kgdaf
-qfuel_g = hchar + hvol - hfuel
-
-# energy for heating and drying water kj/kgdaf
-qh2o_g = case.xh2o_g*(enthalpy(h2o,case.TG) - enthalpy(h2ol,case.Tfuel))
-
-# energy for heating fluidising steam kj / kgdaf
-qsteam_g = SB * (enthalpy(h2o,case.TG) - enthalpy(h2o,case.Tsteam))
-
-#  energy needed for char conversion reaction kj/kgdaf
-qchar = case.y_char*X_ch*dHr_g
-
-# Total heat demand in gasifier
-Q_g = sink_gnew + m_gfuel*( + qsteam_g + qchar)/1000 # MW
-
-# --------------- mass flows in combustion chamber ------------ 
-
-m_bonuschar=(1-X_ch)* case.y_char*m_gfuel
-m_cfuel = (case.P_fuel + Q_g - lhv_ch*m_bonuschar) / case.fuel_LHV # needed massflow of fuel to combustion
-
-
-# For generating case without gasification chamber
-if justbed:
-    m_bonuschar = 0
-    m_cfuel = case.P_heat/case.nboil / case.fuel_LHV 
-    
-CHO_mix = m_bonuschar* np.array([1,0,0]) + m_cfuel*case.CHO
-CHO_mix = CHO_mix / CHO_mix.sum()
-
-# Calculate outgoing fluegas composition and total air demand for this case
-x_flue, yFlue, yAir = fluegasComp(CHO_mix,case.ER)   # mol fraction, mol/kg fuel
-
-# Molar flows of air and flue gas
-
-A_C = case.L_bed * case.W_bed - A_G - A_wall
-
-# For generating case without gasification chamber
-if justbed:
-    A_C = case.L_bed * case.W_bed
-
-V_fm = case.u_air * A_C 
-
-
-# Molar flow of fluidising media from ideal gas law
-n_fm_tot = V_fm * (p_atm + dP) / (8.3144 * (case.TC+TK))
-
-# molar flow of air needed for this amount of fuel
-n_air_tot = (m_cfuel + m_bonuschar)*yAir # mol/s
-
-#  amount of primary air through empirical relationship
-n_primary = primaryAirFraction(n_air_tot)*n_air_tot
-
-# amount of flue gas recirculated
-n_flue = n_fm_tot - n_primary
-
-# component amounts in fluidising gas
-n_fm = n_primary*x_air + n_flue*x_flue
-
-x_fm = n_fm/n_fm_tot # %-mol composition 
-
-# fraction of total fluidising media that is fluegas
-Xflue = n_flue/n_fm_tot
-
-# ------------------ Energy demands in combustion chamber ----------------- 
-
-    
-# Sensible heat of of char kj /kg daf
-hchar = case.y_char * cpChar(case.TC) * (case.TC - Tref) 
-
-# Sensible heat of volatiles kj/kg daf
-hvol = case.y_vol * meanCpmix(comps_gas,case.x_gas,Tref,case.TC) * (case.TC - Tref)   
-
-# Sensible heat of entering fuel kj/ kgdaf
-hfuel = cpFuel(case.Tfuel) * (case.Tfuel - Tref)
-
-# energy for heating fuel kj / kgdaf
-qfuel_c = hchar + hvol - hfuel
-
-# energy for heating and drying water kj/kgdaf
-qh2o_c = case.xh2o_c*(enthalpy(h2o,case.TC) - enthalpy(h2ol,case.Tfuel))
-
-# Energy for heating fluidising media (kj/mol fluidising media)
-qfm = meanCpmix(comps_flue,x_fm,case.Tair,case.TC,True) * (case.TC - case.Tair)
-
-Q_c = (m_cfuel*(qfuel_c + qh2o_c) + n_fm_tot*qfm)/1000 
-
-# ------------------ Energy balance tally ----------------
-Qtot = Q_c + Q_g
-
-# For generating case without gasification chamber
-if justbed:
-    Qtot = Q_c
-
-# heat released from combustion
-Q_comb = n_fm[2]*dHr_c
-
-# mismatch between heat released and heat needed.
-Q_corr = Qtot - Q_comb
-
-# ------------------------------------------------------------------------- 
-# Postprocessing
-# -------------------------------------------------------------------------
-# Formulation of the source terms
-
-S_c = Qtot # MW, heat released to keep temperature at 850 deg C
-
-sink_c = m_cfuel*(qfuel_c + qh2o_c) /1e3  # MW, heat needed to dry combusting fuel
-
-S_g = m_gfuel*qchar/1e3            # MW, heat needed for char gasification
-
-sink_g = m_gfuel*(qh2o_g + qfuel_g)/1e3                 # MW, heat needed to dry gasifying fuel
-
-# For generating case without gasification chamber
-if justbed:
-    S_g=0
-    sink_g=0
-    case.L_chamber=0
-    case.W_chamber=0
-    case.wall_thickness =0
-
-S_tot = S_c - S_g - sink_g - sink_c             # summation of source terms to correspond to a volume integral over domain in star.
-
-# Calculation of k_eff from case data
-k_eff = case.D*case.rho_solid*cp_solid((case.TC + case.TG)/2+TK)*(1-case.porosity)
-
-# Fluid properties at 800 - 850 deg C
-mu_air = 44.0e-6 # Pa s 
-
-tc_air = 68.0e-3 # W/(m K)
-
-cp_air =  meanCpmix(comps_flue,x_fm,case.Tair,case.TC,True) / mixtureMW(comps_flue,x_fm) * 1e3 # J/(kg K)
-
-mu_steam = np.interp(case.TG + TK,steam_props.Temp,steam_props.mu) * 1e-6 # Pa s
-
-tc_steam = np.interp(case.TG + TK,steam_props.Temp,steam_props.tc) * 1e-3 # W/(m K) 
-
-cp_steam = np.interp(case.TG + TK,steam_props.Temp,steam_props.Cp) * 1000 # J/(kg K) 
-
-# Preprocess velocities to match T = 200 C, 
-# since simulation uses ideal gas law
-# THESE VALUES NOT used atm since massflows are instead sent to STAR
-
-V_fm_in= n_fm_tot / (np.interp(case.Tair + TK,air_props.Temp,air_props.rho) * 1000)
-v_air = V_fm_in / A_C # m/s
-
-V_steam_in =  m_steam / np.interp(case.Tsteam + TK,steam_props.Temp, steam_props.rho)
-v_steam = V_steam_in / A_G # m/s
-
-m_fm = n_fm_tot*mixtureMW(comps_flue,x_fm)
-
-
-######################
-################### Temporary for DEBUG
-
-cp_air = meanCpmix(comps_flue,x_fm,case.Tair,case.TC)
-S_c_steam = m_steam * cp_steam * (case.TG - case.Tsteam) /1e6
-
-S_c = m_fm * cp_air * (case.TC - case.Tair) /1e3 + sink_c + S_c_steam + S_g
-cp_air = cp_air * 1e3
-#############################
-#################################
-
-#--------------------------------------------------------------------------
-# Write sourcefile for STAR CCM+ to read
-
-
-data = [1, case.case_index, S_c, -sink_c, -S_g, const_g, K_g, v_air, v_steam, m_fm, m_steam, k_eff,
-        mu_air, mu_steam,tc_air,tc_steam, cp_air, cp_steam, case.rho_solid,
-        case.TG+TK,case.TC+TK,case.Tair+TK,case.Tsteam+TK,
-        case.porosity, case.L_chamber, case.W_chamber, case.H_gap,case.wall_thickness, case.L_bed,
-        case.W_bed, case.H_bed]
-header = 'row,index,S_c,sink_c,S_g,const_g,K_g,v_air,v_steam,m_fm,m_steam,k_eff,mu_air,mu_steam,tc_air,tc_steam,cp_air,cp_steam,rho_solid,TG,TC,Tair,Tsteam,porosity,L_chamber,W_chamber,H_gap,chamber_thickness,L,W,H'
-
-with open(sourcepath + 'source_' + str(case.index) + '.csv', 'w') as f:
-    f.write(header)
-    f.write('\n')
-    for i,val in enumerate(data):    
-        f.write(str(val) + ',')
-    f.close()
-
-
-
+    data, header, exceldata, excelheader = calcSource(case)
+    writeSource(case,data,header)
 
 
 

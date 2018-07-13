@@ -23,7 +23,7 @@ def readCase(fnam):
     return data, header
 
 # Test matrix formulation
-N = 2**3
+N = 2**8
 Fukt = np.resize([0,1],N)
 char = np.resize([0,0,1,1],N)
 D = np.resize([0,0,0,0,1,1,1,1],N)
