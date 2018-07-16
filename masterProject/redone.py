@@ -8,6 +8,8 @@ import numpy as np
 
 import pandas as pd
 
+from openpyxl import load_workbook
+
 from thermopy import nasa9polynomials as nasa9
 db=nasa9.Database()
 
@@ -532,31 +534,125 @@ def calcSource(case):
             case.W_bed, case.H_bed]
     header = 'row,index,S_c,sink_c,S_g,const_g,K_g,m_fm,m_steam,k_eff,mu_air,mu_steam,tc_air,tc_steam,cp_air,cp_steam,rho_solid,TG,TC,Tair,Tsteam,porosity,L_chamber,W_chamber,H_gap,chamber_thickness,L,W,H'
     
-    exceldata = [case.case_index, m_cfuel, qh2o_c*m_cfuel/1e3, qfuel_c*m_cfuel/1e3, m_fm * cp_air * (case.TC - case.Tair) /1e6, Q_c, Q_comb, Q_corr, Xflue, m_gfuel, qh2o_g*m_gfuel/1e3, qfuel_g*m_gfuel/1e3, m_steam * cp_steam * (case.TG - case.Tsteam) /1e6, qchar*m_gfuel/1e3, Q_g, m_cfuel, m_cfuel*case.fuel_LHV, SB, SFR, X_ch, S_c, sink_c, S_g, sink_g ]
-    excelheader = 'index,m_fuel_c,qh2o_c,q_fuel_c,q_fm_c,Q_c,Qcomb,Qcorr,Xflue,m_fuel_g,q_h2o_g,q_fuel_g,q_steam_g,q_charconv,Q_g,load_kg,load_MW,SB,SFR,X_ch,S_c,sink_c,S_g,sink_g'
+    exceldata = [case.case_index, m_cfuel, qh2o_c*m_cfuel/1e3, qfuel_c*m_cfuel/1e3, m_fm * cp_air * (case.TC - case.Tair) /1e6, Q_c, Q_comb, Q_corr, Xflue, m_gfuel, qh2o_g*m_gfuel/1e3, qfuel_g*m_gfuel/1e3, m_steam * cp_steam * (case.TG - case.Tsteam) /1e6, qchar*m_gfuel/1e3, Q_g, m_cfuel, m_cfuel*case.fuel_LHV, SB, SFR, X_ch, X_steam, S_c, sink_c, S_g, sink_g,S_tot ]
+    excelheader = 'index,m_fuel_c,qh2o_c,q_fuel_c,q_fm_c,Q_c,Qcomb,Qcorr,Xflue,m_fuel_g,q_h2o_g,q_fuel_g,q_steam_g,q_charconv,Q_g,load_kg,load_MW,SB,SFR,X_ch,X_steam,S_c,sink_c,S_g,sink_g,S_tot'
+
 
     return data, header, exceldata, excelheader
     
 
 
-sourcepath='/scratch/gabgus/geometry/redone/sourcefiles/' 
+#sourcepath='/scratch/gabgus/geometry/redone/sourcefiles/' 
 
 
 # Function to write calculated source terms to STAR input file
-def writeSource(case,data,header,sourcepath=sourcepath):
-    with open(sourcepath + 'source_' + str(case.index) + '.csv', 'w') as f:
+def writeSource(case,data,header,casename,sourcepath=sourcepath):
+    with open(sourcepath + casename, 'w') as f:
         f.write(header)
         f.write('\n')
         for i,val in enumerate(data):    
             f.write(str(val) + ',')
         f.close()
 
-# loop to generate all cases for this batch
-for index in range(len(cases)):
-    case = Case(cases,index)
+## loop to generate all cases for this batch
+#for index in range(len(cases)):
+#    case = Case(cases,index)
+#
+#    data, header, exceldata, excelheader = calcSource(case)
+#    casename = 'source_' + str(case.index) + '.csv'
+#    writeSource(case,data,header,casename)
 
+
+### Test matrix source generation
+
+# Test matrix formulation
+param_order = 'P_gas, D, Xbed, xH2O_G_wet, Tsteam, L_chamber, W_chamber, H_gap'
+paramrange = [ [12.0, 8.0], [0.03,0.01], [1.0,0.4], [0.55,0.2], [450.0,200.0], [3.0,2.2], [1.2,0.8], [0.4,0.3] ]
+n = len(paramrange)    
+N = 2**n
+
+ic=[]
+indc=[]
+for i in range(n):
+    b = [0]*2**i + [1]*2**i
+    paramrange[i].sort()
+    a= np.choose(b,paramrange[i])
+    ic.append(np.resize(a,N))
+    indc.append(np.resize(b,N))
+    
+    
+    
+ic.reverse()
+indc.reverse()
+param_order = param_order.split(', ')
+param_order.reverse()
+
+matrix = np.column_stack(tuple(ic))
+imatrix = np.column_stack(tuple(indc))
+
+
+
+
+
+excellist = []
+
+for i in range(N):
+    case = Case(cases,0)
+    case.P_gas = ic[7][i]
+    case.D = ic[6][i]
+    case.Xbed = ic[5][i]
+    case.xH2O_G_wet = ic[4][i]
+    case.Tsteam = ic[3][i]
+    case.L_chamber=ic[2][i]
+    case.W_chamber = ic[1][i]
+    case.H_gap = ic[0][i]
+    
+    casestring=''
+    for k in range(len(imatrix[i])):
+        casestring = casestring + str(imatrix[i][k])
+    
+    case.case_index=int(casestring)
+    
+    
     data, header, exceldata, excelheader = calcSource(case)
-    writeSource(case,data,header)
+    
+    casename = 'source_' + casestring + '.csv'
+    writeSource(case,data,header,casename)
+    
+    exceldata[0] = casestring
+    excellist.append(exceldata)
+
+
+exceldf = pd.DataFrame(excellist,columns=excelheader.split(','))
+
+book = load_workbook(fnam)
+
+writer = pd.ExcelWriter(fnam, engine='openpyxl') 
+writer.book = book
+writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
+
+exceldf.to_excel(writer, "Sheet2", startrow=15)
+
+writer.save()
+#exceldf.to_excel(fnam,'Sheet2',startrow=2)
+
+
+#
+#P_gas = np.resize(a[0],N)
+#D = np.resize(a[1],N)
+#X_vola_mois = np.resize(a[2],N)
+#xH2O_G_wet = np.resize(a[3],N)
+#Tsteam = np.resize(a[4],N)
+#L_chamber = np.resize(a[5],N)
+#W_chamber = np.resize([0,1],N)
+#H_gap = np.resize([0,1],N)
+
+
+#Fukt = np.choose(Fukt,[0.08,0.7])
+#char = np.choose(char,[0,1])
+#D = np.choose(D,[20,100])
+
+#matrix = np.column_stack((Fukt,char,D))
 
 
 
