@@ -106,3 +106,25 @@ plt.xlim(t[0]-0.1,t[-1]+0.1)
 print(qavg.iloc[-1] * 1.4 / (0.3*1.2*(60)))
 
 
+plt.figure(4,figsize=(8,5))
+plt.plot(t,qavg,label='Expanding average')
+plt.plot(trev,qavgr,label='Reverse expanding average')
+plt.plot(t,qroll,label='Rolling average')
+#plt.plot(trev,qrollr,label='Reverse rolling average')
+
+plt.plot([t[0],t[-1]+0.1],[555000,555000],'--',color=(0.5,0.5,0.5),label='Expected lower bound')
+plt.plot([t[0],t[-1]+0.1],[2777000,2777000],'-.',color=(0.5,0.5,0.5),label='Expected higher bound')
+
+plt.xlabel('Time [s]')
+plt.ylabel('Average net energy flow [W]')
+plt.title('Expanding time average')
+
+plt.xlim(t[0]-0.1,t[-1]+0.1)
+plt.ylim(0,0.3e7)
+plt.grid()
+plt.legend(loc='best')
+
+plt.savefig('cumavgzoomzoom.pdf', bbox_inches='tight')
+
+k_eff = qavg.iloc[-1]/(0.3*1.2)*(1.4/60)
+print('k_eff = {:.3}'.format(k_eff))
