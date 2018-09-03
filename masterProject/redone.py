@@ -536,6 +536,7 @@ def calcSource(case):
     
     exceldata = [case.case_index, m_cfuel, qh2o_c*m_cfuel/1e3, qfuel_c*m_cfuel/1e3, m_fm * cp_air * (case.TC - case.Tair) /1e6, Q_c, Q_comb, Q_corr, Xflue, m_gfuel, qh2o_g*m_gfuel/1e3, qfuel_g*m_gfuel/1e3, m_steam * cp_steam * (case.TG - case.Tsteam) /1e6, qchar*m_gfuel/1e3, Q_g, m_cfuel, m_cfuel*case.fuel_LHV, SB, SFR, X_ch, X_steam, S_c, sink_c, S_g, sink_g,S_tot ]
     excelheader = 'index,m_fuel_c,qh2o_c,q_fuel_c,q_fm_c,Q_c,Qcomb,Qcorr,Xflue,m_fuel_g,q_h2o_g,q_fuel_g,q_steam_g,q_charconv,Q_g,load_kg,load_MW,SB,SFR,X_ch,X_steam,S_c,sink_c,S_g,sink_g,S_tot'
+    #excelunits = 
 
 
     return data, header, exceldata, excelheader
@@ -554,65 +555,13 @@ def writeSource(case,data,header,casename,sourcepath=sourcepath):
             f.write(str(val) + ',')
         f.close()
 
-## loop to generate all cases for this batch
-#for index in range(len(cases)):
-#    case = Case(cases,index)
-#
-#    data, header, exceldata, excelheader = calcSource(case)
-#    casename = 'source_' + str(case.index) + '.csv'
-#    writeSource(case,data,header,casename)
-
-
-### Test matrix source generation
-
-# Test matrix formulation
-param_order = 'P_gas, D, Xbed, xH2O_G_wet, Tsteam, L_chamber, W_chamber, H_gap'
-paramrange = [ [12.0, 8.0], [0.03,0.01], [1.0,0.4], [0.55,0.2], [450.0,200.0], [3.0,2.2], [1.2,0.8], [0.4,0.3] ]
-n = len(paramrange)    
-N = 2**n
-
-ic=[]
-indc=[]
-for i in range(n):
-    b = [0]*2**i + [1]*2**i
-    paramrange[i].sort()
-    a= np.choose(b,paramrange[i])
-    ic.append(np.resize(a,N))
-    indc.append(np.resize(b,N))
-    
-    
-    
-ic.reverse()
-indc.reverse()
-param_order = param_order.split(', ')
-param_order.reverse()
-
-matrix = np.column_stack(tuple(ic))
-imatrix = np.column_stack(tuple(indc))
-
-
-
-
 
 excellist = []
-
-for i in range(N):
-    case = Case(cases,0)
-    case.P_gas = ic[7][i]
-    case.D = ic[6][i]
-    case.Xbed = ic[5][i]
-    case.xH2O_G_wet = ic[4][i]
-    case.Tsteam = ic[3][i]
-    case.L_chamber=ic[2][i]
-    case.W_chamber = ic[1][i]
-    case.H_gap = ic[0][i]
-    
-    casestring=''
-    for k in range(len(imatrix[i])):
-        casestring = casestring + str(imatrix[i][k])
-    
-    case.case_index=int(casestring)
-    
+## loop to generate all cases for this batch
+for index in range(len(cases)):
+    case = Case(cases,index)
+        
+    casestring = str(index)
     
     data, header, exceldata, excelheader = calcSource(case)
     
@@ -623,6 +572,69 @@ for i in range(N):
     excellist.append(exceldata)
 
 
+
+
+
+### Test matrix source generation
+
+## Test matrix formulation
+#param_order = 'P_gas, D, Xbed, xH2O_G_wet, Tsteam, L_chamber, W_chamber, H_gap'
+#paramrange = [ [12.0, 8.0], [0.03,0.01], [1.0,0.4], [0.55,0.2], [450.0,200.0], [3.0,2.2], [1.2,0.8], [0.4,0.3] ]
+#n = len(paramrange)    
+#N = 2**n
+#
+#ic=[]
+#indc=[]
+#for i in range(n):
+#    b = [0]*2**i + [1]*2**i
+#    paramrange[i].sort()
+#    a= np.choose(b,paramrange[i])
+#    ic.append(np.resize(a,N))
+#    indc.append(np.resize(b,N))
+#    
+#    
+#    
+#ic.reverse()
+#indc.reverse()
+#param_order = param_order.split(', ')
+#param_order.reverse()
+#
+#matrix = np.column_stack(tuple(ic))
+#imatrix = np.column_stack(tuple(indc))
+#
+#
+#
+#
+#
+#excellist = []
+#
+#for i in range(N):
+#    case = Case(cases,0)
+#    case.P_gas = ic[7][i]
+#    case.D = ic[6][i]
+#    case.Xbed = ic[5][i]
+#    case.xH2O_G_wet = ic[4][i]
+#    case.Tsteam = ic[3][i]
+#    case.L_chamber=ic[2][i]
+#    case.W_chamber = ic[1][i]
+#    case.H_gap = ic[0][i]
+#    
+#    casestring=''
+#    for k in range(len(imatrix[i])):
+#        casestring = casestring + str(imatrix[i][k])
+#    
+#    case.case_index=int(casestring)
+#    
+#    
+#    data, header, exceldata, excelheader = calcSource(case)
+#    
+#    casename = 'source_' + casestring + '.csv'
+#    #writeSource(case,data,header,casename)
+#    
+#    exceldata[0] = casestring
+#    excellist.append(exceldata)
+
+
 exceldf = pd.DataFrame(excellist,columns=excelheader.split(','))
 
 book = load_workbook(fnam)
@@ -631,7 +643,7 @@ writer = pd.ExcelWriter(fnam, engine='openpyxl')
 writer.book = book
 writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
 
-exceldf.to_excel(writer, "Sheet2", startrow=15)
+exceldf.to_excel(writer, "Sheet2", startrow=1)
 
 writer.save()
 #exceldf.to_excel(fnam,'Sheet2',startrow=2)
@@ -709,50 +721,6 @@ Qfuel = mfuel * lhv_fuel
 print(m)
 print(Qfuel)
 
-#%%
-# high mesh
-TG_avg_h = [765.1691502546852, 773.7080757144821]
-TC_max_h = [872.8852783203125, 882.412255859375]
-TG_min_h = [746.1984497070313, 754.5776611328125]
-Cells_h =  4.821680e+05
-
-# mid mesh
-
-TG_avg_m = [763.3680105652624, 771.8211752373446]
-TC_max_m = [868.464501953125, 877.8099609375]
-TG_min_m = [745.0793701171875, 753.389794921875]
-Cells_m = 1.200910e+05
-
-# low mesh
-
-TG_avg_l = [7.616326e+02, 7.684362e+02]
-TC_max_l = [8.675207e+02, 8.774951e+02]
-TG_min_l = [7.430160e+02, 7.492616e+02]
-Cells_l = 6.317400e+04
-
-
-x = [Cells_l, Cells_m, Cells_h]
-
-
-TG_avg = []
-dt = []
-for i in range(len(TG_avg_h)):
-    TG_avg.append([TG_avg_l[i], TG_avg_m[i], TG_avg_h[i] ])
-    dt.append([TC_max_l[i] - TG_min_l[i], TC_max_m[i]- TG_min_m[i], TC_max_h[i] - TG_min_h[i]])
-    
-import matplotlib.pyplot as plt
-
-
-plt.figure(1,figsize=(8,5))
-plt.plot(x,TG_avg[0],label='case 0')
-plt.plot(x,TG_avg[1], label = 'case 1')
-plt.plot([Cells_m,Cells_m],[750,780],'k--', label = 'Used mesh size')
-plt.ylim(761,774)
-
-plt.xlabel('Cells')
-plt.ylabel('$T_{G,avg} \;\; [\degree C]$')
-plt.title('Mesh comparison')
-plt.legend(loc='best')
 
 
 
