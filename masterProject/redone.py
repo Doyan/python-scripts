@@ -543,7 +543,7 @@ def calcSource(case):
     
 
 
-sourcepath='/scratch/gabgus/geometry/redone/sourcefiles/' 
+#sourcepath='/scratch/gabgus/geometry/redone/sourcefiles/' 
 
 
 # Function to write calculated source terms to STAR input file
@@ -558,20 +558,51 @@ def writeSource(case,data,header,casename,sourcepath=sourcepath):
 
 excellist = []
 ## loop to generate all cases for this batch
-for index in range(len(cases)):
-    case = Case(cases,index)
-        
-    casestring = str(index)
+#for index in range(len(cases)):
+#    case = Case(cases,index)
+#        
+#    casestring = str(index)
+#    
+#    data, header, exceldata, excelheader = calcSource(case)
+#    
+#    casename = 'source_' + casestring + '.csv'
+#    writeSource(case,data,header,casename)
+#    
+#    exceldata[0] = casestring
+#    excellist.append(exceldata)
+
+
+scaling=[0.2, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 7, 10]
+
+
+n = len(scaling)
+N = n * 3
+
+nrange=np.arange(n)
+idx = np.append(nrange,nrange)
+idx = np.append(idx,nrange)
+
+
+for i in range(N):
+    case=Case(cases,0)
+    case.D = 0.02 * scaling[idx[i]]
+    if i < n :
+        case.xH2O_G_wet = 0.2
+    elif i < 2 * n :
+        case.xH2O_G_wet = 0.4
+    elif i < 3 * n :
+        case.xH2O_G_wet = 0.6
+    casestring = str(i)
     
     data, header, exceldata, excelheader = calcSource(case)
     
     casename = 'source_' + casestring + '.csv'
+    
     writeSource(case,data,header,casename)
     
     exceldata[0] = casestring
     excellist.append(exceldata)
-
-
+        
 
 
 
@@ -635,17 +666,23 @@ for index in range(len(cases)):
 #    excellist.append(exceldata)
 
 
-exceldf = pd.DataFrame(excellist,columns=excelheader.split(','))
+def writeExcelSheet(excellist,excelheader,fnam, sheet):
+    
+    exceldf = pd.DataFrame(excellist,columns=excelheader.split(','))
 
-book = load_workbook(fnam)
+    book = load_workbook(fnam)
 
-writer = pd.ExcelWriter(fnam, engine='openpyxl') 
-writer.book = book
-writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
+    writer = pd.ExcelWriter(fnam, engine='openpyxl') 
+    writer.book = book
+    writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
 
-exceldf.to_excel(writer, "Sheet2", startrow=1)
+    exceldf.to_excel(writer, sheet, startrow=1)
 
-writer.save()
+    writer.save()
+    
+    
+writeExcelSheet(excellist,excelheader,'test.xlsx','Sheet3')
+    
 #exceldf.to_excel(fnam,'Sheet2',startrow=2)
 
 
