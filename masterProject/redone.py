@@ -499,6 +499,9 @@ def calcSource(case):
     # Calculation of k_eff from case data
     k_eff = case.D*case.rho_solid*cp_solid((case.TC + case.TG)/2+TK)*(1-case.porosity)
     
+    k_eff_low = k_eff*0.5
+    tc_low_thick = 0.2 # m 
+    
     # Fluid properties at 800 - 850 deg C
     mu_air = 44.0e-6 # Pa s 
     
@@ -527,12 +530,12 @@ def calcSource(case):
     # Write sourcefile for STAR CCM+ to read
     
     
-    data = [1, case.case_index, S_c, -sink_c, -S_g, const_g, K_g, m_fm, m_steam, k_eff,
+    data = [1, case.case_index, S_c, -sink_c, -S_g, const_g, K_g, m_fm, m_steam, k_eff, k_eff_low,tc_low_thick,
             mu_air, mu_steam,tc_air,tc_steam, cp_air, cp_steam, case.rho_solid,
             case.TG+TK,case.TC+TK,case.Tair+TK,case.Tsteam+TK,
             case.porosity, case.L_chamber, case.W_chamber, case.H_gap,case.wall_thickness, case.L_bed,
             case.W_bed, case.H_bed]
-    header = 'row,index,S_c,sink_c,S_g,const_g,K_g,m_fm,m_steam,k_eff,mu_air,mu_steam,tc_air,tc_steam,cp_air,cp_steam,rho_solid,TG,TC,Tair,Tsteam,porosity,L_chamber,W_chamber,H_gap,chamber_thickness,L,W,H'
+    header = 'row,index,S_c,sink_c,S_g,const_g,K_g,m_fm,m_steam,k_eff,k_eff_low,tc_low_thick,mu_air,mu_steam,tc_air,tc_steam,cp_air,cp_steam,rho_solid,TG,TC,Tair,Tsteam,porosity,L_chamber,W_chamber,H_gap,chamber_thickness,L,W,H'
     
     exceldata = [case.case_index, m_cfuel, qh2o_c*m_cfuel/1e3, qfuel_c*m_cfuel/1e3, m_fm * cp_air * (case.TC - case.Tair) /1e6, Q_c, Q_comb, Q_corr, Xflue, m_gfuel, qh2o_g*m_gfuel/1e3, qfuel_g*m_gfuel/1e3, m_steam * cp_steam * (case.TG - case.Tsteam) /1e6, qchar*m_gfuel/1e3, Q_g, m_cfuel, m_cfuel*case.fuel_LHV, SB, SFR, X_ch, X_steam, S_c, sink_c, S_g, sink_g,S_tot ]
     excelheader = 'index,m_fuel_c,qh2o_c,q_fuel_c,q_fm_c,Q_c,Qcomb,Qcorr,Xflue,m_fuel_g,q_h2o_g,q_fuel_g,q_steam_g,q_charconv,Q_g,load_kg,load_MW,SB,SFR,X_ch,X_steam,S_c,sink_c,S_g,sink_g,S_tot'
