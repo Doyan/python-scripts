@@ -555,22 +555,43 @@ def writeSource(case,data,header,casename,sourcepath=sourcepath):
             f.write(str(val) + ',')
         f.close()
 
+# function to write source terms for a series of cases to files 
+# and collect data for corresponding excel sheet, takes two lists as input
+def writeFiles(caselist, namelist):
+    excellist=[]
+    for i in range(len(caselist)):
+        data, header, exceldata, excelheader = calcSource(caselist[i])
+        
+        casestring = namelist[i]
+        casename = 'source_' + casestring + '.csv'
+    
+        writeSource(case,data,header,casename)
+        exceldata[0] = casestring
+        excellist.append(exceldata)
+    print('Wrote ' + str(len(caselist)) + ' cases to directory "' + sourcepath + '"')
+    return excellist, excelheader
 
-excellist = []
-## loop to generate all cases for this batch
-#for index in range(len(cases)):
-#    case = Case(cases,index)
-#        
-#    casestring = str(index)
-#    
-#    data, header, exceldata, excelheader = calcSource(case)
-#    
-#    casename = 'source_' + casestring + '.csv'
-#    writeSource(case,data,header,casename)
-#    
-#    exceldata[0] = casestring
-#    excellist.append(exceldata)
+# function to write collection of outputs for several cases to an excelfile 
+# for later reference
+def writeExcelSheet(excellist,excelheader,fnam, sheet):
+    
+    exceldf = pd.DataFrame(excellist,columns=excelheader.split(','))
 
+    book = load_workbook(fnam)
+
+    writer = pd.ExcelWriter(fnam, engine='openpyxl') 
+    writer.book = book
+    writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
+
+    exceldf.to_excel(writer, sheet, startrow=1)
+
+    writer.save()
+    print('Wrote ' + str(len(excellist)) + ' cases to sheet: "' + sheet + '" of exelfile "' + fnam + '"')
+
+
+# -----------------------------------------------------------------------------
+
+# Stencil to generate list of cases to run
 
 scaling=[0.2, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 7, 10]
 
@@ -582,7 +603,8 @@ nrange=np.arange(n)
 idx = np.append(nrange,nrange)
 idx = np.append(idx,nrange)
 
-
+caselist=[]
+namelist = []
 for i in range(N):
     case=Case(cases,0)
     case.D = 0.02 * scaling[idx[i]]
@@ -594,15 +616,13 @@ for i in range(N):
         case.xH2O_G_wet = 0.6
     casestring = str(i)
     
-    data, header, exceldata, excelheader = calcSource(case)
+    caselist.append(case)
+    namelist.append(casestring)
+
+
+# excellist, excelheader = writeFiles(caselist,namelist)
     
-    casename = 'source_' + casestring + '.csv'
-    
-    writeSource(case,data,header,casename)
-    
-    exceldata[0] = casestring
-    excellist.append(exceldata)
-        
+# writeExcelSheet(excellist,excelheader,'test.xlsx','Sheet3')
 
 
 
@@ -666,22 +686,9 @@ for i in range(N):
 #    excellist.append(exceldata)
 
 
-def writeExcelSheet(excellist,excelheader,fnam, sheet):
+
     
-    exceldf = pd.DataFrame(excellist,columns=excelheader.split(','))
 
-    book = load_workbook(fnam)
-
-    writer = pd.ExcelWriter(fnam, engine='openpyxl') 
-    writer.book = book
-    writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
-
-    exceldf.to_excel(writer, sheet, startrow=1)
-
-    writer.save()
-    
-    
-writeExcelSheet(excellist,excelheader,'test.xlsx','Sheet3')
     
 #exceldf.to_excel(fnam,'Sheet2',startrow=2)
 
@@ -703,60 +710,6 @@ writeExcelSheet(excellist,excelheader,'test.xlsx','Sheet3')
 
 #matrix = np.column_stack((Fukt,char,D))
 
-
-
-
-# scrap calculation to get loads for empiric data
-
-
-CHONS = np.array([0.035, 0.518, 0.06, 0.381, 0.0054, 0.0009])
-CHONS_daf = CHONS[1:]/CHONS[1:].sum()
-
-lhv_fuel = 20.456 # MW/kgdaf
-
-MW_CHONS=np.array([0.01201 , 0.001007, 0.015998, 0.0140067, 0.032])
-
-
-X_CHONS = CHONS_daf/MW_CHONS # mol element/kgdaf 
-
-n_co2 = X_CHONS[0] # mol co2 /kgdaf
-
-n_h2o = X_CHONS[1]/2 # mol h2o/kgdaf
-
-n_so2 = X_CHONS[4]
-
-n_o2 = (X_CHONS[0] + X_CHONS[1]/4 - X_CHONS[2]/2 + X_CHONS[4]) # mol o2 /kgdaf
-
-n_n2 = n_o2*3.76 + X_CHONS[3]/2    # mol n2/kgdaf
-
-lt = (n_o2 + n_n2)* R*(TK)/p_atm # theoretical Nm3 air/kgdaf
-
-
-#SEEMS WRONG? need o2conc in dry fluegas -> need total amount of flue gas
-o2conc=np.array([0.058, 0.048]) # vol % o2 in moist flue gas?
-
-
-xh2o_wet = 0.55
-xh2o_daf = xh2o_wet /(1- xh2o_wet) 
-
-n_moisture = xh2o_daf/ h2o.molecular_weight
-
-gt = (n_co2 + n_n2 + n_so2)* R*(TK)/p_atm # theoretical Nm3 gas / kgdaf
-
-# need to remake with dry o2conc
-m = 1.0 + gt/lt * o2conc/(0.21 - o2conc) # air factor 
-
-lv = lt*m  # real Nm3 air/kgdaf 
-
-ltot = np.array([39.2241, 69.4282])/3.6 # Nm3 total air 
-
-mfuel= ltot/lv # kgdaf 
-
-Qfuel = mfuel * lhv_fuel
-
-
-print(m)
-print(Qfuel)
 
 
 

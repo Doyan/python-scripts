@@ -12,18 +12,9 @@ from scipy.optimize import curve_fit
 
 # -------------------------------------------------------------------------
 
-fnam = 'reportdata.csv'
-fnam2 = 'result'
-
-D1=pd.read_csv(fnam2)
-D1.spec = '$x_{H_2O} = 0.6$, $X_{ch} = 0.1$'
-
-D2=pd.read_csv(fnam)
-D2.spec = '$x_{H_2O} = 0.4$, $X_{ch} = 0.2$'
-
 
 def func(x,a,b):
-    return a*(x)**(-1) + b
+    return a*(x)**(-1) + b*x
 
 def curveChecked(f,xdata,ydata):
     popt,cov = curve_fit(f, xdata,ydata)
@@ -43,10 +34,26 @@ def genCurveData(f,xdata,ydata,I=[0,110],N=100):
 
 
 def plotFitted(f,xdata,ydata,label='',I=[0,110],N=100):
+    if I[0] == 0:
+        I[0] = I[0] + 0.00001*I[-1]
+        
     x,y,r2,p = genCurveData(f,xdata,ydata,I,N)
     ax = plt.plot(xdata,ydata,'o')
     ax2 = plt.plot(x,y,color=ax[0].get_c(), label=label)
     return ax2
+
+#%%
+
+
+fnam = 'reportdata.csv'
+fnam2 = 'result'
+
+D1=pd.read_csv(fnam2)
+D1.spec = '$x_{H_2O} = 0.6$, $X_{ch} = 0.1$'
+
+D2=pd.read_csv(fnam)
+D2.spec = '$x_{H_2O} = 0.4$, $X_{ch} = 0.2$'
+    
 
 
 plt.figure(1)
@@ -92,6 +99,58 @@ plt.savefig('dtmaxplot.pdf')
 #    plt.plot(x,func(x,*pavg),'b--', label='$f = %2.3f \; x^{-1} + %2.3f $' % tuple(pavg))
 #    plt.plot(x,func(x,*pmax),'g--', label='$f = %2.3f \; x^{-1} + %2.3f $' % tuple(pmax))
 
+#%%
+fnam = 'keff33.csv'  
 
-   
+df=pd.read_csv(fnam)
+
+
+D1 = df[0:11]
+D1.spec = 'xH2O = 0.2'
+D2 = df[11:22]
+D2.spec = 'xH2O = 0.4'
+
+D3 = df[22:33]
+D3.spec = 'xH2O = 0.6'
+
+
+DF = [D1, D2, D3]
+
+
+def func(x,a,b,c):
+    return a*(x)**(-c) + b
+
+for D in DF:    
+    dTmax = pd.to_numeric(D.T_C_max) - pd.to_numeric(D.T_G_min)
+    ax= plotFitted(func,pd.to_numeric(D.K_eff),dTmax,'$\Delta T_{max}$ - ' + D.spec,[0.01,320000])
+
+
+plt.ylim(0,300)
+plt.xlim(1,200000)
+plt.grid()
+plt.title('Maximum $\Delta T$ vs effective conduction')
+plt.xlabel('$k_{eff}$    [W/mK]')
+plt.ylabel('$\Delta T$    [K]')
+plt.legend()
+plt.savefig('new-k-vs-dT-max.pdf')
+plt.show()
+
+
+for D in DF:
+ 
+    dTavg = pd.to_numeric(D.T_C_avg) - pd.to_numeric(D.T_G_avg)
+    
+    ax= plotFitted(func,pd.to_numeric(D.K_eff),dTavg,'$\Delta T_{avg}$ - ' + D.spec,[0.01,320000])
+
+
+plt.ylim(0,300)
+plt.xlim(1,200000)
+plt.grid()
+plt.title('Average $\Delta T$ vs effective conduction')
+plt.xlabel('$k_{eff}$    [W/mK]')
+plt.ylabel('$\Delta T$    [K]')
+plt.legend()
+plt.savefig('new-k-vs-dT-avg.pdf')
+plt.show()
+
 

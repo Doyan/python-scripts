@@ -7,6 +7,7 @@ Created on Sun Jun  3 23:06:52 2018
 
 import numpy as np, matplotlib.pyplot as plt
 import pandas as pd
+from scipy.stats import t as student_t 
 # -----------------------------------------------------------------------------
 path = './datafiles/'
 
@@ -48,9 +49,10 @@ qavgr = qrev.expanding().mean()
 qroll=qframe.rolling(int(np.ceil(Rn))).mean()
 qrollr = qrev.rolling(int(np.ceil(Rn))).mean()
 
+# expanding standard deviation
+qstd = qframe.expanding().std()
 
-
-avgrdiff = qavgr.diff() 
+#%%
 
 plt.figure(0, figsize=(4,4))
 plt.plot(t,qframe)
@@ -126,5 +128,47 @@ plt.legend(loc='best')
 
 plt.savefig('cumavgzoomzoom.pdf', bbox_inches='tight')
 
+#%%
+# confidence interval
+n = np.arange(len(qframe)) + 1
+
+confidence = 0.999999
+alpha = (1 - confidence)/2
+df = n - 1
+
+tstar = student_t.ppf(alpha,df)
+
+h = tstar * np.array(qstd) / np.sqrt(n) 
+
+qminus = np.array(qavg) - h
+qplus = np.array(qavg) + h
+
+
+
+plt.figure(5)
+
+plt.plot(t,qavg)
+plt.plot(t,qminus,'--',color=(0.7,0.7,0.7))
+plt.plot(t,qplus,'--',color=(0.7,0.7,0.7))
+
+plt.plot([t[0],t[-1]+0.1],[555000,555000],'k--',label='Expected lower bound')
+plt.plot([t[0],t[-1]+0.1],[2777000,2777000],'k-.',label='Expected higher bound')
+
+plt.xlim(45,t[-1]+0.1)
+plt.ylim(0.05e7,0.15e7)
+
+
 k_eff = qavg.iloc[-1]/(0.3*1.2)*(1.4/60)
-print('k_eff = {:.3}'.format(k_eff))
+k_eff_diff = h[-1]/(0.3*1.2)*(1.4/60)
+
+print('k_eff = {:.3} +- {:.3}, alpha = {:.2}'.format(k_eff,k_eff_diff,alpha))
+
+#%%
+#
+#plt.figure(6)
+#
+#
+#
+#
+#plt.psd(qframe,2**12,2**13)
+#plt.xlim(0,25)
