@@ -28,8 +28,8 @@ import os
 # -----------------------------------------------------------------------------
 # Inputs
 
-Th = 850 + 273.15   # K
-Tc = 800 + 273.15   # K
+Th = 845 + 273.15   # K
+Tc = 805 + 273.15   # K
 T0 = 825 + 273.15   # K
 
 L = 0.51    # m
@@ -51,7 +51,7 @@ cp_s = 1.23e3     # J / kgK
 eps = 0.45  # void fraction
 
 rho = eps*rho_g + (1 - eps)*rho_s # kg / m3
-cp = eps*cp_g + (1-eps)*rho_s # J / kgK
+cp = eps*cp_g + (1-eps)*cp_s # J / kgK
 
 def S(x,L):
     a = (Tc -Th)/L
@@ -90,14 +90,17 @@ def u(x,t,k,L=L):
 # Calculation of accumulated deviation from simulated solution
 # for array of k-values
 
-    
-datapath = './T_profiles_case2/'
+caseNo=4
+
+datapath = './datafiles/case0' + str(caseNo) + '/'
 
 # value to scale integer from filename with
 tscaling = 1e-6
 
 # value to add to captured time to offset time before averaging process
-toffset = -3.3
+toffsets=[0,-3.6,-3.3,-3.3,-3.5]
+
+toffset = toffsets[caseNo]
 
 
 
@@ -166,7 +169,7 @@ def plotKguess(sampleNo,k):
     times,dflist,Llist,x0list,dcelllist = getDflist()
     
     df = dflist[sampleNo]
-    L = Llist[sampleNo]
+    L = Llist[sampleNo] - dcelllist[sampleNo]
     time = times[sampleNo]
     
     N = 200
@@ -188,29 +191,35 @@ def plotKguess(sampleNo,k):
 
 times,dflist,Llist,x0list,dcelllist = getDflist()
 
-L = Llist[0]    
+L = Llist[0] -dcelllist[0]   
 
-# array of k-values to try
-krange = [2389, 2390, 2390.5] 
-
-#  loop to try each value and settle for the one with least deviation
-ktrue = 0
-minAck = 100000
-acklist = []
-for k in krange:
-    ack, tDev = getTimedev(dflist,times,L,k)
-    acklist.append(ack)
-    if ack < minAck:
-        minAck=ack
-        ktrue=k
-
-print(ktrue)    
-
-
-
-
+plotKguess(229,25000)
+print(dcelllist[0])
+## array of k-values to try
+#krange = [2389, 2390, 2390.5] 
+#
+##  loop to try each value and settle for the one with least deviation
+#ktrue = 0
+#minAck = 100000
+#acklist = []
+#for k in krange:
+#    ack, tDev = getTimedev(dflist,times,L,k)
+#    acklist.append(ack)
+#    if ack < minAck:
+#        minAck=ack
+#        ktrue=k
+#
+#print(ktrue)    
 
 
+#n=0
+#df=dflist[n]
+#time= times[n]
+#
+#klist = []
+#for i in range(12):
+#    Y = (df.Ti[i] - T0)/(Th - T0)
+#    klist.append(rho*cp/(12*(1-Y))*df.x[i]**2/time)
 
 
 
