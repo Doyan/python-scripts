@@ -596,38 +596,41 @@ def writeExcelSheet(excellist,excelheader,fnam, sheet):
 
 # Stencil to generate list of cases to run
 
-scaling=[0.2, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 7, 10]
-
-
-n = len(scaling)
-N = n * 3
-
-nrange=np.arange(n)
-idx = np.append(nrange,nrange)
-idx = np.append(idx,nrange)
-
-caselist=[]
-namelist = []
-for i in range(N):
-    case=Case(cases,0)
-    case.D = 0.02 * scaling[idx[i]]
-    if i < n :
-        case.xH2O_G_wet = 0.2
-    elif i < 2 * n :
-        case.xH2O_G_wet = 0.4
-    elif i < 3 * n :
-        case.xH2O_G_wet = 0.6
-    casestring = str(i)
-    
-    caselist.append(case)
-    namelist.append(casestring)
+#scaling=[0.2, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 7, 10]
+#
+#
+#n = len(scaling)
+#N = n * 3
+#
+#nrange=np.arange(n)
+#idx = np.append(nrange,nrange)
+#idx = np.append(idx,nrange)
+#
+#caselist=[]
+#namelist = []
+#for i in range(N):
+#    case=Case(cases,0)
+#    case.D = 0.02 * scaling[idx[i]]
+#    if i < n :
+#        case.xH2O_G_wet = 0.2
+#    elif i < 2 * n :
+#        case.xH2O_G_wet = 0.4
+#    elif i < 3 * n :
+#        case.xH2O_G_wet = 0.6
+#    casestring = str(i)
+#    
+#    caselist.append(case)
+#    namelist.append(casestring)
 
 
 # excellist, excelheader = writeFiles(caselist,namelist)
     
 # writeExcelSheet(excellist,excelheader,'test.xlsx','Sheet3')
 
+namelist = [str(i) for i in range(7)]
+caselist = [Case(cases,i) for i in range(7)]
 
+writeFiles(caselist,namelist)
 
 ### Test matrix source generation
 
