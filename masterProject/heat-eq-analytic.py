@@ -90,7 +90,7 @@ def u(x,t,k,L=L):
 # Calculation of accumulated deviation from simulated solution
 # for array of k-values
 
-caseNo=4
+caseNo=2
 
 datapath = './datafiles/case0' + str(caseNo) + '/'
 

@@ -274,7 +274,6 @@ case = Case(cases,index) # load case specific indata
 
 def calcSource(case):
     # Collection of given gas composition into numpy array
-    
     case.gas_order = ['h2', 'co','co2','ch4','c2h2','c2h4','c2h6','c3h6']
     case.x_gas = np.array([case.gas_H2, case.gas_CO, case.gas_CO2, 
                            case.gas_CH4, case.gas_C2H2, case.gas_C2H4, case.gas_C2H6, case.gas_C3H6])/100
@@ -596,41 +595,86 @@ def writeExcelSheet(excellist,excelheader,fnam, sheet):
 
 # Stencil to generate list of cases to run
 
-#scaling=[0.2, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 7, 10]
-#
-#
-#n = len(scaling)
-#N = n * 3
-#
-#nrange=np.arange(n)
-#idx = np.append(nrange,nrange)
-#idx = np.append(idx,nrange)
-#
-#caselist=[]
-#namelist = []
-#for i in range(N):
-#    case=Case(cases,0)
-#    case.D = 0.02 * scaling[idx[i]]
-#    if i < n :
-#        case.xH2O_G_wet = 0.2
-#    elif i < 2 * n :
-#        case.xH2O_G_wet = 0.4
-#    elif i < 3 * n :
-#        case.xH2O_G_wet = 0.6
-#    casestring = str(i)
-#    
-#    caselist.append(case)
-#    namelist.append(casestring)
+scaling=[0.2, 0.4, 0.5, 0.8, 1, 1.2, 1.5, 2, 2.5]
+
+n = len(scaling)
+N = n * 4
+
+nrange=np.arange(n)
+
+idx=np.tile(nrange,4)
+
+caselist=[]
+namelist = []
+for i in range(N):
+    case=Case(cases,0)
+    
+    case.D = 0.02 * scaling[idx[i]]
+    case.W_chamber = 0.8
+    case.L_chamber= 2.6
+    case.P_gas = 10
+    case.wall_thickness = 0.03
+    case.W_tczone = case.wall_thickness
+    
+    if i   < 1 * n :
+        case.xH2O_G_wet = 0.2
+        case.tc_factor = 1
+    elif i < 2 * n :
+        case.xH2O_G_wet = 0.2
+        case.tc_factor = 0.5
+    elif i < 3 * n :
+        case.xH2O_G_wet = 0.1
+        case.tc_factor = 1
+    elif i < 4 * n :
+        case.xH2O_G_wet = 0.1
+        case.tc_factor = 0.5
+        
+    casestring = str(i)
+    
+    caselist.append(case)
+    namelist.append(casestring)
+
+# bonus cases
+n0 = len(namelist)
+nbonus = 4
+for i in range(nbonus):
+   case.D = 0.02 
+   case.tc_factor = 0.5
+   
+   case.W_chamber = 0.8
+   case.L_chamber= 2.6
+   case.P_gas = 10
+   case.wall_thickness = 0.03
+   
+   if i < 1:
+       case.xH2O_G_wet = 0.2
+       case.wall_thickness = 0.15
+   elif i < 2:
+       case.xH2O_G_wet = 0.2
+       case.W_chamber = 1.0
+   elif i < 3:
+       case.xH2O_G_wet = 0.1
+       case.wall_thickness = 0.15
+   elif i < 4:
+       case.xH2O_G_wet = 0.1
+       case.W_chamber = 1.0
+   
+   casestring = str(n0+i) 
+       
+   caselist.append(case)
+   namelist.append(casestring)
+
+       
+   
+   case.W_tczone = case.wall_thickness
+    
+    
 
 
 # excellist, excelheader = writeFiles(caselist,namelist)
     
 # writeExcelSheet(excellist,excelheader,'test.xlsx','Sheet3')
 
-namelist = [str(i) for i in range(7)]
-caselist = [Case(cases,i) for i in range(7)]
-
-writeFiles(caselist,namelist)
 
 ### Test matrix source generation
 

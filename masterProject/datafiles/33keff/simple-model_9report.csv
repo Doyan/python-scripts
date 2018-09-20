@@ -1,0 +1,35 @@
+Report Name, Value, Unit, 
+heat out c, 2.143729222759067E7, W
+heat out g, 1685672.5552237914, W
+heat in c, -8959475.492889594, W
+heat in g, -881968.3258460753, W
+Total Heat source, 1.3083016011589568E7, W
+Net heat source, 1.3281520964078791E7, W
+T_G_avg, 835.2720346772143, C
+T_C_avg, 845.8453821086838, C
+T_G_max, 839.5672747820018, C
+T_G_min, 832.9881771754034, C
+T_C_max, 849.2865058017409, C
+T_C_min, 836.947883786907, C
+V_C, 22.522902091891225, m^3
+V_G, 1.4556479081175138, m^3
+T_air, 200.0, C
+T_steam, 300.0, C
+case, 0.0, 
+height, 0.35, m
+K_eff, 219452.369392, W/m-K
+convergence, 1.0151727210540276, 
+V_C_rzone, 8.600434396084765, m^3
+V_G_rzone, 0.5451915210434829, m^3
+Mass Flow air, -16.568369222821346, kg/s
+Mass Flow steam, -0.6651296918520234, kg/s
+Mass Flow flue, 16.574970336194088, kg/s
+Mass Flow gas, 0.6585287884294856, kg/s
+Total mass, 7.785692204914566, kg
+A_C, 40.908400000000746, m^2
+A_G, 2.7398000000000295, m^2
+Solver Iteration Elapsed Time, 0.7768669128417969, s
+sink_gr, -2.537426819819627, 
+velo_G, 1.1823528876925147, m/s
+velo_C, 1.2249111129338544, m/s
+Total Solver Elapsed Time, 0.9337374514341354, hr
