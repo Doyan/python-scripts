@@ -498,8 +498,8 @@ def calcSource(case):
     # Calculation of k_eff from case data
     k_eff = case.D*case.rho_solid*cp_solid((case.TC + case.TG)/2+TK)*(1-case.porosity)
     
-    k_eff_low = k_eff*0.5
-    tc_low_thick = 0.2 # m 
+    k_eff_low = k_eff*case.tc_factor
+    tc_low_thick = case.W_tczone # m 
     
     # Fluid properties at 800 - 850 deg C
     mu_air = 44.0e-6 # Pa s 
