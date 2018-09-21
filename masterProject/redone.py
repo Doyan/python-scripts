@@ -671,9 +671,9 @@ for i in range(nbonus):
     
 
 
-# excellist, excelheader = writeFiles(caselist,namelist)
+excellist, excelheader = writeFiles(caselist,namelist)
     
-# writeExcelSheet(excellist,excelheader,'test.xlsx','Sheet3')
+writeExcelSheet(excellist,excelheader,'test.xlsx','Sheet3')
 
 
 ### Test matrix source generation
