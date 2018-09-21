@@ -40,8 +40,8 @@ x = np.array(df.x)
 T = np.array(df.temp)
 
 # create uniform grid axis points
-gx = np.arange(0.0075,0.51,0.015)
-gy = np.arange(0.0075,0.42,0.015)
+gx = np.arange(0.0,0.51,0.015)
+gy = np.arange(0.0,0.42,0.015)
 
 # plot fluent grid for inspection
 plt.plot(x,y,'b.')
@@ -59,8 +59,8 @@ xi, yi = np.meshgrid(gx,gy)
 z0 = griddata((x,y),T,(xi,yi),method='nearest')
 z1 = griddata((x,y),T,(xi,yi),method='linear')
 
-nanmask = np.isnan(z1)
-z1[nanmask] = z0[nanmask]    
+#nanmask = np.isnan(z1)
+#z1[nanmask] = z0[nanmask]    
 
 
 
@@ -70,13 +70,13 @@ mask = (xi > 0.24) & (xi < 0.27) & (yi > 0.42 - 0.15)
 z1[mask] = np.nan
 
 # plot interpolated grid as surface
-plt.contourf(xi,yi,z1,20,cmap='bwr', vmin=1073.15, vmax=1123.15)
+plt.contourf(xi,yi,z0,20,cmap='bwr', vmin=1073.15, vmax=1123.15)
 
 plt.colorbar()
-
-plt.contour(xi,yi,z1,20,colors='black', vmin=1073.15, vmax=1123.15)
-
-plt.plot(x,y,'b.')
+#
+#plt.contour(xi,yi,z1,20,colors='black', vmin=1073.15, vmax=1123.15)
+#
+#plt.plot(x,y,'b.')
 
 
 #xbar = []
