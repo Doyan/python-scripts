@@ -77,28 +77,25 @@ plt.colorbar()
 plt.contour(xi,yi,z0,36,colors='black', vmin=1073.15, vmax=1123.15)
 
 plt.plot(x,y,'b.')
+plt.xlim(0.0,0.51)
+plt.ylim(0.0,0.42)
 
-data = [xi,yi,z0,mask]
-
-
-A= np.array((xi,yi,z0))
-
-
-
-#xbar = []
-#for i in range(len(gx)):
-#    xsum = 0
-#    n = 0
-#    for j in range(len(gy)):
-#        if not np.isnan(zi[i][j]):
-#            xsum += zi[gx[i]][gy[j]]
-#            n = n + 1
-#    xbar.append(xsum / n) 
+xbar = []
+for i in range(len(gx)):
+    xsum = 0
+    n = 0
+    for j in range(len(gy)):
+        if not np.isnan(z0[j][i]):
+            xsum += z0[j][i]
+            n = n + 1
+    xbar.append(xsum / n) 
+plt.show() 
     
-
-
-
-
+plt.plot(gx,xbar)
+plt.plot([0,0.51],[1123.15,1073.15],'k--')
+plt.plot([0.24,0.24],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+plt.plot([0.27,0.27],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+#plt.grid(linestyle='-.',color=[0.9,0.9,0.9])
 
 
 
