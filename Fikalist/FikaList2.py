@@ -14,7 +14,7 @@ from openpyxl import load_workbook
 # ----------------------------------------------------------------------------
 
 # Path to fikalist file
-fikalistPath = './FikaListDataBase.xlsx' 
+fikalistPath = '../../Documents/FikaListDataBase.xlsx' 
 
 # Days for person to stay off the active drawing pool after having fika once
 sTime = 10
@@ -53,7 +53,8 @@ def readDataBase(fikalistPath):
 
 
 def makeFikaSequence(nameList,scoreList,days):
-    
+    ho=1
+    return ho
 #
 #names, fikaScore, kitchenScore = readDataBase(fikalistPath)
 #

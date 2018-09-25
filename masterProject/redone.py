@@ -638,6 +638,8 @@ for i in range(N):
 n0 = len(namelist)
 nbonus = 4
 for i in range(nbonus):
+   case=Case(cases,0)
+   
    case.D = 0.02 
    case.tc_factor = 0.5
    
@@ -659,6 +661,7 @@ for i in range(nbonus):
        case.xH2O_G_wet = 0.1
        case.W_chamber = 1.0
    
+   case.W_tczone = case.wall_thickness
    casestring = str(n0+i) 
        
    caselist.append(case)
@@ -666,7 +669,7 @@ for i in range(nbonus):
 
        
    
-   case.W_tczone = case.wall_thickness
+   
     
     
 

@@ -164,16 +164,16 @@ df=pd.read_csv(fnam)
 D1 = df[0:9]
 D1.spec = '$x_{H_2O}:\; 0.2, \;\; k_{wall}:\;1$'
 
-D2 = df[9:17]
+D2 = df[9:18]
 D2.spec = '$x_{H_2O}:\; 0.2, \;\; k_{wall}:\;0.5$'
 
-D3 = df[17:24]
+D3 = df[18:27]
 D3.spec = '$x_{H_2O}:\; 0.1, \;\; k_{wall}:\;1$'
 
-D4 = df[24:33]
+D4 = df[27:36]
 D4.spec = '$x_{H_2O}:\; 0.1, \;\; k_{wall}:\;0.5$'
 
-Bonus=df[33:37]
+Bonus=df[36:40]
 
 DF = [D1, D2, D3, D4]
 
@@ -185,7 +185,7 @@ for D in DF:
     ax= plotFitted(func,pd.to_numeric(D.K_eff),dTmax,'$\Delta T_{max}$ - ' + D.spec,[0.01,80000])
 
 dTmax_bonus =pd.to_numeric(Bonus.T_C_max) - pd.to_numeric(Bonus.T_G_min)
-plt.plot(Bonus.K_eff,dTmax_bonus)
+plt.plot(Bonus.K_eff,dTmax_bonus,'x')
 
 plt.xlim(1,80000)
 plt.grid()
