@@ -15,7 +15,7 @@ df_list = []
 
 #reportdir='/scratch/gabgus/geometry/redone/kluster/reports/'
 #reportdir='/scratch/gabgus/geometry/redone/results/images_07-13-2018/reports/'
-reportdir='C:/Users/Gabriel/simple-model/reports/'
+reportdir='/scratch/gabgus/simple-model/reports/'
 
 filelist=os.listdir(reportdir)
 
@@ -54,7 +54,7 @@ df0=df0.sort_values(by='case')
 
 df0=df0.set_index('case')
 
-df0.to_csv('keff33.csv')
+df0.to_csv('keff40.csv')
 #%%
 cols = df0.columns.tolist()
 cols_ordered = [cols[16]] + cols[6:12] + cols[-3:-1] + cols[:6] + cols[12:16]  + cols[17:-3] +[cols[-1]] 

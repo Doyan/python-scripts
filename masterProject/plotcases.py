@@ -153,4 +153,69 @@ plt.legend()
 plt.savefig('new-k-vs-dT-avg.pdf')
 plt.show()
 
+#%%
+
+
+fnam = 'keff40.csv'  
+
+df=pd.read_csv(fnam)
+
+
+D1 = df[0:9]
+D1.spec = '$x_{H_2O}:\; 0.2, \;\; k_{wall}:\;1$'
+
+D2 = df[9:17]
+D2.spec = '$x_{H_2O}:\; 0.2, \;\; k_{wall}:\;0.5$'
+
+D3 = df[17:24]
+D3.spec = '$x_{H_2O}:\; 0.1, \;\; k_{wall}:\;1$'
+
+D4 = df[24:33]
+D4.spec = '$x_{H_2O}:\; 0.1, \;\; k_{wall}:\;0.5$'
+
+Bonus=df[33:37]
+
+DF = [D1, D2, D3, D4]
+
+def func(x,a,b,c):
+    return a*(x)**(-c) + b
+
+for D in DF:    
+    dTmax = pd.to_numeric(D.T_C_max) - pd.to_numeric(D.T_G_min)
+    ax= plotFitted(func,pd.to_numeric(D.K_eff),dTmax,'$\Delta T_{max}$ - ' + D.spec,[0.01,80000])
+
+dTmax_bonus =pd.to_numeric(Bonus.T_C_max) - pd.to_numeric(Bonus.T_G_min)
+plt.plot(Bonus.K_eff,dTmax_bonus)
+
+plt.xlim(1,80000)
+plt.grid()
+plt.title('Maximum $\Delta T$ vs effective conduction')
+plt.xlabel('$k_{eff}$    [W/mK]')
+plt.ylabel('$\Delta T$    [K]')
+
+plt.ylim(0,300)
+plt.legend()
+plt.savefig('new-k-vs-dT-max.pdf')
+plt.show()
+
+
+for D in DF:
+ 
+    dTavg = pd.to_numeric(D.T_C_avg) - pd.to_numeric(D.T_G_avg)
+    
+    ax= plotFitted(func,pd.to_numeric(D.K_eff),dTavg,'$\Delta T_{avg}$ - ' + D.spec,[0.01,80000])
+
+
+plt.ylim(0,300)
+plt.xlim(1,80000)
+plt.grid()
+plt.title('Average $\Delta T$ vs effective conduction')
+plt.xlabel('$k_{eff}$    [W/mK]')
+plt.ylabel('$\Delta T$    [K]')
+plt.legend()
+plt.savefig('new-k-vs-dT-avg.pdf')
+plt.show()
+
+
+
 
