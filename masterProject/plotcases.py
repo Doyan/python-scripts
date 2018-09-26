@@ -180,12 +180,21 @@ DF = [D1, D2, D3, D4]
 def func(x,a,b,c):
     return a*(x)**(-c) + b
 
+
+plt.figure(1,(8,6))
 for D in DF:    
     dTmax = pd.to_numeric(D.T_C_max) - pd.to_numeric(D.T_G_min)
-    ax= plotFitted(func,pd.to_numeric(D.K_eff),dTmax,'$\Delta T_{max}$ - ' + D.spec,[0.01,80000])
+    ax= plotFitted(func,pd.to_numeric(D.K_eff),dTmax,D.spec,[0.01,80000])
 
 dTmax_bonus =pd.to_numeric(Bonus.T_C_max) - pd.to_numeric(Bonus.T_G_min)
-plt.plot(Bonus.K_eff,dTmax_bonus,'x')
+dTmax_D2 = pd.to_numeric(D2.T_C_max) - pd.to_numeric(D2.T_G_min)
+dTmax_D4 = pd.to_numeric(D4.T_C_max) - pd.to_numeric(D4.T_G_min)
+
+
+plt.plot(Bonus.K_eff.iloc[0],dTmax_bonus.iloc[0],'d',color=[0.1,0.3,0.1],label='$x_{H_2O}:\; 0.2, \;\; d_{wall}:\;0.15$')
+plt.plot(Bonus.K_eff.iloc[1],dTmax_bonus.iloc[1],'x',color='r',label='$x_{H_2O}:\; 0.2, \;\; w_{wall}:\;1.0$')
+plt.plot(Bonus.K_eff.iloc[2],dTmax_bonus.iloc[2],'d',color=[0.5,0.5,0.9],label='$x_{H_2O}:\; 0.1, \;\; d_{wall}:\;0.15$')
+plt.plot(Bonus.K_eff.iloc[3],dTmax_bonus.iloc[3],'x',color='b',label='$x_{H_2O}:\; 0.1, \;\; w_{wall}:\;1.0$')
 
 plt.xlim(1,80000)
 plt.grid()
@@ -198,13 +207,41 @@ plt.legend()
 plt.savefig('new-k-vs-dT-max.pdf')
 plt.show()
 
+plt.figure(2,(8,6))
+plt.plot(Bonus.K_eff.iloc[0],dTmax_bonus.iloc[0],'d',color=[0.1,0.3,0.1],label='$x_{H_2O}:\; 0.2, \;\; d_{wall}:\;0.15$')
+plt.plot(Bonus.K_eff.iloc[2],dTmax_bonus.iloc[2],'d',color=[0.5,0.5,0.9],label='$x_{H_2O}:\; 0.1, \;\; d_{wall}:\;0.15$')
 
+plt.plot(D2.K_eff.iloc[4],dTmax_D2.iloc[4],'o',color=[0.2,0.5,0.2],label='$x_{H_2O}:\; 0.2, \;\; w_{thinwall}:\;0.8$')
+
+plt.plot(Bonus.K_eff.iloc[1],dTmax_bonus.iloc[1],'x',color='r',label='$x_{H_2O}:\; 0.2, \;\; w_{thinwall}:\;1.0$')
+
+plt.plot(D4.K_eff.iloc[4],dTmax_D4.iloc[4],'o',color='cyan',label='$x_{H_2O}:\; 0.1, \;\; w_{thinwall}:\;0.8$')
+plt.plot(Bonus.K_eff.iloc[3],dTmax_bonus.iloc[3],'x',color='b',label='$x_{H_2O}:\; 0.1, \;\; w_{thinwall}:\;1.0$')
+
+plt.grid()
+plt.title('Maximum $\Delta T$ vs effective conduction')
+plt.xlabel('$k_{eff}$    [W/mK]')
+plt.ylabel('$\Delta T$    [K]')
+plt.legend()
+plt.savefig('bonus-k-vs-dT-max.pdf')
+
+
+plt.figure(3,(8,6))
 for D in DF:
  
     dTavg = pd.to_numeric(D.T_C_avg) - pd.to_numeric(D.T_G_avg)
     
-    ax= plotFitted(func,pd.to_numeric(D.K_eff),dTavg,'$\Delta T_{avg}$ - ' + D.spec,[0.01,80000])
+    ax= plotFitted(func,pd.to_numeric(D.K_eff),dTavg,D.spec,[0.01,80000])
 
+dTavg_bonus =pd.to_numeric(Bonus.T_C_avg) - pd.to_numeric(Bonus.T_G_avg)
+dTavg_D2 = pd.to_numeric(D2.T_C_avg) - pd.to_numeric(D2.T_G_avg)
+dTavg_D4 = pd.to_numeric(D4.T_C_avg) - pd.to_numeric(D4.T_G_avg)
+
+
+plt.plot(Bonus.K_eff.iloc[0],dTavg_bonus.iloc[0],'d',color=[0.1,0.3,0.1],label='$x_{H_2O}:\; 0.2, \;\; d_{wall}:\;0.15$')
+plt.plot(Bonus.K_eff.iloc[1],dTavg_bonus.iloc[1],'x',color='r',label='$x_{H_2O}:\; 0.2, \;\; w_{wall}:\;1.0$')
+plt.plot(Bonus.K_eff.iloc[2],dTavg_bonus.iloc[2],'d',color=[0.5,0.5,0.8],label='$x_{H_2O}:\; 0.1, \;\; d_{wall}:\;0.15$')
+plt.plot(Bonus.K_eff.iloc[3],dTavg_bonus.iloc[3],'x',color='b',label='$x_{H_2O}:\; 0.1, \;\; w_{wall}:\;1.0$')
 
 plt.ylim(0,300)
 plt.xlim(1,80000)
@@ -215,6 +252,25 @@ plt.ylabel('$\Delta T$    [K]')
 plt.legend()
 plt.savefig('new-k-vs-dT-avg.pdf')
 plt.show()
+
+
+plt.figure(4,(8,6))
+plt.plot(Bonus.K_eff.iloc[0],dTavg_bonus.iloc[0],'d',color=[0.1,0.3,0.1],label='$x_{H_2O}:\; 0.2, \;\; d_{wall}:\;0.15$')
+plt.plot(Bonus.K_eff.iloc[2],dTavg_bonus.iloc[2],'d',color=[0.5,0.5,0.9],label='$x_{H_2O}:\; 0.1, \;\; d_{wall}:\;0.15$')
+
+plt.plot(D2.K_eff.iloc[4],dTavg_D2.iloc[4],'o',color=[0.2,0.5,0.2],label='$x_{H_2O}:\; 0.2, \;\; w_{thinwall}:\;0.8$')
+
+plt.plot(Bonus.K_eff.iloc[1],dTavg_bonus.iloc[1],'x',color='r',label='$x_{H_2O}:\; 0.2, \;\; w_{thinwall}:\;1.0$')
+
+plt.plot(D4.K_eff.iloc[4],dTavg_D4.iloc[4],'o',color='cyan',label='$x_{H_2O}:\; 0.1, \;\; w_{thinwall}:\;0.8$')
+plt.plot(Bonus.K_eff.iloc[3],dTavg_bonus.iloc[3],'x',color='b',label='$x_{H_2O}:\; 0.1, \;\; w_{thinwall}:\;1.0$')
+
+plt.grid()
+plt.title('Average $\Delta T$ vs effective conduction')
+plt.xlabel('$k_{eff}$    [W/mK]')
+plt.ylabel('$\Delta T$    [K]')
+plt.legend()
+plt.savefig('bonus-k-vs-dT-avg.pdf')
 
 
 
