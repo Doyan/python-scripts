@@ -80,13 +80,13 @@ def loadTimeStep(fileindex,stepnum):
 def getOnGrid(x,y,T):
     # Spec boundary of grid
     x0 = 0.0
-    x1 = 0.51
+    x1 = 0.54
     y0 = 0.0
     y1 = 0.4200001
 
     # Spec wall extent for masking 
-    wallxmin = 0.24
-    wallxmax = 0.27
+    wallxmin = 0.255
+    wallxmax = 0.285
     wally = 0.15
 
     # Spec cell width
@@ -166,9 +166,9 @@ def saveData(savepath,folderpath,include_static=False):
     np.save(prefix + '1D-Temp',barM)
     
     if include_static:
-        np.save(prefix + '2D-grid',grid)
-        np.save(prefix + 'x-coords',gx)
-        np.save(prefix + 'y-coords',gy)
+        np.save(savepath + '2D-grid',grid)
+        np.save(savepath + 'x-coords',gx)
+        np.save(savepath + 'y-coords',gy)
     
     # append tdata to its own registry-file
     tdatapath=savepath + 'tdata.csv'
@@ -312,7 +312,7 @@ def fetchMdata(caseNo,sampleNo):
     
     dcell = np.diff(x)[0]
     x0 = x[0]
-    x = x - x0 + dcell/2
+    x = x - x0 + dcell/2 + dcell
     
     
     return x, Ti, Tavg, time
@@ -320,14 +320,53 @@ def fetchMdata(caseNo,sampleNo):
 # -------------- Main loop ---------------------------------------------------
 #%%
 
+
+
+fileindex,_,_ = sortKfolder(runpath + 'k1000/')
+
+x,y,T=loadTimeStep(fileindex,20)
+
+M,l=getOnGrid(x,y,T)
+
+
+
+
 caseNo=2
-sampleNo = 4
+sampleNo = 229
 
 
 knumber=2000
 
 
 kdata,tfreq,tscaling,grid = loadK(knumber)
+
+
+T0 = []
+T1 = []
+Sno = []
+
+kT0 = []
+kT1 = []
+
+for sno in range(230):
+    mx,mT,_,time = fetchMdata(caseNo,sno)
+    T0.append(mT[0])
+    T1.append(mT[-1])
+    Sno.append(sno)
+    ts = sno +1
+    kT0.append(kdata[ts][1])
+    kT1.append(kdata[ts][-2])
+
+Sno=np.array(Sno)
+kT0=np.array(kT0)
+kT1=np.array(kT1)
+
+knumber=2000
+
+
+kdata,tfreq,tscaling,grid = loadK(knumber)
+
+x0=grid[0]
 
 mx, mT,_, time = fetchMdata(caseNo,sampleNo)
 
@@ -339,11 +378,16 @@ ts = sampleNo + 1
 ## ------------ Plotting -------------------------------------
 #
 def furbish():
-    plt.plot([0.24,0.24],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
-    plt.plot([0.27,0.27],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+    plt.plot([0.255,0.255],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+    plt.plot([0.285,0.285],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+    
+    plt.plot([0.18,0.18],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+    plt.plot([0.36,0.36],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+    
+    
     plt.xlabel('x-coordinate [m]')
     plt.title('Temperature gradient at t = ' + str(time) + 's')
-    plt.xlim(0.0,0.51)
+    plt.xlim(0.0,0.54)
     return
 
 kT=kdata[ts]
@@ -352,7 +396,23 @@ plt.plot(grid,kT)
 plt.plot(mx,mT)
 furbish()
 
+plt.figure()
+plt.plot(Sno,T0,Sno,T1)
 
+
+dT=3
+plt.plot(Sno+1,kT0-dT,Sno+1,kT1+dT)
+
+plt.plot([Sno[0],Sno[-1]],[1123.15,1123.15],'r--')
+
+plt.plot([Sno[0],Sno[-1]],[1073.15,1073.15],'b--')
+plt.xlim(0,200)
+
+#Low
+#plt.ylim(1070,1090)
+
+#high
+#plt.ylim(1110,1124)
 
 
 ## plot interpolated grid as surface
