@@ -51,7 +51,7 @@ def sortKfolder(folderpath,toffset=0):
     
     filelist = os.listdir(folderpath)
     
-    tscaling = float(filelist[0].split('_')[1])
+    tscaling = round(float(filelist[0].split('_')[1]),6)
     times = [ round(float(file.split('ts-')[1]) * tscaling + toffset,4) for file in filelist]
     files = [folderpath + file for file in filelist]
     
@@ -160,7 +160,7 @@ def saveData(savepath,folderpath,include_static=False):
     knumber=os.path.basename(os.path.dirname(folderpath)).split('k')[1]
     
     
-    prefix = savepath + '{}_{:.2e}_{}_'.format(knumber,tscaling,int(tfreq))
+    prefix = savepath + '{}_'.format(knumber)
     
     np.save(prefix + '2D-Temp',zM)
     np.save(prefix + '1D-Temp',barM)
@@ -169,6 +169,18 @@ def saveData(savepath,folderpath,include_static=False):
         np.save(prefix + '2D-grid',grid)
         np.save(prefix + 'x-coords',gx)
         np.save(prefix + 'y-coords',gy)
+    
+    # append tdata to its own registry-file
+    tdatapath=savepath + 'tdata.csv'
+    
+    try: 
+        tdf = pd.read_csv(tdatapath,index_col='k')
+    except FileNotFoundError:
+        tdf = pd.DataFrame(columns=['k','ts','freq'])
+        tdf=tdf.set_index('k')
+       
+    tdf.loc[knumber] = {'freq': tfreq, 'ts': tscaling}
+    tdf.to_csv(tdatapath)
     
     return
 
@@ -229,62 +241,120 @@ def addK(knumber):
         else:
             print('\nk-generation failed')
             return 1
+
+# function to retrieve k-data in 1 or 2-D together with its time related data.
+def loadK(knumber,dim='1d'):
+    
+    # choice of dimension
+    if (dim == '1d') or (dim == '1D') or (dim < 2):
+        filename = savepath + '{}_1D-Temp.npy'.format(knumber)
+        gridname = savepath + 'x-coords.npy'
+    elif (dim == '2d') or (dim == '2D') or (dim < 3):
+        filename = savepath + '{}_2D-Temp.npy'.format(knumber)
+        gridname = savepath + 'grid.npy'
+    else:
+        print('\ninvalid dimension')
         
+    # load data    
+    kdata = np.load(filename)
+    grid = np.load(gridname)
+    
+    # retrieve time info
+    tdata = pd.read_csv(savepath + 'tdata.csv',index_col='k')
+    tfreq = tdata.loc[knumber].freq
+    tscaling = tdata.loc[knumber].ts
+    
+
+    
+    return kdata, tfreq, tscaling, grid
+
+
+
+#----- Functions for handling MF Data ---------------------------------------        
+
+# list multiphase folder and return sorted array of times and filenames
+def sortMFolder(folderpath,tscaling,toffset):
+    filelist=os.listdir(folderpath)
+
+    tsteps = []
+    for file in filelist:
+        tsteps.append(file.split('_')[2].split('.')[0])
+
+    times = [round(float(tstep)*tscaling + toffset,4) for tstep in tsteps]
+
+    fileindex = list(sorted(zip(times,filelist)))
+    return fileindex
+
+# read a certain timestep file in a certain casefolder and return lists 
+def fetchMdata(caseNo,sampleNo):
+
+    folderpath = mfdatapath + 'case0' + str(caseNo) + '/'
+
+
+    # value to scale integer from filename with
+    tscaling = 1e-6
+
+    # value to add to captured time to offset time before averaging process
+    toffsets=[0,-3.6,-3.3,-3.3,-3.5]
+    toffset = toffsets[caseNo]
+
+
+    fileindex = sortMFolder(folderpath,tscaling,toffset)
+
+    filename = fileindex[sampleNo][1]
+    time = fileindex[sampleNo][0]
+    df = pd.read_csv(folderpath+filename,names=['x','Ti','Tavg'])
+
+    # unpack into arrays
+    x = np.array(df.x)
+    Ti = np.array(df.Ti)
+    Tavg = np.array(df.Tavg)
+    
+    dcell = np.diff(x)[0]
+    x0 = x[0]
+    x = x - x0 + dcell/2
+    
+    
+    return x, Ti, Tavg, time
         
 # -------------- Main loop ---------------------------------------------------
 #%%
 
 caseNo=2
-
-# value to scale integer from filename with
-tscaling = 1e-6
-
-# value to add to captured time to offset time before averaging process
-toffsets=[0,-3.6,-3.3,-3.3,-3.5]
-
-toffset = toffsets[caseNo]
+sampleNo = 4
 
 
+knumber=2000
 
 
+kdata,tfreq,tscaling,grid = loadK(knumber)
 
-# read and preprocess text file to match 0 - L scale 
-def getDf(sampleNo,datalist):
-    filepath = datapath + datalist[sampleNo][1]
+mx, mT,_, time = fetchMdata(caseNo,sampleNo)
 
-    df = pd.read_csv(filepath,names=['x','Ti','Tavg'])
-    dcell = df.x.diff().shift(-1)[0]
-    x0 = df.x[0]
-    df.x = df.x + dcell/2 - x0
-    L = df.x[33] + dcell/2 - (df.x[0] - dcell/2)
-    return df, L, x0, dcell
+ts = sampleNo + 1
 
 
 
 
-
-#zM, barM, grid, l, tdata = packKfolder(folderpath)
-
-#(xi,yi)=grid
-#(gx,gy)=l     
-#(tscaling, tfreq) = tdata
-
-
-
-#
-#time = 12.5
-#sample = int(time / tscaling / tfreq)   
-#
-#z0=zM[sample].T
-#xbar=barM[sample]
 ## ------------ Plotting -------------------------------------
 #
-#def furbish():
-#    plt.xlabel('x-coordinate [m]')
-#    plt.title('Temperature gradient at t = ' + str(time) + 's')
-#    plt.xlim(0.0,0.51)
-#    return
-#
+def furbish():
+    plt.plot([0.24,0.24],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+    plt.plot([0.27,0.27],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+    plt.xlabel('x-coordinate [m]')
+    plt.title('Temperature gradient at t = ' + str(time) + 's')
+    plt.xlim(0.0,0.51)
+    return
+
+kT=kdata[ts]
+
+plt.plot(grid,kT)
+plt.plot(mx,mT)
+furbish()
+
+
+
+
 ## plot interpolated grid as surface
 #plt.contourf(xi,yi,z0,10,cmap='bwr', vmin=1073.15, vmax=1123.15)
 #plt.colorbar()
@@ -298,8 +368,7 @@ def getDf(sampleNo,datalist):
 #    
 #plt.plot(gx,xbar)
 #plt.plot([0,0.51],[1123.15,1073.15],'k--')
-#plt.plot([0.24,0.24],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
-#plt.plot([0.27,0.27],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+
 #
 #plt.ylabel('Temperature [K]')
 #furbish()
