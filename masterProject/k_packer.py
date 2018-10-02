@@ -27,8 +27,10 @@ savepath= './datafiles/kfiles/'
 # path to folder with saved fluent runs
 runpath = '/scratch/gabgus/fluent/kgenerator/runs/' 
 
-# path to fluent runscript
+# path to fluent runscript and associated journal files
 scriptname = '/scratch/gabgus/fluent/kgenerator/krun.sh'
+stencilpath = '/scratch/gabgus/fluent/kgenerator/journal_stencil.jou'
+journalpath = '/scratch/gabgus/fluent/kgenerator/active_journal.jou'
 
 # path to multiphase simulation data
 mfdatapath = './datafiles/mfdata/'
@@ -150,28 +152,56 @@ def packKfolder(folderpath):
 
 
 # shoehorn all relevant data into numpy-arrays and save using .npy format
-# files are prefixed with k and time info.    
-def saveData(savepath,folderpath,include_static=False):
-    zM, barM, grid, l, tdata = packKfolder(folderpath)
+# files are prefixed with k and stored according to case info.    
+def saveData(caseNo,kfrac,knumber,overwrite=True,include_static=True):
+    # create path for nested folder-structure
+    fspec= 'case{}/q{}/'.format(caseNo,kfrac)
+    
+    runfolder = runpath + fspec + 'k{}/'.format(knumber)
+    savefolder = savepath + fspec 
+   
+    
+    
+    zM, barM, grid, l, tdata = packKfolder(runfolder)
     (tscaling, tfreq) = tdata
     (gx,gy) = l
     grid = np.dstack(grid).T
     
-    knumber=os.path.basename(os.path.dirname(folderpath)).split('k')[1]
     
+    # prefix created files with their k-number 
+    prefix = savefolder + '{}_'.format(knumber)
+   
+    # make folder structure
+    os.makedirs(savefolder,exist_ok=True)
     
-    prefix = savepath + '{}_'.format(knumber)
+    if not overwrite:
+        print('Case already exists, not overwritten')
+        return
     
+    # save temperature fields
     np.save(prefix + '2D-Temp',zM)
     np.save(prefix + '1D-Temp',barM)
     
+    
+    # save gridfiles if needed
     if include_static:
-        np.save(savepath + '2D-grid',grid)
-        np.save(savepath + 'x-coords',gx)
-        np.save(savepath + 'y-coords',gy)
+        casefolder= savepath + fspec.split('/')[0] + '/'
+        try:
+            saved_grid = np.load(casefolder + '2D-grid.npy')
+            if not np.array_equiv(saved_grid,grid):
+                print('Saved grid not equal to parsed grid!\n Saving copy')
+            
+                np.save(casefolder + '2D-grid_q{}_k{}'.format(kfrac,knumber),grid)
+                np.save(casefolder + 'x-coords_q{}_k{}'.format(kfrac,knumber),gx)
+                np.save(casefolder + 'y-coords_q{}_k{}'.format(kfrac,knumber),gy)
+    
+        except FileNotFoundError:
+            np.save(casefolder + '2D-grid',grid)
+            np.save(casefolder + 'x-coords',gx)
+            np.save(casefolder + 'y-coords',gy)
     
     # append tdata to its own registry-file
-    tdatapath=savepath + 'tdata.csv'
+    tdatapath=savefolder + 'tdata.csv'
     
     try: 
         tdf = pd.read_csv(tdatapath,index_col='k')
@@ -184,74 +214,94 @@ def saveData(savepath,folderpath,include_static=False):
     
     return
 
-# request for new runfolder to be made by fluent 
-def requestK(knumber,scriptname):
+
+# check what k's we have already parsed through, 
+# returns set which can be checked against
+#def checkDone(savepath):
+#    savelist=[]
+#    caselist = os.listdir(savepath)
+#    for case in caselist:
+#        qlist = os.listdir(savepath + case)
+#        for quota in qlist:
+#            q=1
+#    
+#    done = set()
+#    for saved in savelist:
+#        k = saved.split('_')[0]
+#        if not k in done:
+#            done.add(k)
+#    return done
+
+## Function to make sure we have parsed all runs so far
+#def saveAll(runpath,savepath):
+#    runlist = os.listdir(runpath)
+#
+#    done = checkDone(savepath)
+#
+#    for runfolder in runlist:
+#        k = runfolder.split('k')[1]
+#        if not k in done:
+#            print('processed k:' + k) 
+#            folderpath = runpath+runfolder + '/'
+#            saveData(savepath,folderpath)
+#    return checkDone(savepath)
+
+
+
+
+## Request k to be added to parsed collection. Runs fluent if needed.
+#def addK(caseNo,knumber,Kfrac):
+#    done = checkDone(savepath)
+#    if str(knumber) in done:
+#        print('k = ' + str(knumber) + ' already exists in savepath')
+#        return
+#    else: 
+#        print('Making fluent run for k = ' + str(knumber) + ' W/mK \n')
+#        print('please wait...')
+#        ecode,args = requestK(knumber,scriptname)
+#        folderpath= genfonam(knumber)
+#        saveData(savepath,folderpath)
+#        if ecode == 0:
+#            print('\nSuccesfully added k = ' + str(knumber) + ' W/mK')
+#            return
+#        else:
+#            print('\nk-generation failed')
+#            return 1
+
+# -------------------------------------------------------------------------
+# Functions for working with Fluent 
+
+## request for new runfolder to be made by fluent 
+def requestK(caseNo,knumber,kfrac):
     current= os.getcwd()
     scriptdir=os.path.dirname(scriptname)
     
     os.chdir(scriptdir)
     
-    c=subprocess.run([scriptname, str(knumber)])
+    c=subprocess.run([scriptname,str(caseNo) + ' ' + str(knumber) + ' ' + str(kfrac)])
     
     os.chdir(current)
     
     return c.returncode, c.args
 
-# check what k's we have already parsed through, 
-# returns set which can be checked against
-def checkDone(savepath):
-    savelist = os.listdir(savepath)
-    
-    done = set()
-    for saved in savelist:
-        k = saved.split('_')[0]
-        if not k in done:
-            done.add(k)
-    return done
 
-# Function to make sure we have parsed all runs so far
-def saveAll(runpath,savepath):
-    runlist = os.listdir(runpath)
 
-    done = checkDone(savepath)
-
-    for runfolder in runlist:
-        k = runfolder.split('k')[1]
-        if not k in done:
-            print('processed k:' + k) 
-            folderpath = runpath+runfolder + '/'
-            saveData(savepath,folderpath)
-    return checkDone(savepath)
-
-# Request k to be added to parsed collection. Runs fluent if needed.
-def addK(knumber):
-    done = checkDone(savepath)
-    if str(knumber) in done:
-        print('k = ' + str(knumber) + ' already exists in savepath')
-        return
-    else: 
-        print('Making fluent run for k = ' + str(knumber) + ' W/mK \n')
-        print('please wait...')
-        ecode,args = requestK(knumber,scriptname)
-        folderpath= genfonam(knumber)
-        saveData(savepath,folderpath)
-        if ecode == 0:
-            print('\nSuccesfully added k = ' + str(knumber) + ' W/mK')
-            return
-        else:
-            print('\nk-generation failed')
-            return 1
-
+#-------------------------------------------------------------------------- 
+# Retrieval functions
+                    
 # function to retrieve k-data in 1 or 2-D together with its time related data.
-def loadK(knumber,dim='1d'):
+def loadK(case,knumber,kfrac,dim='1d'):
+    fspec= 'case{}/q{}/'.format(caseNo,kfrac)
     
+    savefolder = savepath + fspec 
+    casefolder= savepath + fspec.split('/')[0] + '/'
     # choice of dimension
     if (dim == '1d') or (dim == '1D') or (dim < 2):
-        filename = savepath + '{}_1D-Temp.npy'.format(knumber)
-        gridname = savepath + 'x-coords.npy'
+        filename = savefolder + '{}_1D-Temp.npy'.format(knumber)
+        gridname = casefolder + 'x-coords.npy'
     elif (dim == '2d') or (dim == '2D') or (dim < 3):
-        filename = savepath + '{}_2D-Temp.npy'.format(knumber)
-        gridname = savepath + 'grid.npy'
+        filename = savefolder + '{}_2D-Temp.npy'.format(knumber)
+        gridname = casefolder + 'grid.npy'
     else:
         print('\ninvalid dimension')
         
@@ -260,15 +310,13 @@ def loadK(knumber,dim='1d'):
     grid = np.load(gridname)
     
     # retrieve time info
-    tdata = pd.read_csv(savepath + 'tdata.csv',index_col='k')
+    tdata = pd.read_csv(savefolder + 'tdata.csv',index_col='k')
     tfreq = tdata.loc[knumber].freq
     tscaling = tdata.loc[knumber].ts
     
 
     
     return kdata, tfreq, tscaling, grid
-
-
 
 #----- Functions for handling MF Data ---------------------------------------        
 
@@ -320,25 +368,26 @@ def fetchMdata(caseNo,sampleNo):
 # -------------- Main loop ---------------------------------------------------
 #%%
 
+caseNo=2
+kfrac=0.5
+
+sampleNo = 100
 
 
-fileindex,_,_ = sortKfolder(runpath + 'k1000/')
 
-x,y,T=loadTimeStep(fileindex,20)
+fileindex,_,_ = sortKfolder(runpath + 'case2/q0.5/k2000/')
+
+x,y,T=loadTimeStep(fileindex,sampleNo)
 
 M,l=getOnGrid(x,y,T)
 
+zbar = yAverage(M[2])
 
-
-
-caseNo=2
-sampleNo = 229
 
 
 knumber=2000
-
-
-kdata,tfreq,tscaling,grid = loadK(knumber)
+ 
+kdata,tfreq,tscaling,grid = loadK(caseNo,knumber,kfrac)
 
 
 T0 = []
@@ -359,30 +408,39 @@ for sno in range(230):
 
 Sno=np.array(Sno)
 kT0=np.array(kT0)
+
 kT1=np.array(kT1)
 
-knumber=2000
-
-
-kdata,tfreq,tscaling,grid = loadK(knumber)
 
 x0=grid[0]
 
 mx, mT,_, time = fetchMdata(caseNo,sampleNo)
 
 ts = sampleNo + 1
-
+            
+            
 
 
 
 ## ------------ Plotting -------------------------------------
 #
 def furbish():
-    plt.plot([0.255,0.255],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
-    plt.plot([0.285,0.285],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+    wallpos = [0,0,18,16,23]
     
-    plt.plot([0.18,0.18],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
-    plt.plot([0.36,0.36],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+    dcell = 0.015
+    
+    wxmin = dcell*(wallpos[caseNo] - 1)
+    wxmax = dcell*(wallpos[caseNo] + 1)
+    
+    lkmin = dcell*(wallpos[caseNo] - 5)
+    lkmax = dcell*(wallpos[caseNo] + 5)
+    
+    if not caseNo == 1:
+        plt.plot([wxmin,wxmin],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+        plt.plot([wxmax,wxmax],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+    
+        plt.plot([lkmin,lkmin],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
+        plt.plot([lkmax,lkmax],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
     
     
     plt.xlabel('x-coordinate [m]')
@@ -390,7 +448,7 @@ def furbish():
     plt.xlim(0.0,0.54)
     return
 
-kT=kdata[ts]
+kT=zbar
 
 plt.plot(grid,kT)
 plt.plot(mx,mT)
@@ -400,7 +458,7 @@ plt.figure()
 plt.plot(Sno,T0,Sno,T1)
 
 
-dT=3
+dT=0
 plt.plot(Sno+1,kT0-dT,Sno+1,kT1+dT)
 
 plt.plot([Sno[0],Sno[-1]],[1123.15,1123.15],'r--')
