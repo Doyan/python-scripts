@@ -1,0 +1,10 @@
+rc convective3d.cas
+rd convective3d.dat
+/solve/report-files/edit/mfr-rset file-name mfr.out
+q
+/solve/report-files/edit/p-in-rset file-name p_in.out
+q
+/file/auto-save root-name ./datafiles/convective3d
+/solve/set timestep 5e-05
+/file/auto-save data-frequency 200
+/solve dual-time-iterate 300000 40

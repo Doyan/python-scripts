@@ -1,0 +1,1641 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x0000003a7600e45c, pid=2663, tid=0x00007ff3910cb720
+#
+# JRE version: Java(TM) SE Runtime Environment (8.0_112-b15) (build 1.8.0_112-b15)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.112-b15 mixed mode linux-amd64 compressed oops)
+# Problematic frame:
+# C  [ld-linux-x86-64.so.2+0xe45c]
+#
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000000000f43000):  JavaThread "main" [_thread_in_native, id=2663, stack(0x00007ffc40db4000,0x00007ffc40fb4000)]
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 1 (SEGV_MAPERR), si_addr: 0x0000000000000004
+
+Registers:
+RAX=0x0000000000000000, RBX=0x0000000000000000, RCX=0x0000000000000011, RDX=0x0000000000000003
+RSP=0x00007ffc40faa470, RBP=0x0000000000000000, RSI=0x0000000000000000, RDI=0x00007ff36e23c2be
+R8 =0x0000000000256dac, R9 =0x0000000000000000, R10=0x00007ffc40faa290, R11=0x00007ffc40faa290
+R12=0x0000003f0e5e1548, R13=0x0000000000000000, R14=0x0000000000000000, R15=0x0000000000f43000
+RIP=0x0000003a7600e45c, EFLAGS=0x0000000000010246, CSGSFS=0x0000000000000033, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+Top of Stack: (sp=0x00007ffc40faa470)
+0x00007ffc40faa470:   00007ffc00000005 0000000000000000
+0x00007ffc40faa480:   00000011000000e0 0000000000000000
+0x00007ffc40faa490:   0000000000000000 00000000029cd088
+0x00007ffc40faa4a0:   00000000029cd088 0000003f0db262b0
+0x00007ffc40faa4b0:   0000000000000000 0000003a76014c55
+0x00007ffc40faa4c0:   0000003f0e636f70 0000000000002661
+0x00007ffc40faa4d0:   0000000000000000 0000000000000010
+0x00007ffc40faa4e0:   0000003f0db262b0 0000003a76b8e188
+0x00007ffc40faa4f0:   0000000000000001 000000000299e700
+0x00007ffc40faa500:   0000000000000a7e 0000003f0d3c8bbb
+0x00007ffc40faa510:   0000000000000000 0000003f0e5c3060
+0x00007ffc40faa520:   00000000029cd088 00000000029fe3a0
+0x00007ffc40faa530:   0000003f0e5c3080 0000003f0d3ef813
+0x00007ffc40faa540:   0000000000000000 0000003f0d3f15e5
+0x00007ffc40faa550:   0000000000000010 0000000000000008
+0x00007ffc40faa560:   0000000000000008 0000000000000000
+0x00007ffc40faa570:   0000000000f43000 0000003a7687aaac
+0x00007ffc40faa580:   0000000000000010 0000000000000001
+0x00007ffc40faa590:   0000000000000008 0000003a7dc00fb8
+0x00007ffc40faa5a0:   00000000029cd128 5564db00b683e37f
+0x00007ffc40faa5b0:   0000000000000038 00000000029cd020
+0x00007ffc40faa5c0:   00000000029fe3a0 0000003f0e3c22a0
+0x00007ffc40faa5d0:   0000003f0e5c3080 0000003f0d3f1829
+0x00007ffc40faa5e0:   00000000029fe1f8 00000000029fe180
+0x00007ffc40faa5f0:   00000000029cd020 0000000000000000
+0x00007ffc40faa600:   00007ffc40faa640 00000000029c5d10
+0x00007ffc40faa610:   0000000000000000 0000003f0d3f222c
+0x00007ffc40faa620:   00007ffc40faa670 0000003f0d3c8146
+0x00007ffc40faa630:   00000000029cce60 00007ff200000000
+0x00007ffc40faa640:   0000003f0d9a2210 000000010000000f
+0x00007ffc40faa650:   00000000029fdeb0 00000000029cce40
+0x00007ffc40faa660:   00000000029cc8c0 0000003f0d3ffe60 
+
+Instructions: (pc=0x0000003a7600e45c)
+0x0000003a7600e43c:   44 89 2c 25 4c 00 00 00 48 8b 74 24 18 31 c0 48
+0x0000003a7600e44c:   85 f6 74 0c 48 85 db 74 03 48 8b 03 48 03 46 08
+0x0000003a7600e45c:   0f b6 56 04 83 e2 0f 83 fa 0a 0f 84 7e 00 00 00
+0x0000003a7600e46c:   8b 0d 6e 27 21 00 85 c9 75 04 49 89 04 2c 48 83 
+
+Register to memory mapping:
+
+RAX=0x0000000000000000 is an unknown value
+RBX=0x0000000000000000 is an unknown value
+RCX=0x0000000000000011 is an unknown value
+RDX=0x0000000000000003 is an unknown value
+RSP=0x00007ffc40faa470 is pointing into the stack for thread: 0x0000000000f43000
+RBP=0x0000000000000000 is an unknown value
+RSI=0x0000000000000000 is an unknown value
+RDI=0x00007ff36e23c2be: <offset 0x12be> in /chalmers/sw/sup64/matlab-2016b/bin/glnxa64/libexpat.so.1 at 0x00007ff36e23b000
+R8 =0x0000000000256dac is an unknown value
+R9 =0x0000000000000000 is an unknown value
+R10=0x00007ffc40faa290 is pointing into the stack for thread: 0x0000000000f43000
+R11=0x00007ffc40faa290 is pointing into the stack for thread: 0x0000000000f43000
+R12=0x0000003f0e5e1548: <offset 0x23e1548> in /usr/lib64/xulrunner/libxul.so at 0x0000003f0c200000
+R13=0x0000000000000000 is an unknown value
+R14=0x0000000000000000 is an unknown value
+R15=0x0000000000f43000 is a thread
+
+
+Stack: [0x00007ffc40db4000,0x00007ffc40fb4000],  sp=0x00007ffc40faa470,  free space=2009k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [ld-linux-x86-64.so.2+0xe45c]
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  org.eclipse.swt.internal.mozilla.XPCOM._NS_InitXPCOM2(JJJ)I+0
+j  org.eclipse.swt.internal.mozilla.XPCOM.NS_InitXPCOM2(JJJ)I+11
+j  org.eclipse.swt.browser.Mozilla.initXPCOM(Ljava/lang/String;Z)V+567
+j  org.eclipse.swt.browser.Mozilla.create(Lorg/eclipse/swt/widgets/Composite;I)V+251
+j  org.eclipse.swt.browser.Browser.<init>(Lorg/eclipse/swt/widgets/Composite;I)V+81
+j  com.comsol.widgets.tk.swt.SWTWebBrowser.a(Lorg/eclipse/swt/widgets/Composite;)Lorg/eclipse/swt/widgets/Control;+136
+j  com.comsol.widgets.tk.swt.SWTWidget.b(Lorg/eclipse/swt/widgets/Composite;)V+3
+j  com.comsol.widgets.tk.swt.SWTGridPanel.a(Lcom/comsol/widgets/tk/swt/SWTWidget;)V+5
+j  com.comsol.widgets.tk.swt.SWTContainer.c(Lcom/comsol/widgets/tk/swt/SWTWidget;)V+2
+j  com.comsol.widgets.tk.swt.SWTWidget.a(Lcom/comsol/widgets/tk/interfaces/ITkContainer;)V+12
+j  com.comsol.widgets.CsWidget.aC()V+89
+j  com.comsol.widgets.CsContainer.as_()V+24
+j  com.comsol.widgets.CsContainer.bh_()V+116
+j  com.comsol.widgets.CsWidget.aC()V+95
+j  com.comsol.widgets.CsContainer.as_()V+24
+j  com.comsol.widgets.CsContainer.bh_()V+116
+j  com.comsol.widgets.CsWidget.aC()V+95
+j  com.comsol.widgets.CsContainer.as_()V+24
+j  com.comsol.widgets.CsContainer.bh_()V+116
+j  com.comsol.widgets.CsContentPanel.bh_()V+1
+j  com.comsol.widgets.CsWidget.aC()V+95
+j  com.comsol.widgets.CsCardPanel.a(Ljava/lang/String;Lcom/comsol/widgets/CsWidget;Z)V+230
+j  com.comsol.widgets.CsCardPanel.a(Ljava/lang/String;Lcom/comsol/widgets/CsWidget;)V+4
+j  com.comsol.gui.swt.SWTDesktop.showView(Ljava/lang/String;Lcom/comsol/gui/ViewManager$ShowViewOperation;)V+245
+j  com.comsol.gui.ViewManager.showView(Lcom/comsol/gui/views/e;Lcom/comsol/gui/ViewManager$ShowViewOperation;Z)V+360
+j  com.comsol.guiclient.d.showView(Lcom/comsol/gui/views/e;Lcom/comsol/gui/ViewManager$ShowViewOperation;Z)V+4
+j  com.comsol.guiclient.d.a(Lcom/comsol/communication/ndata/NView;)V+283
+j  com.comsol.guiclient.MainWindow.a(Lcom/comsol/communication/CommandAnswer;Lcom/comsol/communication/ndata/NMainWindow;)V+692
+j  com.comsol.guiclient.MainWindow.b(Lcom/comsol/communication/CommandAnswer;)V+57
+j  com.comsol.guiclient.MainWindow.handleEventData(Lcom/comsol/communication/CommandAnswer;Z)V+23
+j  com.comsol.client.interfaces.f.a(Lcom/comsol/communication/CommandAnswer;Z)V+25
+j  com.comsol.client.interfaces.f.processCommandAnswer(Lcom/comsol/communication/CommandAnswer;Lcom/comsol/client/interfaces/ClientBridgeCommand;Z)V+8
+j  com.comsol.client.interfaces.ClientSingleProcessCommandManager.processCommandAnswer(Lcom/comsol/communication/CommandAnswer;Lcom/comsol/client/interfaces/ClientBridgeCommand;Z)V+13
+j  com.comsol.client.interfaces.f$d.f()V+67
+j  com.comsol.client.interfaces.f.a(ZLcom/comsol/client/interfaces/f$b;Lcom/comsol/client/interfaces/ClientBridgeCommand;)V+39
+j  com.comsol.client.interfaces.f.runAndWait(Lcom/comsol/client/interfaces/ClientBridgeCommand;)Lcom/comsol/communication/CommandAnswer;+4
+j  com.comsol.guiclient.MainWindow.initializeStandAlone(Lcom/comsol/communication/ndata/NDisconnectInfo;Lcom/comsol/client/interfaces/z;)V+190
+j  com.comsol.guiclient.MainWindow.initializeStandAlone()V+3
+j  com.comsol.guiclient.CsClientApplication.doPostInit(Lcom/comsol/gui/DesktopWindow;)V+54
+j  com.comsol.gui.CsApplication.postInit(Lcom/comsol/gui/DesktopWindow;)V+2
+j  com.comsol.gui.DesktopWindow.postShowInit()V+5
+j  com.comsol.guiclient.MainWindow.postShowInit()V+241
+j  com.comsol.gui.swt.SWTDesktop.e()V+4
+j  com.comsol.gui.swt.o.postWindowCreate()V+243
+j  org.eclipse.ui.internal.WorkbenchWindow.setup()V+979
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+100
+J 3031 C2 java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object; (62 bytes) @ 0x00007ff37ad0aeb0 [0x00007ff37ad0ae00+0xb0]
+j  org.eclipse.e4.core.internal.di.MethodRequestor.execute()Ljava/lang/Object;+96
+j  org.eclipse.e4.core.internal.di.InjectorImpl.processAnnotated(Ljava/lang/Class;Ljava/lang/Object;Ljava/lang/Class;Lorg/eclipse/e4/core/di/suppliers/PrimaryObjectSupplier;Lorg/eclipse/e4/core/di/suppliers/PrimaryObjectSupplier;Ljava/util/ArrayList;)V+184
+j  org.eclipse.e4.core.internal.di.InjectorImpl.inject(Ljava/lang/Object;Lorg/eclipse/e4/core/di/suppliers/PrimaryObjectSupplier;Lorg/eclipse/e4/core/di/suppliers/PrimaryObjectSupplier;)V+174
+j  org.eclipse.e4.core.internal.di.InjectorImpl.inject(Ljava/lang/Object;Lorg/eclipse/e4/core/di/suppliers/PrimaryObjectSupplier;)V+4
+j  org.eclipse.e4.core.contexts.ContextInjectionFactory.inject(Ljava/lang/Object;Lorg/eclipse/e4/core/contexts/IEclipseContext;)V+13
+j  org.eclipse.ui.internal.Workbench.createWorkbenchWindow(Lorg/eclipse/core/runtime/IAdaptable;Lorg/eclipse/ui/IPerspectiveDescriptor;Lorg/eclipse/e4/ui/model/application/ui/basic/MWindow;Z)Lorg/eclipse/ui/IWorkbenchWindow;+139
+j  org.eclipse.ui.internal.Workbench.openWorkbenchWindow(Lorg/eclipse/core/runtime/IAdaptable;Lorg/eclipse/ui/IPerspectiveDescriptor;Lorg/eclipse/e4/ui/model/application/ui/basic/MWindow;Z)Lorg/eclipse/ui/internal/WorkbenchWindow;+6
+j  org.eclipse.ui.internal.Workbench.getWorkbenchPage(Lorg/eclipse/e4/ui/model/application/ui/basic/MPart;)Lorg/eclipse/ui/internal/WorkbenchPage;+67
+j  org.eclipse.ui.internal.Workbench.setReference(Lorg/eclipse/e4/ui/model/application/ui/basic/MPart;Lorg/eclipse/e4/core/contexts/IEclipseContext;)V+161
+j  org.eclipse.ui.internal.Workbench.access$28(Lorg/eclipse/ui/internal/Workbench;Lorg/eclipse/e4/ui/model/application/ui/basic/MPart;Lorg/eclipse/e4/core/contexts/IEclipseContext;)V+3
+j  org.eclipse.ui.internal.Workbench$35.handleEvent(Lorg/osgi/service/event/Event;)V+39
+j  org.eclipse.e4.ui.services.internal.events.UIEventHandler$1.run()V+11
+j  org.eclipse.swt.widgets.Synchronizer.syncExec(Ljava/lang/Runnable;)V+99
+j  org.eclipse.ui.internal.UISynchronizer.syncExec(Ljava/lang/Runnable;)V+91
+j  org.eclipse.swt.widgets.Display.syncExec(Ljava/lang/Runnable;)V+77
+j  org.eclipse.e4.ui.internal.workbench.swt.E4Application$1.syncExec(Ljava/lang/Runnable;)V+22
+j  org.eclipse.e4.ui.services.internal.events.UIEventHandler.handleEvent(Lorg/osgi/service/event/Event;)V+33
+j  org.eclipse.equinox.internal.event.EventHandlerWrapper.handleEvent(Lorg/osgi/service/event/Event;Ljava/security/Permission;)V+66
+j  org.eclipse.equinox.internal.event.EventHandlerTracker.dispatchEvent(Lorg/eclipse/equinox/internal/event/EventHandlerWrapper;Ljava/security/Permission;ILorg/osgi/service/event/Event;)V+4
+j  org.eclipse.equinox.internal.event.EventHandlerTracker.dispatchEvent(Ljava/lang/Object;Ljava/lang/Object;ILjava/lang/Object;)V+15
+J 3833 C2 org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(Ljava/util/Set;Lorg/eclipse/osgi/framework/eventmgr/EventDispatcher;ILjava/lang/Object;)V (69 bytes) @ 0x00007ff37b5b6ee8 [0x00007ff37b5b6e00+0xe8]
+J 3009 C1 org.eclipse.osgi.framework.eventmgr.ListenerQueue.dispatchEventSynchronous(ILjava/lang/Object;)V (81 bytes) @ 0x00007ff37b399dec [0x00007ff37b3995e0+0x80c]
+j  org.eclipse.equinox.internal.event.EventAdminImpl.dispatchEvent(Lorg/osgi/service/event/Event;Z)V+215
+j  org.eclipse.equinox.internal.event.EventAdminImpl.sendEvent(Lorg/osgi/service/event/Event;)V+3
+j  org.eclipse.equinox.internal.event.EventComponent.sendEvent(Lorg/osgi/service/event/Event;)V+5
+j  org.eclipse.e4.ui.services.internal.events.EventBroker.send(Ljava/lang/String;Ljava/lang/Object;)Z+49
+j  org.eclipse.e4.ui.internal.workbench.UIEventPublisher.notifyChanged(Lorg/eclipse/emf/common/notify/Notification;)V+54
+J 3381 C1 org.eclipse.emf.common.notify.impl.BasicNotifierImpl.eNotify(Lorg/eclipse/emf/common/notify/Notification;)V (44 bytes) @ 0x00007ff37b4a3b54 [0x00007ff37b4a3840+0x314]
+j  org.eclipse.e4.ui.model.application.ui.basic.impl.PartImpl.setContext(Lorg/eclipse/e4/core/contexts/IEclipseContext;)V+34
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;Ljava/lang/Object;Lorg/eclipse/e4/core/contexts/IEclipseContext;)Ljava/lang/Object;+418
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$1.run()V+21
+J 3963 C1 org.eclipse.core.runtime.SafeRunner.run(Lorg/eclipse/core/runtime/ISafeRunnable;)V (38 bytes) @ 0x00007ff37b656994 [0x00007ff37b6567e0+0x1b4]
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;Ljava/lang/Object;Lorg/eclipse/e4/core/contexts/IEclipseContext;)Ljava/lang/Object;+19
+j  org.eclipse.e4.ui.workbench.renderers.swt.ElementReferenceRenderer.createWidget(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;Ljava/lang/Object;)Ljava/lang/Object;+181
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createWidget(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;Ljava/lang/Object;)Ljava/lang/Object;+21
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;Ljava/lang/Object;Lorg/eclipse/e4/core/contexts/IEclipseContext;)Ljava/lang/Object;+557
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+168
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.access$0(Lorg/eclipse/e4/ui/internal/workbench/swt/PartRenderingEngine;Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+2
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run()V+13
+J 3963 C1 org.eclipse.core.runtime.SafeRunner.run(Lorg/eclipse/core/runtime/ISafeRunnable;)V (38 bytes) @ 0x00007ff37b656994 [0x00007ff37b6567e0+0x1b4]
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+15
+j  org.eclipse.e4.ui.workbench.renderers.swt.StackRenderer.showTab(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)V+113
+j  org.eclipse.e4.ui.workbench.renderers.swt.LazyStackRenderer.postProcess(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)V+41
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;Ljava/lang/Object;Lorg/eclipse/e4/core/contexts/IEclipseContext;)Ljava/lang/Object;+603
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+168
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.access$0(Lorg/eclipse/e4/ui/internal/workbench/swt/PartRenderingEngine;Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+2
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run()V+13
+J 3963 C1 org.eclipse.core.runtime.SafeRunner.run(Lorg/eclipse/core/runtime/ISafeRunnable;)V (38 bytes) @ 0x00007ff37b656994 [0x00007ff37b6567e0+0x1b4]
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+15
+j  org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(Lorg/eclipse/e4/ui/model/application/ui/MElementContainer;)V+70
+j  org.eclipse.e4.ui.workbench.renderers.swt.SashRenderer.processContents(Lorg/eclipse/e4/ui/model/application/ui/MElementContainer;)V+12
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;Ljava/lang/Object;Lorg/eclipse/e4/core/contexts/IEclipseContext;)Ljava/lang/Object;+597
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+168
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.access$0(Lorg/eclipse/e4/ui/internal/workbench/swt/PartRenderingEngine;Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+2
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run()V+13
+J 3963 C1 org.eclipse.core.runtime.SafeRunner.run(Lorg/eclipse/core/runtime/ISafeRunnable;)V (38 bytes) @ 0x00007ff37b656994 [0x00007ff37b6567e0+0x1b4]
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+15
+j  org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(Lorg/eclipse/e4/ui/model/application/ui/MElementContainer;)V+70
+j  org.eclipse.e4.ui.workbench.renderers.swt.SashRenderer.processContents(Lorg/eclipse/e4/ui/model/application/ui/MElementContainer;)V+12
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;Ljava/lang/Object;Lorg/eclipse/e4/core/contexts/IEclipseContext;)Ljava/lang/Object;+597
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+168
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.access$0(Lorg/eclipse/e4/ui/internal/workbench/swt/PartRenderingEngine;Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+2
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run()V+13
+J 3963 C1 org.eclipse.core.runtime.SafeRunner.run(Lorg/eclipse/core/runtime/ISafeRunnable;)V (38 bytes) @ 0x00007ff37b656994 [0x00007ff37b6567e0+0x1b4]
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+15
+j  org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(Lorg/eclipse/e4/ui/model/application/ui/MElementContainer;)V+70
+j  org.eclipse.e4.ui.workbench.renderers.swt.PerspectiveRenderer.processContents(Lorg/eclipse/e4/ui/model/application/ui/MElementContainer;)V+2
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;Ljava/lang/Object;Lorg/eclipse/e4/core/contexts/IEclipseContext;)Ljava/lang/Object;+597
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+168
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.access$0(Lorg/eclipse/e4/ui/internal/workbench/swt/PartRenderingEngine;Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+2
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run()V+13
+J 3963 C1 org.eclipse.core.runtime.SafeRunner.run(Lorg/eclipse/core/runtime/ISafeRunnable;)V (38 bytes) @ 0x00007ff37b656994 [0x00007ff37b6567e0+0x1b4]
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+15
+j  org.eclipse.e4.ui.workbench.renderers.swt.PerspectiveStackRenderer.showTab(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)V+24
+j  org.eclipse.e4.ui.workbench.renderers.swt.LazyStackRenderer.postProcess(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)V+41
+j  org.eclipse.e4.ui.workbench.renderers.swt.PerspectiveStackRenderer.postProcess(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)V+2
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;Ljava/lang/Object;Lorg/eclipse/e4/core/contexts/IEclipseContext;)Ljava/lang/Object;+603
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+168
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.access$0(Lorg/eclipse/e4/ui/internal/workbench/swt/PartRenderingEngine;Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+2
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run()V+13
+J 3963 C1 org.eclipse.core.runtime.SafeRunner.run(Lorg/eclipse/core/runtime/ISafeRunnable;)V (38 bytes) @ 0x00007ff37b656994 [0x00007ff37b6567e0+0x1b4]
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+15
+j  org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(Lorg/eclipse/e4/ui/model/application/ui/MElementContainer;)V+70
+j  org.eclipse.e4.ui.workbench.renderers.swt.SashRenderer.processContents(Lorg/eclipse/e4/ui/model/application/ui/MElementContainer;)V+12
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;Ljava/lang/Object;Lorg/eclipse/e4/core/contexts/IEclipseContext;)Ljava/lang/Object;+597
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+168
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.access$0(Lorg/eclipse/e4/ui/internal/workbench/swt/PartRenderingEngine;Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+2
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run()V+13
+J 3963 C1 org.eclipse.core.runtime.SafeRunner.run(Lorg/eclipse/core/runtime/ISafeRunnable;)V (38 bytes) @ 0x00007ff37b656994 [0x00007ff37b6567e0+0x1b4]
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+15
+j  org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(Lorg/eclipse/e4/ui/model/application/ui/MElementContainer;)V+70
+j  org.eclipse.e4.ui.workbench.renderers.swt.WBWRenderer.processContents(Lorg/eclipse/e4/ui/model/application/ui/MElementContainer;)V+15
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;Ljava/lang/Object;Lorg/eclipse/e4/core/contexts/IEclipseContext;)Ljava/lang/Object;+597
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+168
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.access$0(Lorg/eclipse/e4/ui/internal/workbench/swt/PartRenderingEngine;Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+2
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run()V+13
+J 3963 C1 org.eclipse.core.runtime.SafeRunner.run(Lorg/eclipse/core/runtime/ISafeRunnable;)V (38 bytes) @ 0x00007ff37b656994 [0x00007ff37b6567e0+0x1b4]
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(Lorg/eclipse/e4/ui/model/application/ui/MUIElement;)Ljava/lang/Object;+15
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run()V+283
+j  org.eclipse.core.databinding.observable.Realm.runWithDefault(Lorg/eclipse/core/databinding/observable/Realm;Ljava/lang/Runnable;)V+12
+j  org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(Lorg/eclipse/e4/ui/model/application/MApplicationElement;Lorg/eclipse/e4/core/contexts/IEclipseContext;)Ljava/lang/Object;+57
+j  org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(Lorg/eclipse/e4/ui/model/application/MApplicationElement;)V+20
+j  org.eclipse.ui.internal.Workbench$5.run()V+442
+j  org.eclipse.core.databinding.observable.Realm.runWithDefault(Lorg/eclipse/core/databinding/observable/Realm;Ljava/lang/Runnable;)V+12
+j  org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Lorg/eclipse/swt/widgets/Display;Lorg/eclipse/ui/application/WorkbenchAdvisor;)I+18
+j  org.eclipse.ui.PlatformUI.createAndRunWorkbench(Lorg/eclipse/swt/widgets/Display;Lorg/eclipse/ui/application/WorkbenchAdvisor;)I+2
+j  com.comsol.gui.swt.SWTDesktop.open()V+38
+j  com.comsol.gui.DesktopWindow.open()V+4
+j  com.comsol.gui.CsApplication.startApplication()Lcom/comsol/gui/DesktopWindow;+21
+j  com.comsol.guiclient.CsClientApplication.doStart([Ljava/lang/String;)Ljava/lang/Object;+30
+j  com.comsol.util.application.ComsolApplication.doStart([Ljava/lang/String;)Ljava/lang/Object;+867
+j  com.comsol.util.application.CsBaseApplication.start(Lorg/eclipse/equinox/app/IApplicationContext;)Ljava/lang/Object;+552
+j  org.eclipse.equinox.internal.app.EclipseAppHandle.run(Ljava/lang/Object;)Ljava/lang/Object;+135
+j  org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(Ljava/lang/Object;)Ljava/lang/Object;+85
+j  org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(Ljava/lang/Object;)Ljava/lang/Object;+82
+j  org.eclipse.core.runtime.adaptor.EclipseStarter.run(Ljava/lang/Object;)Ljava/lang/Object;+109
+j  org.eclipse.core.runtime.adaptor.EclipseStarter.run([Ljava/lang/String;Ljava/lang/Runnable;)Ljava/lang/Object;+132
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+100
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+56
+j  org.eclipse.equinox.launcher.Main.invokeFramework([Ljava/lang/String;[Ljava/net/URL;)V+265
+j  org.eclipse.equinox.launcher.Main.basicRun([Ljava/lang/String;)V+160
+j  org.eclipse.equinox.launcher.Main.run([Ljava/lang/String;)I+4
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x0000000002626000 JavaThread "pool-9-thread-1" [_thread_blocked, id=3139, stack(0x00007ff2d86e4000,0x00007ff2d8ae5000)]
+  0x00000000017fd000 JavaThread "process reaper" daemon [_thread_blocked, id=3040, stack(0x00007ff3650d2000,0x00007ff36510b000)]
+  0x00007ff2dcfec000 JavaThread "WidgetRecorderBuffer" daemon [_thread_blocked, id=3038, stack(0x00007ff2d9afc000,0x00007ff2d9efd000)]
+  0x00000000023e7000 JavaThread "Blocking-0" [_thread_blocked, id=2837, stack(0x00007ff2e4faf000,0x00007ff2e53b0000)]
+  0x00000000023c8800 JavaThread "BridgeRndEvent" daemon [_thread_blocked, id=2836, stack(0x00007ff2e5c2c000,0x00007ff2e602d000)]
+  0x00000000021cc800 JavaThread "clientcommunicator" daemon [_thread_blocked, id=2835, stack(0x00007ff2ec440000,0x00007ff2ec841000)]
+  0x00007ff318003000 JavaThread "Worker-1" [_thread_blocked, id=2833, stack(0x00007ff2ec03f000,0x00007ff2ec440000)]
+  0x0000000001cfd000 JavaThread "LocalMsgPump" [_thread_in_native, id=2829, stack(0x00007ff2fc4f0000,0x00007ff2fc8f1000)]
+  0x0000000001cfa800 JavaThread "RndMsgPump" [_thread_in_native, id=2828, stack(0x00007ff2fc8f1000,0x00007ff2fccf2000)]
+  0x00000000017c3000 JavaThread "Thread-4" daemon [_thread_blocked, id=2827, stack(0x00007ff2fdfcd000,0x00007ff2fe3ce000)]
+  0x0000000001377800 JavaThread "Worker-0" [_thread_blocked, id=2826, stack(0x00007ff36729c000,0x00007ff36769d000)]
+  0x00007ff328005000 JavaThread "com.comsol.logger.c@4b770e40" daemon [_thread_blocked, id=2825, stack(0x00007ff36515d000,0x00007ff36555e000)]
+  0x000000000182e800 JavaThread "AWT-XAWT" daemon [_thread_in_native, id=2770, stack(0x00007ff366499000,0x00007ff36689a000)]
+  0x000000000181f800 JavaThread "Java2D Disposer" daemon [_thread_blocked, id=2760, stack(0x00007ff36555e000,0x00007ff36595f000)]
+  0x00007ff32c157800 JavaThread "Worker-JM" [_thread_blocked, id=2728, stack(0x00007ff36689a000,0x00007ff366c9b000)]
+  0x00007ff32c021000 JavaThread "[Timer] - Main Queue Handler" daemon [_thread_blocked, id=2727, stack(0x00007ff366e9b000,0x00007ff36729c000)]
+  0x0000000001845000 JavaThread "Bundle File Closer" daemon [_thread_blocked, id=2703, stack(0x00007ff367810000,0x00007ff367c11000)]
+  0x00000000013af800 JavaThread "Refresh Thread: Equinox Container: 9045bdd8-66ed-0018-1abf-e6280536bf44" daemon [_thread_blocked, id=2686, stack(0x00007ff36c2d3000,0x00007ff36c6d4000)]
+  0x000000000138e000 JavaThread "Start Level: Equinox Container: 9045bdd8-66ed-0018-1abf-e6280536bf44" daemon [_thread_blocked, id=2685, stack(0x00007ff36c6d4000,0x00007ff36cad5000)]
+  0x0000000001382800 JavaThread "Framework Event Dispatcher: Equinox Container: 9045bdd8-66ed-0018-1abf-e6280536bf44" daemon [_thread_blocked, id=2683, stack(0x00007ff36cad5000,0x00007ff36ced6000)]
+  0x000000000134f800 JavaThread "Active Thread: Equinox Container: 9045bdd8-66ed-0018-1abf-e6280536bf44" [_thread_blocked, id=2682, stack(0x00007ff36ced6000,0x00007ff36d2d7000)]
+  0x0000000001002000 JavaThread "Service Thread" daemon [_thread_blocked, id=2675, stack(0x00007ff36e7f4000,0x00007ff36ebf5000)]
+  0x0000000000ff6800 JavaThread "C1 CompilerThread2" daemon [_thread_blocked, id=2674, stack(0x00007ff36ebf5000,0x00007ff36ecf6000)]
+  0x0000000000ff4800 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=2673, stack(0x00007ff36ecf6000,0x00007ff36edf7000)]
+  0x0000000000ff1800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=2672, stack(0x00007ff36edf7000,0x00007ff36eef8000)]
+  0x0000000000ff0800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=2671, stack(0x00007ff36eef8000,0x00007ff36f2f9000)]
+  0x0000000000fbe000 JavaThread "Finalizer" daemon [_thread_blocked, id=2670, stack(0x00007ff36f2f9000,0x00007ff36f6fa000)]
+  0x0000000000fb9800 JavaThread "Reference Handler" daemon [_thread_blocked, id=2669, stack(0x00007ff36f6fa000,0x00007ff36fafb000)]
+=>0x0000000000f43000 JavaThread "main" [_thread_in_native, id=2663, stack(0x00007ffc40db4000,0x00007ffc40fb4000)]
+
+Other Threads:
+  0x0000000000fb1800 VMThread [stack: 0x00007ff36fafb000,0x00007ff36fbfc000] [id=2668]
+  0x0000000001005000 WatcherThread [stack: 0x00007ff36e6f3000,0x00007ff36e7f4000] [id=2676]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap:
+ PSYoungGen      total 311296K, used 97179K [0x00000000d5580000, 0x00000000ece00000, 0x0000000100000000)
+  eden space 264704K, 27% used [0x00000000d5580000,0x00000000d9d7d378,0x00000000e5800000)
+  from space 46592K, 50% used [0x00000000e5800000,0x00000000e6ee9ab0,0x00000000e8580000)
+  to   space 46592K, 0% used [0x00000000ea080000,0x00000000ea080000,0x00000000ece00000)
+ ParOldGen       total 177152K, used 114286K [0x0000000080000000, 0x000000008ad00000, 0x00000000d5580000)
+  object space 177152K, 64% used [0x0000000080000000,0x0000000086f9b9b8,0x000000008ad00000)
+ Metaspace       used 92666K, capacity 99349K, committed 99840K, reserved 1134592K
+  class space    used 12587K, capacity 14750K, committed 14848K, reserved 1048576K
+
+Card table byte_map: [0x00007ff37a21c000,0x00007ff37a61d000] byte_map_base: 0x00007ff379e1c000
+
+Marking Bits: (ParMarkBitMap*) 0x00007ff38aff6c80
+ Begin Bits: [0x00007ff375b6d000, 0x00007ff377b6d000)
+ End Bits:   [0x00007ff377b6d000, 0x00007ff379b6d000)
+
+Polling page: 0x00007ff391352000
+
+CodeCache: size=245760Kb used=23355Kb max_used=23359Kb free=222404Kb
+ bounds [0x00007ff37a9dd000, 0x00007ff37c0cd000, 0x00007ff3899dd000]
+ total_blobs=7380 nmethods=6315 adapters=973
+ compilation: enabled
+
+Compilation events (10 events):
+Event: 13.249 Thread 0x0000000000ff6800 nmethod 7665 0x00007ff37b12cb90 code [0x00007ff37b12cee0, 0x00007ff37b12e8d8]
+Event: 13.250 Thread 0x0000000000ff6800 7666       3       com.comsol.widgets.CsAbstractGridLayoutInfo::g (22 bytes)
+Event: 13.251 Thread 0x0000000000ff6800 nmethod 7666 0x00007ff37b12c690 code [0x00007ff37b12c800, 0x00007ff37b12ca50]
+Event: 13.251 Thread 0x0000000000ff6800 7667       3       com.comsol.widgets.tk.swt.SWTContainer::du_ (8 bytes)
+Event: 13.251 Thread 0x0000000000ff6800 nmethod 7667 0x00007ff37b12bfd0 code [0x00007ff37b12c160, 0x00007ff37b12c568]
+Event: 13.256 Thread 0x0000000000ff6800 7668       3       java.lang.ClassNotFoundException::<init> (7 bytes)
+Event: 13.256 Thread 0x0000000000ff6800 nmethod 7668 0x00007ff37b12bb10 code [0x00007ff37b12bc80, 0x00007ff37b12bec8]
+Event: 13.271 Thread 0x0000000000ff1800 nmethod 7656 0x00007ff37bc38a10 code [0x00007ff37bc38d00, 0x00007ff37bc3b1a0]
+Event: 13.436 Thread 0x0000000000ff4800 7669       4       java.lang.Character::digit (6 bytes)
+Event: 13.437 Thread 0x0000000000ff4800 nmethod 7669 0x00007ff37c0c7290 code [0x00007ff37c0c74c0, 0x00007ff37c0c76b8]
+
+GC Heap History (10 events):
+Event: 8.225 GC heap before
+{Heap before GC invocations=21 (full 2):
+ PSYoungGen      total 289280K, used 272228K [0x00000000d5580000, 0x00000000e9500000, 0x0000000100000000)
+  eden space 273408K, 98% used [0x00000000d5580000,0x00000000e5b41f78,0x00000000e6080000)
+  from space 15872K, 26% used [0x00000000e6f80000,0x00000000e73972c0,0x00000000e7f00000)
+  to   space 15360K, 0% used [0x00000000e6080000,0x00000000e6080000,0x00000000e6f80000)
+ ParOldGen       total 61440K, used 36271K [0x0000000080000000, 0x0000000083c00000, 0x00000000d5580000)
+  object space 61440K, 59% used [0x0000000080000000,0x000000008236bea8,0x0000000083c00000)
+ Metaspace       used 50380K, capacity 54624K, committed 54912K, reserved 1097728K
+  class space    used 5758K, capacity 6996K, committed 7040K, reserved 1048576K
+Event: 8.229 GC heap after
+Heap after GC invocations=21 (full 2):
+ PSYoungGen      total 288768K, used 7170K [0x00000000d5580000, 0x00000000e9400000, 0x0000000100000000)
+  eden space 273408K, 0% used [0x00000000d5580000,0x00000000d5580000,0x00000000e6080000)
+  from space 15360K, 46% used [0x00000000e6080000,0x00000000e6780af0,0x00000000e6f80000)
+  to   space 14848K, 0% used [0x00000000e8580000,0x00000000e8580000,0x00000000e9400000)
+ ParOldGen       total 61440K, used 36279K [0x0000000080000000, 0x0000000083c00000, 0x00000000d5580000)
+  object space 61440K, 59% used [0x0000000080000000,0x000000008236dea8,0x0000000083c00000)
+ Metaspace       used 50380K, capacity 54624K, committed 54912K, reserved 1097728K
+  class space    used 5758K, capacity 6996K, committed 7040K, reserved 1048576K
+}
+Event: 8.229 GC heap before
+{Heap before GC invocations=22 (full 3):
+ PSYoungGen      total 288768K, used 7170K [0x00000000d5580000, 0x00000000e9400000, 0x0000000100000000)
+  eden space 273408K, 0% used [0x00000000d5580000,0x00000000d5580000,0x00000000e6080000)
+  from space 15360K, 46% used [0x00000000e6080000,0x00000000e6780af0,0x00000000e6f80000)
+  to   space 14848K, 0% used [0x00000000e8580000,0x00000000e8580000,0x00000000e9400000)
+ ParOldGen       total 61440K, used 36279K [0x0000000080000000, 0x0000000083c00000, 0x00000000d5580000)
+  object space 61440K, 59% used [0x0000000080000000,0x000000008236dea8,0x0000000083c00000)
+ Metaspace       used 50380K, capacity 54624K, committed 54912K, reserved 1097728K
+  class space    used 5758K, capacity 6996K, committed 7040K, reserved 1048576K
+Event: 8.309 GC heap after
+Heap after GC invocations=22 (full 3):
+ PSYoungGen      total 288768K, used 0K [0x00000000d5580000, 0x00000000e9400000, 0x0000000100000000)
+  eden space 273408K, 0% used [0x00000000d5580000,0x00000000d5580000,0x00000000e6080000)
+  from space 15360K, 0% used [0x00000000e6080000,0x00000000e6080000,0x00000000e6f80000)
+  to   space 14848K, 0% used [0x00000000e8580000,0x00000000e8580000,0x00000000e9400000)
+ ParOldGen       total 61440K, used 34354K [0x0000000080000000, 0x0000000083c00000, 0x00000000d5580000)
+  object space 61440K, 55% used [0x0000000080000000,0x000000008218c9e0,0x0000000083c00000)
+ Metaspace       used 50380K, capacity 54624K, committed 54912K, reserved 1097728K
+  class space    used 5758K, capacity 6996K, committed 7040K, reserved 1048576K
+}
+Event: 10.608 GC heap before
+{Heap before GC invocations=23 (full 3):
+ PSYoungGen      total 288768K, used 273408K [0x00000000d5580000, 0x00000000e9400000, 0x0000000100000000)
+  eden space 273408K, 100% used [0x00000000d5580000,0x00000000e6080000,0x00000000e6080000)
+  from space 15360K, 0% used [0x00000000e6080000,0x00000000e6080000,0x00000000e6f80000)
+  to   space 14848K, 0% used [0x00000000e8580000,0x00000000e8580000,0x00000000e9400000)
+ ParOldGen       total 61440K, used 34354K [0x0000000080000000, 0x0000000083c00000, 0x00000000d5580000)
+  object space 61440K, 55% used [0x0000000080000000,0x000000008218c9e0,0x0000000083c00000)
+ Metaspace       used 82851K, capacity 89643K, committed 90112K, reserved 1126400K
+  class space    used 11162K, capacity 13219K, committed 13312K, reserved 1048576K
+Event: 10.648 GC heap after
+Heap after GC invocations=23 (full 3):
+ PSYoungGen      total 279552K, used 14818K [0x00000000d5580000, 0x00000000ee400000, 0x0000000100000000)
+  eden space 264704K, 0% used [0x00000000d5580000,0x00000000d5580000,0x00000000e5800000)
+  from space 14848K, 99% used [0x00000000e8580000,0x00000000e93f88d0,0x00000000e9400000)
+  to   space 46592K, 0% used [0x00000000e5800000,0x00000000e5800000,0x00000000e8580000)
+ ParOldGen       total 114688K, used 114275K [0x0000000080000000, 0x0000000087000000, 0x00000000d5580000)
+  object space 114688K, 99% used [0x0000000080000000,0x0000000086f98fc8,0x0000000087000000)
+ Metaspace       used 82851K, capacity 89643K, committed 90112K, reserved 1126400K
+  class space    used 11162K, capacity 13219K, committed 13312K, reserved 1048576K
+}
+Event: 10.648 GC heap before
+{Heap before GC invocations=24 (full 4):
+ PSYoungGen      total 279552K, used 14818K [0x00000000d5580000, 0x00000000ee400000, 0x0000000100000000)
+  eden space 264704K, 0% used [0x00000000d5580000,0x00000000d5580000,0x00000000e5800000)
+  from space 14848K, 99% used [0x00000000e8580000,0x00000000e93f88d0,0x00000000e9400000)
+  to   space 46592K, 0% used [0x00000000e5800000,0x00000000e5800000,0x00000000e8580000)
+ ParOldGen       total 114688K, used 114275K [0x0000000080000000, 0x0000000087000000, 0x00000000d5580000)
+  object space 114688K, 99% used [0x0000000080000000,0x0000000086f98fc8,0x0000000087000000)
+ Metaspace       used 82851K, capacity 89643K, committed 90112K, reserved 1126400K
+  class space    used 11162K, capacity 13219K, committed 13312K, reserved 1048576K
+Event: 10.811 GC heap after
+Heap after GC invocations=24 (full 4):
+ PSYoungGen      total 279552K, used 9624K [0x00000000d5580000, 0x00000000ee400000, 0x0000000100000000)
+  eden space 264704K, 0% used [0x00000000d5580000,0x00000000d5580000,0x00000000e5800000)
+  from space 14848K, 64% used [0x00000000e8580000,0x00000000e8ee6388,0x00000000e9400000)
+  to   space 46592K, 0% used [0x00000000e5800000,0x00000000e5800000,0x00000000e8580000)
+ ParOldGen       total 177152K, used 114278K [0x0000000080000000, 0x000000008ad00000, 0x00000000d5580000)
+  object space 177152K, 64% used [0x0000000080000000,0x0000000086f999b8,0x000000008ad00000)
+ Metaspace       used 82851K, capacity 89643K, committed 90112K, reserved 1126400K
+  class space    used 11162K, capacity 13219K, committed 13312K, reserved 1048576K
+}
+Event: 12.639 GC heap before
+{Heap before GC invocations=25 (full 4):
+ PSYoungGen      total 279552K, used 274328K [0x00000000d5580000, 0x00000000ee400000, 0x0000000100000000)
+  eden space 264704K, 100% used [0x00000000d5580000,0x00000000e5800000,0x00000000e5800000)
+  from space 14848K, 64% used [0x00000000e8580000,0x00000000e8ee6388,0x00000000e9400000)
+  to   space 46592K, 0% used [0x00000000e5800000,0x00000000e5800000,0x00000000e8580000)
+ ParOldGen       total 177152K, used 114278K [0x0000000080000000, 0x000000008ad00000, 0x00000000d5580000)
+  object space 177152K, 64% used [0x0000000080000000,0x0000000086f999b8,0x000000008ad00000)
+ Metaspace       used 89589K, capacity 96339K, committed 96768K, reserved 1132544K
+  class space    used 12119K, capacity 14293K, committed 14336K, reserved 1048576K
+Event: 12.656 GC heap after
+Heap after GC invocations=25 (full 4):
+ PSYoungGen      total 311296K, used 23462K [0x00000000d5580000, 0x00000000ece00000, 0x0000000100000000)
+  eden space 264704K, 0% used [0x00000000d5580000,0x00000000d5580000,0x00000000e5800000)
+  from space 46592K, 50% used [0x00000000e5800000,0x00000000e6ee9ab0,0x00000000e8580000)
+  to   space 46592K, 0% used [0x00000000ea080000,0x00000000ea080000,0x00000000ece00000)
+ ParOldGen       total 177152K, used 114286K [0x0000000080000000, 0x000000008ad00000, 0x00000000d5580000)
+  object space 177152K, 64% used [0x0000000080000000,0x0000000086f9b9b8,0x000000008ad00000)
+ Metaspace       used 89589K, capacity 96339K, committed 96768K, reserved 1132544K
+  class space    used 12119K, capacity 14293K, committed 14336K, reserved 1048576K
+}
+
+Deoptimization events (10 events):
+Event: 12.509 Thread 0x0000000000f43000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007ff37bf2ddc4 method=org.eclipse.swt.widgets.EventTable.sendEvent(Lorg/eclipse/swt/widgets/Event;)V @ 214
+Event: 12.510 Thread 0x0000000000f43000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007ff37bf2ddc4 method=org.eclipse.swt.widgets.EventTable.sendEvent(Lorg/eclipse/swt/widgets/Event;)V @ 214
+Event: 12.555 Thread 0x0000000000f43000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007ff37bf157e0 method=org.eclipse.swt.internal.ImageList.createPixbuf(Lorg/eclipse/swt/graphics/Image;)J @ 559
+Event: 12.566 Thread 0x0000000000f43000 Uncommon trap: reason=predicate action=maybe_recompile pc=0x00007ff37be2af9c method=java.util.AbstractCollection.toArray([Ljava/lang/Object;)[Ljava/lang/Object; @ 49
+Event: 12.630 Thread 0x0000000000f43000 Uncommon trap: reason=array_check action=maybe_recompile pc=0x00007ff37bfeab04 method=java.util.AbstractCollection.toArray([Ljava/lang/Object;)[Ljava/lang/Object; @ 119
+Event: 12.630 Thread 0x0000000000f43000 Uncommon trap: reason=array_check action=maybe_recompile pc=0x00007ff37bfeab04 method=java.util.AbstractCollection.toArray([Ljava/lang/Object;)[Ljava/lang/Object; @ 119
+Event: 12.630 Thread 0x0000000000f43000 Uncommon trap: reason=array_check action=maybe_recompile pc=0x00007ff37bfeab04 method=java.util.AbstractCollection.toArray([Ljava/lang/Object;)[Ljava/lang/Object; @ 119
+Event: 12.630 Thread 0x0000000000f43000 Uncommon trap: reason=array_check action=maybe_recompile pc=0x00007ff37bfeab04 method=java.util.AbstractCollection.toArray([Ljava/lang/Object;)[Ljava/lang/Object; @ 119
+Event: 12.798 Thread 0x0000000000f43000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007ff37ab01ee0 method=java.lang.CharacterData.of(I)Ljava/lang/CharacterData; @ 4
+Event: 12.812 Thread 0x0000000000f43000 Uncommon trap: reason=null_check action=make_not_entrant pc=0x00007ff37b71adac method=org.eclipse.e4.ui.workbench.modeling.ElementMatcher.select(Lorg/eclipse/e4/ui/model/application/MApplicationElement;)Z @ 17
+
+Internal exceptions (10 events):
+Event: 10.826 Thread 0x00000000023e7000 Exception <a 'java/lang/IllegalStateException'> (0x00000000d58bf498) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u112/7884/hotspot/src/share/vm/prims/jvm.cpp, line 1394]
+Event: 11.394 Thread 0x00000000023e7000 Exception <a 'java/lang/IllegalStateException'> (0x00000000d8fee938) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u112/7884/hotspot/src/share/vm/prims/jvm.cpp, line 1394]
+Event: 11.394 Thread 0x00000000023e7000 Exception <a 'java/lang/IllegalStateException'> (0x00000000d8ff06a8) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u112/7884/hotspot/src/share/vm/prims/jvm.cpp, line 1394]
+Event: 11.395 Thread 0x00000000023e7000 Implicit null exception at 0x00007ff37af294e5 to 0x00007ff37af2ad49
+Event: 11.419 Thread 0x00000000023e7000 Exception <a 'com/comsol/nativejni/FlNativeException': The_thermodynamics_package_feature_only_works_under_Windows> (0x00000000d9211598) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u112/7884/hotspot/src/share/vm/prims/jni.cpp, line 735]
+Event: 11.835 Thread 0x0000000000f43000 Exception <a 'java/lang/IllegalStateException'> (0x00000000ded39248) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u112/7884/hotspot/src/share/vm/prims/jvm.cpp, line 1394]
+Event: 11.835 Thread 0x0000000000f43000 Exception <a 'java/lang/IllegalStateException'> (0x00000000ded3c6a8) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u112/7884/hotspot/src/share/vm/prims/jvm.cpp, line 1394]
+Event: 12.812 Thread 0x0000000000f43000 Implicit null exception at 0x00007ff37b718b9c to 0x00007ff37b71ad79
+Event: 13.203 Thread 0x0000000000f43000 Exception <a 'java/lang/IllegalStateException'> (0x00000000d95bcc90) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u112/7884/hotspot/src/share/vm/prims/jvm.cpp, line 1394]
+Event: 13.203 Thread 0x0000000000f43000 Exception <a 'java/lang/IllegalStateException'> (0x00000000d95c06a0) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u112/7884/hotspot/src/share/vm/prims/jvm.cpp, line 1394]
+
+Events (10 events):
+Event: 12.996 Executing VM operation: Deoptimize
+Event: 12.997 Executing VM operation: Deoptimize done
+Event: 13.053 Thread 0x0000000000f43000 DEOPT PACKING pc=0x00007ff37c032910 sp=0x00007ffc40faa3e0
+Event: 13.053 Thread 0x0000000000f43000 DEOPT UNPACKING pc=0x00007ff37aa24633 sp=0x00007ffc40faa1e0 mode 0
+Event: 13.252 Executing VM operation: Deoptimize
+Event: 13.253 Executing VM operation: Deoptimize done
+Event: 13.256 loading class org/eclipse/swt/browser/BrowserInitializer
+Event: 13.256 loading class org/eclipse/swt/browser/BrowserInitializer done
+Event: 13.389 loading class org/eclipse/swt/browser/XULRunnerInitializer
+Event: 13.389 loading class org/eclipse/swt/browser/XULRunnerInitializer done
+
+
+Dynamic libraries:
+00400000-00405000 r-xp 00000000 00:26 22782689                           /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/bin/glnxa64/comsollauncher
+00605000-00606000 rw-p 00005000 00:26 22782689                           /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/bin/glnxa64/comsollauncher
+00f35000-02b17000 rw-p 00000000 00:00 0                                  [heap]
+80000000-8ad00000 rw-p 00000000 00:00 0 
+8ad00000-d5580000 ---p 00000000 00:00 0 
+d5580000-ece00000 rw-p 00000000 00:00 0 
+ece00000-100000000 ---p 00000000 00:00 0 
+100000000-100e80000 rw-p 00000000 00:00 0 
+100e80000-140000000 ---p 00000000 00:00 0 
+3a76000000-3a76020000 r-xp 00000000 08:04 1306744                        /lib64/ld-2.12.so
+3a76220000-3a76221000 r--p 00020000 08:04 1306744                        /lib64/ld-2.12.so
+3a76221000-3a76222000 rw-p 00021000 08:04 1306744                        /lib64/ld-2.12.so
+3a76222000-3a76223000 rw-p 00000000 00:00 0 
+3a76400000-3a76415000 r-xp 00000000 08:04 1306764                        /lib64/libz.so.1.2.3
+3a76415000-3a76614000 ---p 00015000 08:04 1306764                        /lib64/libz.so.1.2.3
+3a76614000-3a76615000 r--p 00014000 08:04 1306764                        /lib64/libz.so.1.2.3
+3a76615000-3a76616000 rw-p 00015000 08:04 1306764                        /lib64/libz.so.1.2.3
+3a76800000-3a7698a000 r-xp 00000000 08:04 1306745                        /lib64/libc-2.12.so
+3a7698a000-3a76b8a000 ---p 0018a000 08:04 1306745                        /lib64/libc-2.12.so
+3a76b8a000-3a76b8e000 r--p 0018a000 08:04 1306745                        /lib64/libc-2.12.so
+3a76b8e000-3a76b90000 rw-p 0018e000 08:04 1306745                        /lib64/libc-2.12.so
+3a76b90000-3a76b94000 rw-p 00000000 00:00 0 
+3a76c00000-3a76c02000 r-xp 00000000 08:04 1306753                        /lib64/libdl-2.12.so
+3a76c02000-3a76e02000 ---p 00002000 08:04 1306753                        /lib64/libdl-2.12.so
+3a76e02000-3a76e03000 r--p 00002000 08:04 1306753                        /lib64/libdl-2.12.so
+3a76e03000-3a76e04000 rw-p 00003000 08:04 1306753                        /lib64/libdl-2.12.so
+3a77000000-3a77017000 r-xp 00000000 08:04 1306752                        /lib64/libpthread-2.12.so
+3a77017000-3a77217000 ---p 00017000 08:04 1306752                        /lib64/libpthread-2.12.so
+3a77217000-3a77218000 r--p 00017000 08:04 1306752                        /lib64/libpthread-2.12.so
+3a77218000-3a77219000 rw-p 00018000 08:04 1306752                        /lib64/libpthread-2.12.so
+3a77219000-3a7721d000 rw-p 00000000 00:00 0 
+3a77400000-3a77483000 r-xp 00000000 08:04 1306746                        /lib64/libm-2.12.so
+3a77483000-3a77682000 ---p 00083000 08:04 1306746                        /lib64/libm-2.12.so
+3a77682000-3a77683000 r--p 00082000 08:04 1306746                        /lib64/libm-2.12.so
+3a77683000-3a77684000 rw-p 00083000 08:04 1306746                        /lib64/libm-2.12.so
+3a77800000-3a77807000 r-xp 00000000 08:04 1306761                        /lib64/librt-2.12.so
+3a77807000-3a77a06000 ---p 00007000 08:04 1306761                        /lib64/librt-2.12.so
+3a77a06000-3a77a07000 r--p 00006000 08:04 1306761                        /lib64/librt-2.12.so
+3a77a07000-3a77a08000 rw-p 00007000 08:04 1306761                        /lib64/librt-2.12.so
+3a77c00000-3a77c16000 r-xp 00000000 08:04 1306762                        /lib64/libresolv-2.12.so
+3a77c16000-3a77e16000 ---p 00016000 08:04 1306762                        /lib64/libresolv-2.12.so
+3a77e16000-3a77e17000 r--p 00016000 08:04 1306762                        /lib64/libresolv-2.12.so
+3a77e17000-3a77e18000 rw-p 00017000 08:04 1306762                        /lib64/libresolv-2.12.so
+3a77e18000-3a77e1a000 rw-p 00000000 00:00 0 
+3a78000000-3a7801d000 r-xp 00000000 08:04 1310363                        /lib64/libselinux.so.1
+3a7801d000-3a7821c000 ---p 0001d000 08:04 1310363                        /lib64/libselinux.so.1
+3a7821c000-3a7821d000 r--p 0001c000 08:04 1310363                        /lib64/libselinux.so.1
+3a7821d000-3a7821e000 rw-p 0001d000 08:04 1310363                        /lib64/libselinux.so.1
+3a7821e000-3a7821f000 rw-p 00000000 00:00 0 
+3a78400000-3a78515000 r-xp 00000000 08:04 1330003                        /lib64/libglib-2.0.so.0.2800.8
+3a78515000-3a78715000 ---p 00115000 08:04 1330003                        /lib64/libglib-2.0.so.0.2800.8
+3a78715000-3a78716000 rw-p 00115000 08:04 1330003                        /lib64/libglib-2.0.so.0.2800.8
+3a78716000-3a78717000 rw-p 00000000 00:00 0 
+3a78800000-3a78804000 r-xp 00000000 08:04 1330004                        /lib64/libgthread-2.0.so.0.2800.8
+3a78804000-3a78a03000 ---p 00004000 08:04 1330004                        /lib64/libgthread-2.0.so.0.2800.8
+3a78a03000-3a78a04000 rw-p 00003000 08:04 1330004                        /lib64/libgthread-2.0.so.0.2800.8
+3a78c00000-3a78c02000 r-xp 00000000 08:04 1177161                        /usr/lib64/libXau.so.6.0.0
+3a78c02000-3a78e02000 ---p 00002000 08:04 1177161                        /usr/lib64/libXau.so.6.0.0
+3a78e02000-3a78e03000 rw-p 00002000 08:04 1177161                        /usr/lib64/libXau.so.6.0.0
+3a79000000-3a79137000 r-xp 00000000 08:04 1177582                        /usr/lib64/libX11.so.6.3.0
+3a79137000-3a79337000 ---p 00137000 08:04 1177582                        /usr/lib64/libX11.so.6.3.0
+3a79337000-3a7933d000 rw-p 00137000 08:04 1177582                        /usr/lib64/libX11.so.6.3.0
+3a79400000-3a79424000 r-xp 00000000 08:04 1255017                        /usr/lib64/libxcb.so.1.1.0
+3a79424000-3a79624000 ---p 00024000 08:04 1255017                        /usr/lib64/libxcb.so.1.1.0
+3a79624000-3a79625000 rw-p 00024000 08:04 1255017                        /usr/lib64/libxcb.so.1.1.0
+3a79c00000-3a79c4a000 r-xp 00000000 08:04 1330005                        /lib64/libgobject-2.0.so.0.2800.8
+3a79c4a000-3a79e49000 ---p 0004a000 08:04 1330005                        /lib64/libgobject-2.0.so.0.2800.8
+3a79e49000-3a79e4b000 rw-p 00049000 08:04 1330005                        /lib64/libgobject-2.0.so.0.2800.8
+3a79e4b000-3a79e4c000 rw-p 00000000 00:00 0 
+3a7a000000-3a7a011000 r-xp 00000000 08:04 1177586                        /usr/lib64/libXext.so.6.4.0
+3a7a011000-3a7a211000 ---p 00011000 08:04 1177586                        /usr/lib64/libXext.so.6.4.0
+3a7a211000-3a7a212000 rw-p 00011000 08:04 1177586                        /usr/lib64/libXext.so.6.4.0
+3a7ac00000-3a7ac34000 r-xp 00000000 08:04 1177116                        /usr/lib64/libfontconfig.so.1.4.4
+3a7ac34000-3a7ae34000 ---p 00034000 08:04 1177116                        /usr/lib64/libfontconfig.so.1.4.4
+3a7ae34000-3a7ae36000 rw-p 00034000 08:04 1177116                        /usr/lib64/libfontconfig.so.1.4.4
+3a7b400000-3a7b40c000 r-xp 00000000 08:04 1330012                        /lib64/libudev.so.0.5.1
+3a7b40c000-3a7b60c000 ---p 0000c000 08:04 1330012                        /lib64/libudev.so.0.5.1
+3a7b60c000-3a7b60d000 r--p 0000c000 08:04 1330012                        /lib64/libudev.so.0.5.1
+3a7b60d000-3a7b60e000 rw-p 0000d000 08:04 1330012                        /lib64/libudev.so.0.5.1
+3a7b800000-3a7b809000 r-xp 00000000 08:04 1177597                        /usr/lib64/libXrender.so.1.3.0
+3a7b809000-3a7ba08000 ---p 00009000 08:04 1177597                        /usr/lib64/libXrender.so.1.3.0
+3a7ba08000-3a7ba09000 rw-p 00008000 08:04 1177597                        /usr/lib64/libXrender.so.1.3.0
+3a7bc00000-3a7bc40000 r-xp 00000000 08:04 1329991                        /lib64/libdbus-1.so.3.4.0
+3a7bc40000-3a7be3f000 ---p 00040000 08:04 1329991                        /lib64/libdbus-1.so.3.4.0
+3a7be3f000-3a7be40000 r--p 0003f000 08:04 1329991                        /lib64/libdbus-1.so.3.4.0
+3a7be40000-3a7be41000 rw-p 00040000 08:04 1329991                        /lib64/libdbus-1.so.3.4.0
+3a7c000000-3a7c00f000 r-xp 00000000 08:04 1177588                        /usr/lib64/libXi.so.6.1.0
+3a7c00f000-3a7c20e000 ---p 0000f000 08:04 1177588                        /usr/lib64/libXi.so.6.1.0
+3a7c20e000-3a7c20f000 rw-p 0000e000 08:04 1177588                        /usr/lib64/libXi.so.6.1.0
+3a7c400000-3a7c405000 r-xp 00000000 08:04 1177595                        /usr/lib64/libXfixes.so.3.1.0
+3a7c405000-3a7c604000 ---p 00005000 08:04 1177595                        /usr/lib64/libXfixes.so.3.1.0
+3a7c604000-3a7c605000 rw-p 00004000 08:04 1177595                        /usr/lib64/libXfixes.so.3.1.0
+3a7c800000-3a7c80a000 r-xp 00000000 08:04 1177590                        /usr/lib64/libXrandr.so.2.2.0
+3a7c80a000-3a7ca09000 ---p 0000a000 08:04 1177590                        /usr/lib64/libXrandr.so.2.2.0
+3a7ca09000-3a7ca0a000 rw-p 00009000 08:04 1177590                        /usr/lib64/libXrandr.so.2.2.0
+3a7cc00000-3a7cc02000 r-xp 00000000 08:04 1177611                        /usr/lib64/libXinerama.so.1.0.0
+3a7cc02000-3a7ce01000 ---p 00002000 08:04 1177611                        /usr/lib64/libXinerama.so.1.0.0
+3a7ce01000-3a7ce02000 rw-p 00001000 08:04 1177611                        /usr/lib64/libXinerama.so.1.0.0
+3a7d000000-3a7d009000 r-xp 00000000 08:04 1177601                        /usr/lib64/libXcursor.so.1.0.2
+3a7d009000-3a7d209000 ---p 00009000 08:04 1177601                        /usr/lib64/libXcursor.so.1.0.2
+3a7d209000-3a7d20a000 rw-p 00009000 08:04 1177601                        /usr/lib64/libXcursor.so.1.0.2
+3a7d400000-3a7d403000 r-xp 00000000 08:04 1330006                        /lib64/libgmodule-2.0.so.0.2800.8
+3a7d403000-3a7d602000 ---p 00003000 08:04 1330006                        /lib64/libgmodule-2.0.so.0.2800.8
+3a7d602000-3a7d603000 rw-p 00002000 08:04 1330006                        /lib64/libgmodule-2.0.so.0.2800.8
+3a7d800000-3a7d841000 r-xp 00000000 08:04 1205587                        /usr/lib64/libibus.so.2.0.0
+3a7d841000-3a7da40000 ---p 00041000 08:04 1205587                        /usr/lib64/libibus.so.2.0.0
+3a7da40000-3a7da43000 rw-p 00040000 08:04 1205587                        /usr/lib64/libibus.so.2.0.0
+3a7dc00000-3a7dc02000 r-xp 00000000 08:04 1177135                        /usr/lib64/xulrunner/libmozalloc.so
+3a7dc02000-3a7de01000 ---p 00002000 08:04 1177135                        /usr/lib64/xulrunner/libmozalloc.so
+3a7de01000-3a7de02000 rw-p 00001000 08:04 1177135                        /usr/lib64/xulrunner/libmozalloc.so
+3a7e000000-3a7e004000 r-xp 00000000 08:04 1306770                        /lib64/libuuid.so.1.3.0
+3a7e004000-3a7e203000 ---p 00004000 08:04 1306770                        /lib64/libuuid.so.1.3.0
+3a7e203000-3a7e204000 rw-p 00003000 08:04 1306770                        /lib64/libuuid.so.1.3.0
+3a7e400000-3a7e488000 r-xp 00000000 08:04 1212426                        /usr/lib64/xulrunner/libmozsqlite3.so
+3a7e488000-3a7e688000 ---p 00088000 08:04 1212426                        /usr/lib64/xulrunner/libmozsqlite3.so
+3a7e688000-3a7e68c000 rw-p 00088000 08:04 1212426                        /usr/lib64/xulrunner/libmozsqlite3.so
+3a7ec00000-3a7ed14000 r-xp 00000000 08:04 1330007                        /lib64/libgio-2.0.so.0.2800.8
+3a7ed14000-3a7ef13000 ---p 00114000 08:04 1330007                        /lib64/libgio-2.0.so.0.2800.8
+3a7ef13000-3a7ef18000 rw-p 00113000 08:04 1330007                        /lib64/libgio-2.0.so.0.2800.8
+3a7ef18000-3a7ef1a000 rw-p 00000000 00:00 0 
+3a80400000-3a80417000 r-xp 00000000 08:04 1179526                        /usr/lib64/libICE.so.6.3.0
+3a80417000-3a80617000 ---p 00017000 08:04 1179526                        /usr/lib64/libICE.so.6.3.0
+3a80617000-3a80618000 rw-p 00017000 08:04 1179526                        /usr/lib64/libICE.so.6.3.0
+3a80618000-3a8061c000 rw-p 00000000 00:00 0 
+3a80800000-3a80807000 r-xp 00000000 08:04 1177144                        /usr/lib64/libSM.so.6.0.1
+3a80807000-3a80a07000 ---p 00007000 08:04 1177144                        /usr/lib64/libSM.so.6.0.1
+3a80a07000-3a80a08000 rw-p 00007000 08:04 1177144                        /usr/lib64/libSM.so.6.0.1
+3a80c00000-3a80c48000 r-xp 00000000 08:04 1179496                        /usr/lib64/libpango-1.0.so.0.2800.1
+3a80c48000-3a80e48000 ---p 00048000 08:04 1179496                        /usr/lib64/libpango-1.0.so.0.2800.1
+3a80e48000-3a80e4b000 rw-p 00048000 08:04 1179496                        /usr/lib64/libpango-1.0.so.0.2800.1
+3a81000000-3a8102a000 r-xp 00000000 08:04 1190528                        /usr/lib64/libpangoft2-1.0.so.0.2800.1
+3a8102a000-3a81229000 ---p 0002a000 08:04 1190528                        /usr/lib64/libpangoft2-1.0.so.0.2800.1
+3a81229000-3a8122b000 rw-p 00029000 08:04 1190528                        /usr/lib64/libpangoft2-1.0.so.0.2800.1
+3a81400000-3a814a9000 r-xp 00000000 08:04 1178894                        /usr/lib64/libpixman-1.so.0.32.8
+3a814a9000-3a816a8000 ---p 000a9000 08:04 1178894                        /usr/lib64/libpixman-1.so.0.32.8
+3a816a8000-3a816b0000 rw-p 000a8000 08:04 1178894                        /usr/lib64/libpixman-1.so.0.32.8
+3a81800000-3a81820000 r-xp 00000000 08:04 1177650                        /usr/lib64/libgdk_pixbuf-2.0.so.0.2400.1
+3a81820000-3a81a20000 ---p 00020000 08:04 1177650                        /usr/lib64/libgdk_pixbuf-2.0.so.0.2400.1
+3a81a20000-3a81a21000 rw-p 00020000 08:04 1177650                        /usr/lib64/libgdk_pixbuf-2.0.so.0.2400.1
+3a81c00000-3a81c0b000 r-xp 00000000 08:04 1190532                        /usr/lib64/libpangocairo-1.0.so.0.2800.1
+3a81c0b000-3a81e0b000 ---p 0000b000 08:04 1190532                        /usr/lib64/libpangocairo-1.0.so.0.2800.1
+3a81e0b000-3a81e0c000 rw-p 0000b000 08:04 1190532                        /usr/lib64/libpangocairo-1.0.so.0.2800.1
+3a82000000-3a820bb000 r-xp 00000000 08:04 1178918                        /usr/lib64/libgdk-x11-2.0.so.0.2400.23
+3a820bb000-3a822bb000 ---p 000bb000 08:04 1178918                        /usr/lib64/libgdk-x11-2.0.so.0.2400.23
+3a822bb000-3a822c0000 rw-p 000bb000 08:04 1178918                        /usr/lib64/libgdk-x11-2.0.so.0.2400.23
+3a82400000-3a8241e000 r-xp 00000000 08:04 1190574                        /usr/lib64/libatk-1.0.so.0.3009.1
+3a8241e000-3a8261e000 ---p 0001e000 08:04 1190574                        /usr/lib64/libatk-1.0.so.0.3009.1
+3a8261e000-3a82621000 rw-p 0001e000 08:04 1190574                        /usr/lib64/libatk-1.0.so.0.3009.1
+3a82800000-3a82807000 r-xp 00000000 08:04 1329993                        /lib64/libcrypt-2.12.so
+3a82807000-3a82a07000 ---p 00007000 08:04 1329993                        /lib64/libcrypt-2.12.so
+3a82a07000-3a82a08000 r--p 00007000 08:04 1329993                        /lib64/libcrypt-2.12.so
+3a82a08000-3a82a09000 rw-p 00008000 08:04 1329993                        /lib64/libcrypt-2.12.so
+3a82a09000-3a82a37000 rw-p 00000000 00:00 0 
+3a82c00000-3a82c02000 r-xp 00000000 08:04 1306806                        /lib64/libutil-2.12.so
+3a82c02000-3a82e01000 ---p 00002000 08:04 1306806                        /lib64/libutil-2.12.so
+3a82e01000-3a82e02000 r--p 00001000 08:04 1306806                        /lib64/libutil-2.12.so
+3a82e02000-3a82e03000 rw-p 00002000 08:04 1306806                        /lib64/libutil-2.12.so
+3a83000000-3a83473000 r-xp 00000000 08:04 1177439                        /usr/lib64/libgtk-x11-2.0.so.0.2400.23
+3a83473000-3a83673000 ---p 00473000 08:04 1177439                        /usr/lib64/libgtk-x11-2.0.so.0.2400.23
+3a83673000-3a8367e000 rw-p 00473000 08:04 1177439                        /usr/lib64/libgtk-x11-2.0.so.0.2400.23
+3a8367e000-3a83680000 rw-p 00000000 00:00 0 
+3a83800000-3a83802000 r-xp 00000000 08:04 1190530                        /usr/lib64/libXcomposite.so.1.0.0
+3a83802000-3a83a01000 ---p 00002000 08:04 1190530                        /usr/lib64/libXcomposite.so.1.0.0
+3a83a01000-3a83a02000 rw-p 00001000 08:04 1190530                        /usr/lib64/libXcomposite.so.1.0.0
+3a83c00000-3a83c76000 r-xp 00000000 08:04 1177738                        /usr/lib64/libcairo.so.2.10800.8
+3a83c76000-3a83e76000 ---p 00076000 08:04 1177738                        /usr/lib64/libcairo.so.2.10800.8
+3a83e76000-3a83e79000 rw-p 00076000 08:04 1177738                        /usr/lib64/libcairo.so.2.10800.8
+3a84000000-3a84002000 r-xp 00000000 08:04 1329992                        /lib64/libfreebl3.so
+3a84002000-3a84201000 ---p 00002000 08:04 1329992                        /lib64/libfreebl3.so
+3a84201000-3a84202000 r--p 00001000 08:04 1329992                        /lib64/libfreebl3.so
+3a84202000-3a84203000 rw-p 00002000 08:04 1329992                        /lib64/libfreebl3.so
+3a84400000-3a84402000 r-xp 00000000 08:04 1177702                        /usr/lib64/libXdamage.so.1.1.0
+3a84402000-3a84601000 ---p 00002000 08:04 1177702                        /usr/lib64/libXdamage.so.1.1.0
+3a84601000-3a84602000 rw-p 00001000 08:04 1177702                        /usr/lib64/libXdamage.so.1.1.0
+3a84800000-3a8480f000 r-xp 00000000 08:04 1214353                        /usr/lib64/libGLX.so.0
+3a8480f000-3a84a0f000 ---p 0000f000 08:04 1214353                        /usr/lib64/libGLX.so.0
+3a84a0f000-3a84a10000 rw-p 0000f000 08:04 1214353                        /usr/lib64/libGLX.so.0
+3a84a10000-3a84a30000 rw-p 00000000 00:00 0 
+3a84c00000-3a84c44000 r-xp 00000000 08:04 1214354                        /usr/lib64/libGL.so.1.0.0
+3a84c44000-3a84c76000 r-xp 00044000 08:04 1214354                        /usr/lib64/libGL.so.1.0.0
+3a84c76000-3a84c89000 r-xp 00076000 08:04 1214354                        /usr/lib64/libGL.so.1.0.0
+3a84c89000-3a84e89000 ---p 00089000 08:04 1214354                        /usr/lib64/libGL.so.1.0.0
+3a84e89000-3a84ea3000 rw-p 00089000 08:04 1214354                        /usr/lib64/libGL.so.1.0.0
+3a84ea3000-3a84ea4000 rw-p 00000000 00:00 0 
+3a85000000-3a85042000 r-xp 00000000 08:04 1205892                        /usr/lib64/libGLdispatch.so.0
+3a85042000-3a85074000 r-xp 00042000 08:04 1205892                        /usr/lib64/libGLdispatch.so.0
+3a85074000-3a85086000 r-xp 00074000 08:04 1205892                        /usr/lib64/libGLdispatch.so.0
+3a85086000-3a85286000 ---p 00086000 08:04 1205892                        /usr/lib64/libGLdispatch.so.0
+3a85286000-3a852ae000 rw-p 00086000 08:04 1205892                        /usr/lib64/libGLdispatch.so.0
+3a852ae000-3a852ce000 rw-p 00000000 00:00 0 
+3a85400000-3a85428000 r-xp 00000000 08:04 1214930                        /usr/lib64/libnssutil3.so
+3a85428000-3a85627000 ---p 00028000 08:04 1214930                        /usr/lib64/libnssutil3.so
+3a85627000-3a8562e000 r--p 00027000 08:04 1214930                        /usr/lib64/libnssutil3.so
+3a8562e000-3a8562f000 rw-p 0002e000 08:04 1214930                        /usr/lib64/libnssutil3.so
+3a85800000-3a85804000 r-xp 00000000 08:04 1329995                        /lib64/libplc4.so
+3a85804000-3a85a03000 ---p 00004000 08:04 1329995                        /lib64/libplc4.so
+3a85a03000-3a85a04000 r--p 00003000 08:04 1329995                        /lib64/libplc4.so
+3a85a04000-3a85a05000 rw-p 00004000 08:04 1329995                        /lib64/libplc4.so
+3a85c00000-3a85c05000 r-xp 00000000 08:04 1199303                        /usr/lib64/libogg.so.0.6.0
+3a85c05000-3a85e05000 ---p 00005000 08:04 1199303                        /usr/lib64/libogg.so.0.6.0
+3a85e05000-3a85e06000 rw-p 00005000 08:04 1199303                        /usr/lib64/libogg.so.0.6.0
+3a87400000-3a87422000 r-xp 00000000 08:04 1208395                        /usr/lib64/libdbus-glib-1.so.2.1.0
+3a87422000-3a87621000 ---p 00022000 08:04 1208395                        /usr/lib64/libdbus-glib-1.so.2.1.0
+3a87621000-3a87623000 rw-p 00021000 08:04 1208395                        /usr/lib64/libdbus-glib-1.so.2.1.0
+3a87800000-3a87807000 r-xp 00000000 08:04 1208803                        /usr/lib64/libvorbisfile.so.3.3.2
+3a87807000-3a87a06000 ---p 00007000 08:04 1208803                        /usr/lib64/libvorbisfile.so.3.3.2
+3a87a06000-3a87a07000 rw-p 00006000 08:04 1208803                        /usr/lib64/libvorbisfile.so.3.3.2
+3a88800000-3a88810000 r-xp 00000000 08:04 1253923                        /usr/lib64/libhal.so.1.0.0
+3a88810000-3a88a0f000 ---p 00010000 08:04 1253923                        /usr/lib64/libhal.so.1.0.0
+3a88a0f000-3a88a10000 rw-p 0000f000 08:04 1253923                        /usr/lib64/libhal.so.1.0.0
+3a89400000-3a89405000 r-xp 00000000 08:04 1177603                        /usr/lib64/libXtst.so.6.1.0
+3a89405000-3a89604000 ---p 00005000 08:04 1177603                        /usr/lib64/libXtst.so.6.1.0
+3a89604000-3a89605000 rw-p 00004000 08:04 1177603                        /usr/lib64/libXtst.so.6.1.0
+3a8b800000-3a8b814000 r-xp 00000000 08:04 1177707                        /usr/lib64/libtdb.so.1.3.8
+3a8b814000-3a8ba14000 ---p 00014000 08:04 1177707                        /usr/lib64/libtdb.so.1.3.8
+3a8ba14000-3a8ba15000 rw-p 00014000 08:04 1177707                        /usr/lib64/libtdb.so.1.3.8
+3a8c000000-3a8c02c000 r-xp 00000000 08:04 1180095                        /usr/lib64/libvorbis.so.0.4.3
+3a8c02c000-3a8c22b000 ---p 0002c000 08:04 1180095                        /usr/lib64/libvorbis.so.0.4.3
+3a8c22b000-3a8c22c000 rw-p 0002b000 08:04 1180095                        /usr/lib64/libvorbis.so.0.4.3
+3a8c400000-3a8c403000 r-xp 00000000 08:04 1208152                        /usr/lib64/libxcb-atom.so.1.0.0
+3a8c403000-3a8c603000 ---p 00003000 08:04 1208152                        /usr/lib64/libxcb-atom.so.1.0.0
+3a8c603000-3a8c604000 rw-p 00003000 08:04 1208152                        /usr/lib64/libxcb-atom.so.1.0.0
+3a8c800000-3a8c809000 r-xp 00000000 08:04 1208148                        /usr/lib64/libstartup-notification-1.so.0.0.0
+3a8c809000-3a8ca08000 ---p 00009000 08:04 1208148                        /usr/lib64/libstartup-notification-1.so.0.0.0
+3a8ca08000-3a8ca09000 rw-p 00008000 08:04 1208148                        /usr/lib64/libstartup-notification-1.so.0.0.0
+3a8cc00000-3a8cc02000 r-xp 00000000 08:04 1222107                        /usr/lib64/libxcb-aux.so.0.0.0
+3a8cc02000-3a8ce02000 ---p 00002000 08:04 1222107                        /usr/lib64/libxcb-aux.so.0.0.0
+3a8ce02000-3a8ce03000 rw-p 00002000 08:04 1222107                        /usr/lib64/libxcb-aux.so.0.0.0
+3a8d000000-3a8d003000 r-xp 00000000 08:04 1208150                        /usr/lib64/libxcb-event.so.1.0.0
+3a8d003000-3a8d203000 ---p 00003000 08:04 1208150                        /usr/lib64/libxcb-event.so.1.0.0
+3a8d203000-3a8d204000 rw-p 00003000 08:04 1208150                        /usr/lib64/libxcb-event.so.1.0.0
+3a8f200000-3a8f204000 r-xp 00000000 08:04 1188375                        /usr/lib64/libcanberra-gtk.so.0.1.5
+3a8f204000-3a8f403000 ---p 00004000 08:04 1188375                        /usr/lib64/libcanberra-gtk.so.0.1.5
+3a8f403000-3a8f404000 rw-p 00003000 08:04 1188375                        /usr/lib64/libcanberra-gtk.so.0.1.5
+3a8fa00000-3a8fa0f000 r-xp 00000000 08:04 1177281                        /usr/lib64/libcanberra.so.0.2.1
+3a8fa0f000-3a8fc0f000 ---p 0000f000 08:04 1177281                        /usr/lib64/libcanberra.so.0.2.1
+3a8fc0f000-3a8fc10000 rw-p 0000f000 08:04 1177281                        /usr/lib64/libcanberra.so.0.2.1
+3f0b200000-3f0b33d000 r-xp 00000000 08:04 1201018                        /usr/lib64/libnss3.so
+3f0b33d000-3f0b53d000 ---p 0013d000 08:04 1201018                        /usr/lib64/libnss3.so
+3f0b53d000-3f0b544000 r--p 0013d000 08:04 1201018                        /usr/lib64/libnss3.so
+3f0b544000-3f0b546000 rw-p 00144000 08:04 1201018                        /usr/lib64/libnss3.so
+3f0b546000-3f0b548000 rw-p 00000000 00:00 0 
+3f0b600000-3f0b64d000 r-xp 00000000 08:04 1202800                        /usr/lib64/libssl3.so
+3f0b64d000-3f0b84d000 ---p 0004d000 08:04 1202800                        /usr/lib64/libssl3.so
+3f0b84d000-3f0b851000 r--p 0004d000 08:04 1202800                        /usr/lib64/libssl3.so
+3f0b851000-3f0b852000 rw-p 00051000 08:04 1202800                        /usr/lib64/libssl3.so
+3f0b852000-3f0b853000 rw-p 00000000 00:00 0 
+3f0ba00000-3f0ba29000 r-xp 00000000 08:04 1202801                        /usr/lib64/libsmime3.so
+3f0ba29000-3f0bc28000 ---p 00029000 08:04 1202801                        /usr/lib64/libsmime3.so
+3f0bc28000-3f0bc2c000 r--p 00028000 08:04 1202801                        /usr/lib64/libsmime3.so
+3f0bc2c000-3f0bc2d000 rw-p 0002c000 08:04 1202801                        /usr/lib64/libsmime3.so
+3f0be00000-3f0be04000 r-xp 00000000 08:04 1209202                        /usr/lib64/xulrunner/libxpcom.so
+3f0be04000-3f0c003000 ---p 00004000 08:04 1209202                        /usr/lib64/xulrunner/libxpcom.so
+3f0c003000-3f0c004000 rw-p 00003000 08:04 1209202                        /usr/lib64/xulrunner/libxpcom.so
+3f0c200000-3f0e18a000 r-xp 00000000 08:04 1218040                        /usr/lib64/xulrunner/libxul.so
+3f0e18a000-3f0e38a000 ---p 01f8a000 08:04 1218040                        /usr/lib64/xulrunner/libxul.so
+3f0e38a000-3f0e64e000 rw-p 01f8a000 08:04 1218040                        /usr/lib64/xulrunner/libxul.so
+3f0e64e000-3f0e6b2000 rw-p 00000000 00:00 0 
+7ff2d19b7000-7ff2d19b8000 ---p 00000000 00:00 0 
+7ff2d19b8000-7ff2d23b8000 rw-p 00000000 00:00 0 
+7ff2d23b8000-7ff2d23b9000 ---p 00000000 00:00 0 
+7ff2d23b9000-7ff2d2db9000 rw-p 00000000 00:00 0 
+7ff2d2db9000-7ff2d2dbb000 r-xp 00000000 08:04 1176997                    /usr/lib64/gconv/UTF-16.so
+7ff2d2dbb000-7ff2d2fbb000 ---p 00002000 08:04 1176997                    /usr/lib64/gconv/UTF-16.so
+7ff2d2fbb000-7ff2d2fbc000 r--p 00002000 08:04 1176997                    /usr/lib64/gconv/UTF-16.so
+7ff2d2fbc000-7ff2d2fbd000 rw-p 00003000 08:04 1176997                    /usr/lib64/gconv/UTF-16.so
+7ff2d2fbd000-7ff2d301c000 r-xp 00000000 08:04 1209496                    /usr/lib64/libXt.so.6.0.0
+7ff2d301c000-7ff2d321b000 ---p 0005f000 08:04 1209496                    /usr/lib64/libXt.so.6.0.0
+7ff2d321b000-7ff2d3221000 rw-p 0005e000 08:04 1209496                    /usr/lib64/libXt.so.6.0.0
+7ff2d3221000-7ff2d3222000 rw-p 00000000 00:00 0 
+7ff2d3222000-7ff2d330a000 r-xp 00000000 08:04 1330008                    /lib64/libasound.so.2.0.0
+7ff2d330a000-7ff2d350a000 ---p 000e8000 08:04 1330008                    /lib64/libasound.so.2.0.0
+7ff2d350a000-7ff2d3512000 rw-p 000e8000 08:04 1330008                    /lib64/libasound.so.2.0.0
+7ff2d3512000-7ff2d354f000 r-xp 00000000 08:04 1209203                    /usr/lib64/libhunspell-1.2.so.0.0.0
+7ff2d354f000-7ff2d374e000 ---p 0003d000 08:04 1209203                    /usr/lib64/libhunspell-1.2.so.0.0.0
+7ff2d374e000-7ff2d3753000 rw-p 0003c000 08:04 1209203                    /usr/lib64/libhunspell-1.2.so.0.0.0
+7ff2d3753000-7ff2d3792000 r-xp 00000000 08:04 1197832                    /usr/lib64/libjpeg.so.62.0.0
+7ff2d3792000-7ff2d3992000 ---p 0003f000 08:04 1197832                    /usr/lib64/libjpeg.so.62.0.0
+7ff2d3992000-7ff2d3993000 rw-p 0003f000 08:04 1197832                    /usr/lib64/libjpeg.so.62.0.0
+7ff2d3993000-7ff2d39a3000 rw-p 00000000 00:00 0 
+7ff2d39a3000-7ff2d39a6000 r-xp 00000000 08:04 1329996                    /lib64/libplds4.so
+7ff2d39a6000-7ff2d3ba5000 ---p 00003000 08:04 1329996                    /lib64/libplds4.so
+7ff2d3ba5000-7ff2d3ba6000 r--p 00002000 08:04 1329996                    /lib64/libplds4.so
+7ff2d3ba6000-7ff2d3ba7000 rw-p 00003000 08:04 1329996                    /lib64/libplds4.so
+7ff2d3ba7000-7ff2d3be0000 r-xp 00000000 08:04 1329994                    /lib64/libnspr4.so
+7ff2d3be0000-7ff2d3de0000 ---p 00039000 08:04 1329994                    /lib64/libnspr4.so
+7ff2d3de0000-7ff2d3de2000 r--p 00039000 08:04 1329994                    /lib64/libnspr4.so
+7ff2d3de2000-7ff2d3de4000 rw-p 0003b000 08:04 1329994                    /lib64/libnspr4.so
+7ff2d3de4000-7ff2d3de6000 rw-p 00000000 00:00 0 
+7ff2d3de6000-7ff2d3e00000 r-xp 00000000 00:25 9222893                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-mozilla-gtk-4530.so
+7ff2d3e00000-7ff2d3fff000 ---p 0001a000 00:25 9222893                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-mozilla-gtk-4530.so
+7ff2d3fff000-7ff2d4000000 rw-p 00019000 00:25 9222893                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-mozilla-gtk-4530.so
+7ff2d4000000-7ff2d4021000 rw-p 00000000 00:00 0 
+7ff2d4021000-7ff2d8000000 ---p 00000000 00:00 0 
+7ff2d80c9000-7ff2d80d0000 r-xp 00000000 00:25 9222892                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-xpcominit-gtk-4530.so
+7ff2d80d0000-7ff2d82d0000 ---p 00007000 00:25 9222892                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-xpcominit-gtk-4530.so
+7ff2d82d0000-7ff2d82d2000 rw-p 00007000 00:25 9222892                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-xpcominit-gtk-4530.so
+7ff2d82d2000-7ff2d82e3000 r-xp 00000000 00:25 9222891                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-webkit-gtk-4530.so
+7ff2d82e3000-7ff2d84e3000 ---p 00011000 00:25 9222891                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-webkit-gtk-4530.so
+7ff2d84e3000-7ff2d84e4000 rw-p 00011000 00:25 9222891                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-webkit-gtk-4530.so
+7ff2d84e4000-7ff2d85e4000 rw-p 00000000 00:00 0 
+7ff2d85e4000-7ff2d86e4000 ---p 00000000 00:00 0 
+7ff2d86e4000-7ff2d86e7000 ---p 00000000 00:00 0 
+7ff2d86e7000-7ff2d8ae5000 rw-p 00000000 00:00 0 
+7ff2d8ae5000-7ff2d8b7b000 r--p 00000000 08:04 8945                       /usr/share/fonts/dejavu/DejaVuSans-BoldOblique.ttf
+7ff2d8b7b000-7ff2d8c11000 r--p 00000000 08:04 8947                       /usr/share/fonts/dejavu/DejaVuSans-Oblique.ttf
+7ff2d8c11000-7ff2d8e11000 rw-p 00000000 00:00 0 
+7ff2d8e11000-7ff2d90f3000 r-xp 00000000 00:26 22804578                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcssplit.so
+7ff2d90f3000-7ff2d92f2000 ---p 002e2000 00:26 22804578                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcssplit.so
+7ff2d92f2000-7ff2d92fc000 rw-p 002e1000 00:26 22804578                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcssplit.so
+7ff2d92fc000-7ff2d94fc000 rw-p 00000000 00:00 0 
+7ff2d94fc000-7ff2d96fc000 rw-p 00000000 00:00 0 
+7ff2d96fc000-7ff2d98fc000 rw-p 00000000 00:00 0 
+7ff2d98fc000-7ff2d9afc000 rw-p 00000000 00:00 0 
+7ff2d9afc000-7ff2d9aff000 ---p 00000000 00:00 0 
+7ff2d9aff000-7ff2da0fd000 rw-p 00000000 00:00 0 
+7ff2da0fd000-7ff2da2fd000 rw-p 00000000 00:00 0 
+7ff2da2fd000-7ff2da4fd000 rw-p 00000000 00:00 0 
+7ff2da4fd000-7ff2da6fd000 rw-p 00000000 00:00 0 
+7ff2da6fd000-7ff2da8fd000 rw-p 00000000 00:00 0 
+7ff2da8fd000-7ff2daafd000 rw-p 00000000 00:00 0 
+7ff2daafd000-7ff2dacfd000 rw-p 00000000 00:00 0 
+7ff2dacfd000-7ff2daefd000 rw-p 00000000 00:00 0 
+7ff2daefd000-7ff2db0fd000 rw-p 00000000 00:00 0 
+7ff2db0fd000-7ff2db2fd000 rw-p 00000000 00:00 0 
+7ff2db2fd000-7ff2db2fe000 ---p 00000000 00:00 0 
+7ff2db2fe000-7ff2db6fe000 rw-p 00000000 00:00 0 
+7ff2db6fe000-7ff2db6ff000 ---p 00000000 00:00 0 
+7ff2db6ff000-7ff2dbaff000 rw-p 00000000 00:00 0 
+7ff2dbaff000-7ff2dbb00000 ---p 00000000 00:00 0 
+7ff2dbb00000-7ff2dc000000 rw-p 00000000 00:00 0 
+7ff2dc000000-7ff2dd359000 rw-p 00000000 00:00 0 
+7ff2dd359000-7ff2e0000000 ---p 00000000 00:00 0 
+7ff2e0000000-7ff2e09db000 rw-p 00000000 00:00 0 
+7ff2e09db000-7ff2e4000000 ---p 00000000 00:00 0 
+7ff2e400a000-7ff2e40af000 r--p 00000000 08:04 8944                       /usr/share/fonts/dejavu/DejaVuSans-Bold.ttf
+7ff2e40af000-7ff2e45af000 rw-p 00000000 00:00 0 
+7ff2e45af000-7ff2e47af000 rw-p 00000000 00:00 0 
+7ff2e47af000-7ff2e49af000 rw-p 00000000 00:00 0 
+7ff2e49af000-7ff2e4baf000 rw-p 00000000 00:00 0 
+7ff2e4baf000-7ff2e4daf000 rw-p 00000000 00:00 0 
+7ff2e4daf000-7ff2e4faf000 rw-p 00000000 00:00 0 
+7ff2e4faf000-7ff2e4fb2000 ---p 00000000 00:00 0 
+7ff2e4fb2000-7ff2e55b0000 rw-p 00000000 00:00 0 
+7ff2e55b0000-7ff2e5626000 r--s 005dd000 00:26 22851470                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.model_1.0.0.jar
+7ff2e5626000-7ff2e5826000 rw-p 00000000 00:00 0 
+7ff2e5826000-7ff2e582c000 r-xp 00000000 08:04 1178903                    /usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-gif.so
+7ff2e582c000-7ff2e5a2b000 ---p 00006000 08:04 1178903                    /usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-gif.so
+7ff2e5a2b000-7ff2e5a2c000 rw-p 00005000 08:04 1178903                    /usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-gif.so
+7ff2e5a2c000-7ff2e5c2c000 rw-p 00000000 00:00 0 
+7ff2e5c2c000-7ff2e5c2f000 ---p 00000000 00:00 0 
+7ff2e5c2f000-7ff2e622d000 rw-p 00000000 00:00 0 
+7ff2e622d000-7ff2e7611000 r-xp 00000000 08:04 1176757                    /usr/lib64/libnvidia-glcore.so.375.66
+7ff2e7611000-7ff2e7631000 rwxp 013e4000 08:04 1176757                    /usr/lib64/libnvidia-glcore.so.375.66
+7ff2e7631000-7ff2e7a01000 r-xp 01404000 08:04 1176757                    /usr/lib64/libnvidia-glcore.so.375.66
+7ff2e7a01000-7ff2e7c01000 ---p 017d4000 08:04 1176757                    /usr/lib64/libnvidia-glcore.so.375.66
+7ff2e7c01000-7ff2e7fe8000 rw-p 017d4000 08:04 1176757                    /usr/lib64/libnvidia-glcore.so.375.66
+7ff2e7fe8000-7ff2e8000000 rw-p 00000000 00:00 0 
+7ff2e8000000-7ff2e8021000 rw-p 00000000 00:00 0 
+7ff2e8021000-7ff2ec000000 ---p 00000000 00:00 0 
+7ff2ec03f000-7ff2ec042000 ---p 00000000 00:00 0 
+7ff2ec042000-7ff2ec440000 rw-p 00000000 00:00 0 
+7ff2ec440000-7ff2ec443000 ---p 00000000 00:00 0 
+7ff2ec443000-7ff2ec841000 rw-p 00000000 00:00 0 
+7ff2ec841000-7ff2ec84b000 r-xp 00000000 00:25 9222871                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-atk-gtk-4530.so
+7ff2ec84b000-7ff2eca4b000 ---p 0000a000 00:25 9222871                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-atk-gtk-4530.so
+7ff2eca4b000-7ff2eca4c000 rw-p 0000a000 00:25 9222871                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-atk-gtk-4530.so
+7ff2eca4c000-7ff2eca76000 r-xp 00000000 08:04 1215724                    /usr/lib64/gio/modules/libgvfsdbus.so
+7ff2eca76000-7ff2ecc75000 ---p 0002a000 08:04 1215724                    /usr/lib64/gio/modules/libgvfsdbus.so
+7ff2ecc75000-7ff2ecc77000 rw-p 00029000 08:04 1215724                    /usr/lib64/gio/modules/libgvfsdbus.so
+7ff2ecc77000-7ff2ecc8e000 r-xp 00000000 08:04 1215849                    /usr/lib64/libgvfscommon.so.0.0.0
+7ff2ecc8e000-7ff2ece8e000 ---p 00017000 08:04 1215849                    /usr/lib64/libgvfscommon.so.0.0.0
+7ff2ece8e000-7ff2ece8f000 rw-p 00017000 08:04 1215849                    /usr/lib64/libgvfscommon.so.0.0.0
+7ff2ecefc000-7ff2ecf10000 r-xp 00000000 08:04 1215723                    /usr/lib64/gio/modules/libgioremote-volume-monitor.so
+7ff2ecf10000-7ff2ed10f000 ---p 00014000 08:04 1215723                    /usr/lib64/gio/modules/libgioremote-volume-monitor.so
+7ff2ed10f000-7ff2ed110000 rw-p 00013000 08:04 1215723                    /usr/lib64/gio/modules/libgioremote-volume-monitor.so
+7ff2ed110000-7ff2ed116000 r-xp 00000000 08:04 1222512                    /usr/lib64/gtk-2.0/2.10.0/immodules/im-ibus.so
+7ff2ed116000-7ff2ed315000 ---p 00006000 08:04 1222512                    /usr/lib64/gtk-2.0/2.10.0/immodules/im-ibus.so
+7ff2ed315000-7ff2ed316000 rw-p 00005000 08:04 1222512                    /usr/lib64/gtk-2.0/2.10.0/immodules/im-ibus.so
+7ff2ed316000-7ff2ed516000 rw-p 00000000 00:00 0 
+7ff2ed516000-7ff2ed716000 rw-p 00000000 00:00 0 
+7ff2ed716000-7ff2ed916000 rw-p 00000000 00:00 0 
+7ff2ed916000-7ff2ed996000 rw-s 13e5fb000 00:05 19589                     /dev/nvidiactl
+7ff2ed996000-7ff2eda16000 rw-s 13e4fa000 00:05 19589                     /dev/nvidiactl
+7ff2eda16000-7ff2eda96000 rw-s 13e478000 00:05 19589                     /dev/nvidiactl
+7ff2eda96000-7ff2edb96000 rw-s 126851000 00:05 19589                     /dev/nvidiactl
+7ff2edb96000-7ff2edba9000 rw-s 1ada29000 00:05 19589                     /dev/nvidiactl
+7ff2edba9000-7ff2edbaa000 rw-s efdf3000 00:05 19591                      /dev/nvidia0
+7ff2edbaa000-7ff2edbea000 rw-s 126908000 00:05 19589                     /dev/nvidiactl
+7ff2edbea000-7ff2edcee000 rw-s 8503f8000 00:05 19589                     /dev/nvidiactl
+7ff2edcee000-7ff2eddb7000 r-xp 00000000 08:04 1179961                    /usr/lib64/libGLX_nvidia.so.375.66
+7ff2eddb7000-7ff2eddeb000 rwxp 000c9000 08:04 1179961                    /usr/lib64/libGLX_nvidia.so.375.66
+7ff2eddeb000-7ff2eddff000 r-xp 000fd000 08:04 1179961                    /usr/lib64/libGLX_nvidia.so.375.66
+7ff2eddff000-7ff2edffe000 ---p 00111000 08:04 1179961                    /usr/lib64/libGLX_nvidia.so.375.66
+7ff2edffe000-7ff2ee026000 rw-p 00110000 08:04 1179961                    /usr/lib64/libGLX_nvidia.so.375.66
+7ff2ee026000-7ff2ee02d000 rw-p 00000000 00:00 0 
+7ff2ee02d000-7ff2ee387000 r-xp 00000000 00:26 22804609                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcs3d_ogl.so
+7ff2ee387000-7ff2ee586000 ---p 0035a000 00:26 22804609                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcs3d_ogl.so
+7ff2ee586000-7ff2ee5a7000 rw-p 00359000 00:26 22804609                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcs3d_ogl.so
+7ff2ee5a7000-7ff2ee5b7000 rw-p 00000000 00:00 0 
+7ff2ee5b7000-7ff2ee9ce000 r-xp 00000000 00:26 22851239                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsgraphics_ogl.so
+7ff2ee9ce000-7ff2eebce000 ---p 00417000 00:26 22851239                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsgraphics_ogl.so
+7ff2eebce000-7ff2eebfc000 rw-p 00417000 00:26 22851239                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsgraphics_ogl.so
+7ff2eebfc000-7ff2eebfe000 rw-p 00000000 00:00 0 
+7ff2eebfe000-7ff2eebff000 ---p 00000000 00:00 0 
+7ff2eebff000-7ff2ef5ff000 rw-p 00000000 00:00 0 
+7ff2ef5ff000-7ff2ef600000 ---p 00000000 00:00 0 
+7ff2ef600000-7ff2f0000000 rw-p 00000000 00:00 0 
+7ff2f0000000-7ff2f0021000 rw-p 00000000 00:00 0 
+7ff2f0021000-7ff2f4000000 ---p 00000000 00:00 0 
+7ff2f4000000-7ff2f4021000 rw-p 00000000 00:00 0 
+7ff2f4021000-7ff2f8000000 ---p 00000000 00:00 0 
+7ff2f8000000-7ff2f8021000 rw-p 00000000 00:00 0 
+7ff2f8021000-7ff2fc000000 ---p 00000000 00:00 0 
+7ff2fc00e000-7ff2fc01e000 rw-s e0360000 00:05 19591                      /dev/nvidia0
+7ff2fc01e000-7ff2fc03e000 rw-s 7ae5e8000 00:05 19589                     /dev/nvidiactl
+7ff2fc03e000-7ff2fc07e000 rw-s 1269c2000 00:05 19589                     /dev/nvidiactl
+7ff2fc07e000-7ff2fc081000 r-xp 00000000 08:04 1177017                    /usr/lib64/tls/libnvidia-tls.so.375.66
+7ff2fc081000-7ff2fc281000 ---p 00003000 08:04 1177017                    /usr/lib64/tls/libnvidia-tls.so.375.66
+7ff2fc281000-7ff2fc282000 rw-p 00003000 08:04 1177017                    /usr/lib64/tls/libnvidia-tls.so.375.66
+7ff2fc282000-7ff2fc283000 r-xp 00000000 00:26 22804576                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcs3d_util.so
+7ff2fc283000-7ff2fc482000 ---p 00001000 00:26 22804576                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcs3d_util.so
+7ff2fc482000-7ff2fc483000 rw-p 00000000 00:26 22804576                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcs3d_util.so
+7ff2fc490000-7ff2fc4b0000 rw-s 2547b8000 00:05 19589                     /dev/nvidiactl
+7ff2fc4b0000-7ff2fc4f0000 rw-s 22b55c000 00:05 19589                     /dev/nvidiactl
+7ff2fc4f0000-7ff2fc4f3000 ---p 00000000 00:00 0 
+7ff2fc4f3000-7ff2fc8f1000 rw-p 00000000 00:00 0 
+7ff2fc8f1000-7ff2fc8f4000 ---p 00000000 00:00 0 
+7ff2fc8f4000-7ff2fccf2000 rw-p 00000000 00:00 0 
+7ff2fccf2000-7ff2fcda2000 r--p 00000000 08:04 8948                       /usr/share/fonts/dejavu/DejaVuSans.ttf
+7ff2fcda2000-7ff2fcdab000 r-xp 00000000 00:25 9222867                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-cairo-gtk-4530.so
+7ff2fcdab000-7ff2fcfab000 ---p 00009000 00:25 9222867                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-cairo-gtk-4530.so
+7ff2fcfab000-7ff2fcfac000 rw-p 00009000 00:25 9222867                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-cairo-gtk-4530.so
+7ff2fcfac000-7ff2fd1ac000 rw-p 00000000 00:00 0 
+7ff2fd1ac000-7ff2fd21e000 r-xp 00000000 00:25 9222866                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-pi-gtk-4530.so
+7ff2fd21e000-7ff2fd41e000 ---p 00072000 00:25 9222866                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-pi-gtk-4530.so
+7ff2fd41e000-7ff2fd421000 rw-p 00072000 00:25 9222866                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-pi-gtk-4530.so
+7ff2fd421000-7ff2fd423000 rw-p 00000000 00:00 0 
+7ff2fd423000-7ff2fd4a1000 r-xp 00000000 00:25 9222865                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-gtk-4530.so
+7ff2fd4a1000-7ff2fd6a0000 ---p 0007e000 00:25 9222865                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-gtk-4530.so
+7ff2fd6a0000-7ff2fd6a8000 rw-p 0007d000 00:25 9222865                    /chalmers/users/gabgus/.comsol/v53a/configuration/comsol/org.eclipse.osgi/225/0/.cp/libswt-gtk-4530.so
+7ff2fd6a8000-7ff2fd8aa000 rw-p 00000000 00:00 0 
+7ff2fd8aa000-7ff2fdaaa000 rw-p 00000000 00:00 0 
+7ff2fdaaa000-7ff2fdbba000 r-xp 00000000 00:26 22804623                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcstextrenderer.so
+7ff2fdbba000-7ff2fddb9000 ---p 00110000 00:26 22804623                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcstextrenderer.so
+7ff2fddb9000-7ff2fddc3000 rw-p 0010f000 00:26 22804623                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcstextrenderer.so
+7ff2fddc3000-7ff2fddcd000 r-xp 00000000 00:26 22804618                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsjnitextrenderer.so
+7ff2fddcd000-7ff2fdfcc000 ---p 0000a000 00:26 22804618                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsjnitextrenderer.so
+7ff2fdfcc000-7ff2fdfcd000 rw-p 00009000 00:26 22804618                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsjnitextrenderer.so
+7ff2fdfcd000-7ff2fdfd0000 ---p 00000000 00:00 0 
+7ff2fdfd0000-7ff2fe3ce000 rw-p 00000000 00:00 0 
+7ff2fe3ce000-7ff2fe79f000 r-xp 00000000 00:26 22851241                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsgraphics_scene_common.so
+7ff2fe79f000-7ff2fe99e000 ---p 003d1000 00:26 22851241                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsgraphics_scene_common.so
+7ff2fe99e000-7ff2fe9cb000 rw-p 003d0000 00:26 22851241                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsgraphics_scene_common.so
+7ff2fe9cb000-7ff2fe9cd000 rw-p 00000000 00:00 0 
+7ff2fe9cd000-7ff2feb62000 r-xp 00000000 00:26 22851231                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsgraphics_common.so
+7ff2feb62000-7ff2fed62000 ---p 00195000 00:26 22851231                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsgraphics_common.so
+7ff2fed62000-7ff2fed66000 rw-p 00195000 00:26 22851231                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsgraphics_common.so
+7ff2fed66000-7ff2feeba000 r-xp 00000000 00:26 22804532                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/ext/graphicsmagick/glnxa64/libGraphicsMagick.so.3.10.0
+7ff2feeba000-7ff2ff0b9000 ---p 00154000 00:26 22804532                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/ext/graphicsmagick/glnxa64/libGraphicsMagick.so.3.10.0
+7ff2ff0b9000-7ff2ff0c6000 rw-p 00153000 00:26 22804532                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/ext/graphicsmagick/glnxa64/libGraphicsMagick.so.3.10.0
+7ff2ff0c6000-7ff2ff0c7000 rw-p 00000000 00:00 0 
+7ff2ff0c7000-7ff2ff0ce000 r--s 00000000 08:04 1177015                    /usr/lib64/gconv/gconv-modules.cache
+7ff2ff0ce000-7ff2ff2ee000 rw-p 00000000 00:00 0 
+7ff2ff2ee000-7ff302ffe000 r-xp 00000000 00:26 22804607                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsmklblas.so
+7ff302ffe000-7ff3031fe000 ---p 03d10000 00:26 22804607                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsmklblas.so
+7ff3031fe000-7ff30323a000 rw-p 03d10000 00:26 22804607                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsmklblas.so
+7ff30323a000-7ff303280000 rw-p 00000000 00:00 0 
+7ff303280000-7ff3032dc000 r-xp 00000000 00:26 22804568                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libintlc.so.5
+7ff3032dc000-7ff3034db000 ---p 0005c000 00:26 22804568                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libintlc.so.5
+7ff3034db000-7ff3034dd000 rw-p 0005b000 00:26 22804568                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libintlc.so.5
+7ff3034dd000-7ff3034de000 rw-p 00000000 00:00 0 
+7ff3034de000-7ff3035e8000 r-xp 00000000 00:26 22804567                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libiomp5.so
+7ff3035e8000-7ff3037e7000 ---p 0010a000 00:26 22804567                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libiomp5.so
+7ff3037e7000-7ff3037e9000 r--p 00109000 00:26 22804567                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libiomp5.so
+7ff3037e9000-7ff3037f2000 rw-p 0010b000 00:26 22804567                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libiomp5.so
+7ff3037f2000-7ff30381f000 rw-p 00000000 00:00 0 
+7ff30381f000-7ff303824000 r-xp 00000000 00:26 22804596                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libirng.so
+7ff303824000-7ff303a24000 ---p 00005000 00:26 22804596                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libirng.so
+7ff303a24000-7ff303a26000 rw-p 00005000 00:26 22804596                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libirng.so
+7ff303a26000-7ff3046c2000 r-xp 00000000 00:26 22804566                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libsvml.so
+7ff3046c2000-7ff3048c1000 ---p 00c9c000 00:26 22804566                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libsvml.so
+7ff3048c1000-7ff3048f9000 rw-p 00c9b000 00:26 22804566                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libsvml.so
+7ff3048f9000-7ff304b73000 r-xp 00000000 00:26 22804563                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libimf.so
+7ff304b73000-7ff304d72000 ---p 0027a000 00:26 22804563                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libimf.so
+7ff304d72000-7ff304db4000 rw-p 00279000 00:26 22804563                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libimf.so
+7ff304db4000-7ff304dc4000 r-xp 00000000 00:26 22804569                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsmpi.so
+7ff304dc4000-7ff304fc4000 ---p 00010000 00:26 22804569                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsmpi.so
+7ff304fc4000-7ff304fc5000 rw-p 00010000 00:26 22804569                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsmpi.so
+7ff304fc5000-7ff3050ef000 r-xp 00000000 00:26 22804631                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libifcoremt.so.5
+7ff3050ef000-7ff3052ef000 ---p 0012a000 00:26 22804631                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libifcoremt.so.5
+7ff3052ef000-7ff3052f4000 rw-p 0012a000 00:26 22804631                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libifcoremt.so.5
+7ff3052f4000-7ff305328000 rw-p 00000000 00:00 0 
+7ff305328000-7ff30534c000 r-xp 00000000 00:26 22804552                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libifport.so.5
+7ff30534c000-7ff30554c000 ---p 00024000 00:26 22804552                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libifport.so.5
+7ff30554c000-7ff30554e000 rw-p 00024000 00:26 22804552                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libifport.so.5
+7ff30554e000-7ff305554000 rw-p 00000000 00:00 0 
+7ff305554000-7ff305579000 r-xp 00000000 00:26 22804562                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsblas.so
+7ff305579000-7ff305779000 ---p 00025000 00:26 22804562                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsblas.so
+7ff305779000-7ff30577a000 rw-p 00025000 00:26 22804562                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsblas.so
+7ff30577a000-7ff305794000 r-xp 00000000 00:26 22804560                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsspecfun.so
+7ff305794000-7ff305994000 ---p 0001a000 00:26 22804560                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsspecfun.so
+7ff305994000-7ff305997000 rw-p 0001a000 00:26 22804560                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsspecfun.so
+7ff305997000-7ff30599b000 r-xp 00000000 00:26 22804565                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcscutil.so
+7ff30599b000-7ff305b9b000 ---p 00004000 00:26 22804565                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcscutil.so
+7ff305b9b000-7ff305b9d000 rw-p 00004000 00:26 22804565                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcscutil.so
+7ff305b9d000-7ff305c14000 rw-p 00000000 00:00 0 
+7ff305c14000-7ff305d30000 r-xp 00000000 00:26 22804592                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsnutil.so
+7ff305d30000-7ff305f30000 ---p 0011c000 00:26 22804592                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsnutil.so
+7ff305f30000-7ff305f3c000 rw-p 0011c000 00:26 22804592                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsnutil.so
+7ff305f3c000-7ff305ff2000 rw-p 00000000 00:00 0 
+7ff305ff2000-7ff306027000 r-xp 00000000 00:26 22804579                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcssundials.so
+7ff306027000-7ff306227000 ---p 00035000 00:26 22804579                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcssundials.so
+7ff306227000-7ff306228000 rw-p 00035000 00:26 22804579                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcssundials.so
+7ff306228000-7ff30637a000 r-xp 00000000 00:26 22804556                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsspooles.so
+7ff30637a000-7ff306579000 ---p 00152000 00:26 22804556                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsspooles.so
+7ff306579000-7ff30657c000 rw-p 00151000 00:26 22804556                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsspooles.so
+7ff30657c000-7ff3065a4000 r-xp 00000000 00:26 22804604                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsarpack.so
+7ff3065a4000-7ff3067a4000 ---p 00028000 00:26 22804604                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsarpack.so
+7ff3067a4000-7ff3067a8000 rw-p 00028000 00:26 22804604                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsarpack.so
+7ff3067a8000-7ff3069bd000 r-xp 00000000 00:26 22851236                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsutil.so
+7ff3069bd000-7ff306bbc000 ---p 00215000 00:26 22851236                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsutil.so
+7ff306bbc000-7ff306bc7000 rw-p 00214000 00:26 22851236                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsutil.so
+7ff306bc7000-7ff307185000 r-xp 00000000 00:26 22851243                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsarray.so
+7ff307185000-7ff307384000 ---p 005be000 00:26 22851243                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsarray.so
+7ff307384000-7ff3073c3000 rw-p 005bd000 00:26 22851243                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsarray.so
+7ff3073c3000-7ff3073c4000 rw-p 00000000 00:00 0 
+7ff3073c4000-7ff3074c0000 r-xp 00000000 00:26 22851232                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsclusterarray.so
+7ff3074c0000-7ff3076c0000 ---p 000fc000 00:26 22851232                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsclusterarray.so
+7ff3076c0000-7ff3076c6000 rw-p 000fc000 00:26 22851232                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsclusterarray.so
+7ff3076c6000-7ff307b5f000 r-xp 00000000 00:26 22851237                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsgeom.so
+7ff307b5f000-7ff307d5f000 ---p 00499000 00:26 22851237                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsgeom.so
+7ff307d5f000-7ff307d70000 rw-p 00499000 00:26 22851237                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsgeom.so
+7ff307d70000-7ff307dfd000 r-xp 00000000 00:26 22804610                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsdatacarrier.so
+7ff307dfd000-7ff307ffc000 ---p 0008d000 00:26 22804610                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsdatacarrier.so
+7ff307ffc000-7ff308000000 rw-p 0008c000 00:26 22804610                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsdatacarrier.so
+7ff308000000-7ff308021000 rw-p 00000000 00:00 0 
+7ff308021000-7ff30c000000 ---p 00000000 00:00 0 
+7ff30c000000-7ff30c021000 rw-p 00000000 00:00 0 
+7ff30c021000-7ff310000000 ---p 00000000 00:00 0 
+7ff310000000-7ff310021000 rw-p 00000000 00:00 0 
+7ff310021000-7ff314000000 ---p 00000000 00:00 0 
+7ff314000000-7ff314034000 rw-p 00000000 00:00 0 
+7ff314034000-7ff318000000 ---p 00000000 00:00 0 
+7ff318000000-7ff31802b000 rw-p 00000000 00:00 0 
+7ff31802b000-7ff31c000000 ---p 00000000 00:00 0 
+7ff31c000000-7ff31c021000 rw-p 00000000 00:00 0 
+7ff31c021000-7ff320000000 ---p 00000000 00:00 0 
+7ff320000000-7ff320112000 rw-p 00000000 00:00 0 
+7ff320112000-7ff324000000 ---p 00000000 00:00 0 
+7ff324000000-7ff324021000 rw-p 00000000 00:00 0 
+7ff324021000-7ff328000000 ---p 00000000 00:00 0 
+7ff328000000-7ff328126000 rw-p 00000000 00:00 0 
+7ff328126000-7ff32c000000 ---p 00000000 00:00 0 
+7ff32c000000-7ff32c18f000 rw-p 00000000 00:00 0 
+7ff32c18f000-7ff330000000 ---p 00000000 00:00 0 
+7ff330000000-7ff330021000 rw-p 00000000 00:00 0 
+7ff330021000-7ff334000000 ---p 00000000 00:00 0 
+7ff334000000-7ff334021000 rw-p 00000000 00:00 0 
+7ff334021000-7ff338000000 ---p 00000000 00:00 0 
+7ff338000000-7ff338914000 rw-p 00000000 00:00 0 
+7ff338914000-7ff33c000000 ---p 00000000 00:00 0 
+7ff33c000000-7ff33c021000 rw-p 00000000 00:00 0 
+7ff33c021000-7ff340000000 ---p 00000000 00:00 0 
+7ff340000000-7ff3419f3000 rw-p 00000000 00:00 0 
+7ff3419f3000-7ff344000000 ---p 00000000 00:00 0 
+7ff344000000-7ff3452c9000 rw-p 00000000 00:00 0 
+7ff3452c9000-7ff348000000 ---p 00000000 00:00 0 
+7ff348000000-7ff348021000 rw-p 00000000 00:00 0 
+7ff348021000-7ff34c000000 ---p 00000000 00:00 0 
+7ff34c000000-7ff34c021000 rw-p 00000000 00:00 0 
+7ff34c021000-7ff350000000 ---p 00000000 00:00 0 
+7ff350000000-7ff3500fb000 rw-p 00000000 00:00 0 
+7ff3500fb000-7ff354000000 ---p 00000000 00:00 0 
+7ff354000000-7ff354021000 rw-p 00000000 00:00 0 
+7ff354021000-7ff358000000 ---p 00000000 00:00 0 
+7ff358000000-7ff358021000 rw-p 00000000 00:00 0 
+7ff358021000-7ff35c000000 ---p 00000000 00:00 0 
+7ff35c004000-7ff35c005000 rw-s 1ada28000 00:05 19589                     /dev/nvidiactl
+7ff35c005000-7ff35c009000 rw-s 1ada24000 00:05 19589                     /dev/nvidiactl
+7ff35c009000-7ff35c00a000 rw-s efdf3000 00:05 19591                      /dev/nvidia0
+7ff35c00a000-7ff35c00b000 rw-s efdf3000 00:05 19591                      /dev/nvidia0
+7ff35c00b000-7ff35c02b000 rw-s 126856000 00:05 19589                     /dev/nvidiactl
+7ff35c02b000-7ff35c02c000 rw-s 2547d5000 00:05 19589                     /dev/nvidiactl
+7ff35c02c000-7ff35c02d000 rw-s f6060000 00:05 19591                      /dev/nvidia0
+7ff35c02d000-7ff35c035000 rw-p 00000000 00:00 0 
+7ff35c035000-7ff35c036000 r--s 00000000 08:04 814444                     /var/cache/fontconfig/a2cb55133c4e4d547d9f2f13802ad545-le64.cache-3
+7ff35c036000-7ff35c037000 r--s 00000000 08:04 814443                     /var/cache/fontconfig/d7c3980621ce8b556f132f9897986857-le64.cache-3
+7ff35c037000-7ff35c038000 r--s 00000000 08:04 814442                     /var/cache/fontconfig/b417f44d866161e310b9b599dabfbbe5-le64.cache-3
+7ff35c038000-7ff35c039000 r--s 00000000 08:04 814441                     /var/cache/fontconfig/1cbcaebf2d8a4584a554b1b7fc6e886b-le64.cache-3
+7ff35c039000-7ff35c03a000 r--s 00000000 08:04 787374                     /var/cache/fontconfig/9c991551d4d37280ee51c97e8f8abbc9-le64.cache-3
+7ff35c03a000-7ff35c03d000 r--s 00000000 08:04 787410                     /var/cache/fontconfig/87f5e051180a7a75f16eb6fe7dbd3749-le64.cache-3
+7ff35c03d000-7ff35c046000 r--s 00000000 08:04 787539                     /var/cache/fontconfig/b79f3aaa7d385a141ab53ec885cc22a8-le64.cache-3
+7ff35c046000-7ff35c04c000 r-xp 00000000 00:26 22804594                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsscalapack.so
+7ff35c04c000-7ff35c24b000 ---p 00006000 00:26 22804594                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsscalapack.so
+7ff35c24b000-7ff35c24c000 rw-p 00005000 00:26 22804594                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsscalapack.so
+7ff35c24c000-7ff35c7af000 r-xp 00000000 00:26 22851244                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcscomsolgeom.so
+7ff35c7af000-7ff35c9af000 ---p 00563000 00:26 22851244                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcscomsolgeom.so
+7ff35c9af000-7ff35c9bc000 rw-p 00563000 00:26 22851244                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcscomsolgeom.so
+7ff35c9bc000-7ff35d47e000 r-xp 00000000 00:26 22851242                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsmesh.so
+7ff35d47e000-7ff35d67e000 ---p 00ac2000 00:26 22851242                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsmesh.so
+7ff35d67e000-7ff35d69d000 rw-p 00ac2000 00:26 22851242                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsmesh.so
+7ff35d69d000-7ff35d69e000 rw-p 00000000 00:00 0 
+7ff35d69e000-7ff35f255000 r-xp 00000000 00:26 22851234                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsxmesh.so
+7ff35f255000-7ff35f454000 ---p 01bb7000 00:26 22851234                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsxmesh.so
+7ff35f454000-7ff35f4e2000 rw-p 01bb6000 00:26 22851234                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsxmesh.so
+7ff35f4e2000-7ff35f4e3000 rw-p 00000000 00:00 0 
+7ff35f4e3000-7ff35fdca000 r-xp 00000000 00:26 22851238                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcssolver.so
+7ff35fdca000-7ff35ffca000 ---p 008e7000 00:26 22851238                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcssolver.so
+7ff35ffca000-7ff35ffff000 rw-p 008e7000 00:26 22851238                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcssolver.so
+7ff35ffff000-7ff360000000 rw-p 00000000 00:00 0 
+7ff360000000-7ff360021000 rw-p 00000000 00:00 0 
+7ff360021000-7ff364000000 ---p 00000000 00:00 0 
+7ff364000000-7ff364003000 r--s 00000000 08:04 814336                     /var/cache/fontconfig/0b1bcc92b4d25cc154d77dafe3bceaa0-le64.cache-3
+7ff364003000-7ff364006000 r--s 00000000 08:04 814366                     /var/cache/fontconfig/2e1514a9fdd499050989183bb65136db-le64.cache-3
+7ff364006000-7ff364007000 r--s 00000000 08:04 814377                     /var/cache/fontconfig/44ad4949f51819251fed26de7f5ef1ed-le64.cache-3
+7ff364007000-7ff36400f000 r--s 00000000 08:04 814381                     /var/cache/fontconfig/5c755b2f27115486aa6359c84dd3cbda-le64.cache-3
+7ff36400f000-7ff364010000 r--s 00000000 08:04 814365                     /var/cache/fontconfig/b966c23d19cce9e9a98d55765cf2a0c7-le64.cache-3
+7ff364010000-7ff36401f000 r--s 00000000 08:04 814384                     /var/cache/fontconfig/3f821257dd33660ba7bbb45c32deb84c-le64.cache-3
+7ff36401f000-7ff364027000 r--s 00000000 08:04 814359                     /var/cache/fontconfig/4460665c0f3e88acdd4c85aa2f409b99-le64.cache-3
+7ff364027000-7ff364029000 r--s 00000000 08:04 814385                     /var/cache/fontconfig/830f035fa84a65ce80e050178dbb630d-le64.cache-3
+7ff364029000-7ff36402c000 r--s 00000000 08:04 814371                     /var/cache/fontconfig/81a173283b451552b599cfaafd6236bd-le64.cache-3
+7ff36402c000-7ff36402d000 r--s 00000000 08:04 814445                     /var/cache/fontconfig/ac68f755438cc3dc5a526084839fc7ca-le64.cache-3
+7ff36402d000-7ff36402e000 r--s 00000000 08:04 814354                     /var/cache/fontconfig/e8fe69fff143ec54c56d12417c2b92c6-le64.cache-3
+7ff36402e000-7ff36402f000 r--s 00000000 08:04 814335                     /var/cache/fontconfig/a8c9a5f1ab5a46f0074d105dddc874cf-le64.cache-3
+7ff36402f000-7ff364050000 r-xp 00000000 00:26 22804619                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcscluster.so
+7ff364050000-7ff364250000 ---p 00021000 00:26 22804619                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcscluster.so
+7ff364250000-7ff364251000 rw-p 00021000 00:26 22804619                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcscluster.so
+7ff364251000-7ff3642a6000 r-xp 00000000 00:26 22804628                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsonline.so
+7ff3642a6000-7ff3644a6000 ---p 00055000 00:26 22804628                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsonline.so
+7ff3644a6000-7ff3644a8000 rw-p 00055000 00:26 22804628                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsonline.so
+7ff3644a8000-7ff3644f5000 r-xp 00000000 00:26 22804577                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcspost.so
+7ff3644f5000-7ff3646f5000 ---p 0004d000 00:26 22804577                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcspost.so
+7ff3646f5000-7ff3646f7000 rw-p 0004d000 00:26 22804577                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcspost.so
+7ff3646f7000-7ff364a4e000 r-xp 00000000 00:26 22804624                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsjni.so
+7ff364a4e000-7ff364c4d000 ---p 00357000 00:26 22804624                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsjni.so
+7ff364c4d000-7ff364c55000 rw-p 00356000 00:26 22804624                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsjni.so
+7ff364c55000-7ff364c56000 rw-p 00000000 00:00 0 
+7ff364c56000-7ff364c57000 r-xp 00000000 00:26 22804603                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsdynload.so
+7ff364c57000-7ff364e56000 ---p 00001000 00:26 22804603                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsdynload.so
+7ff364e56000-7ff364e57000 rw-p 00000000 00:26 22804603                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcsdynload.so
+7ff364e57000-7ff365057000 rw-p 00000000 00:00 0 
+7ff3650d2000-7ff3650d5000 ---p 00000000 00:00 0 
+7ff3650d5000-7ff36510b000 rw-p 00000000 00:00 0 
+7ff36510b000-7ff36510c000 ---p 00000000 00:00 0 
+7ff36510c000-7ff36511c000 rw-p 00000000 00:00 0 
+7ff36511c000-7ff36512a000 r--s 0012a000 00:26 22851494                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.applapi_1.0.0.jar
+7ff36512a000-7ff365146000 r--s 002b9000 00:26 22851484                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.transport_1.0.0.jar
+7ff365146000-7ff36515d000 r--s 001bd000 00:26 22851453                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.post_1.0.0.jar
+7ff36515d000-7ff365160000 ---p 00000000 00:00 0 
+7ff365160000-7ff36555e000 rw-p 00000000 00:00 0 
+7ff36555e000-7ff365561000 ---p 00000000 00:00 0 
+7ff365561000-7ff365b5f000 rw-p 00000000 00:00 0 
+7ff365b5f000-7ff365bb3000 r-xp 00000000 00:26 22804897                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libawt_xawt.so
+7ff365bb3000-7ff365db3000 ---p 00054000 00:26 22804897                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libawt_xawt.so
+7ff365db3000-7ff365db7000 rw-p 00054000 00:26 22804897                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libawt_xawt.so
+7ff365db7000-7ff365db8000 rw-p 00000000 00:00 0 
+7ff365db8000-7ff365e5a000 r-xp 00000000 00:26 22804898                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libawt.so
+7ff365e5a000-7ff36605a000 ---p 000a2000 00:26 22804898                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libawt.so
+7ff36605a000-7ff366066000 rw-p 000a2000 00:26 22804898                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libawt.so
+7ff366066000-7ff36608a000 rw-p 00000000 00:00 0 
+7ff36608a000-7ff366098000 r-xp 00000000 00:26 22804555                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcssystemutil.so
+7ff366098000-7ff366298000 ---p 0000e000 00:26 22804555                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcssystemutil.so
+7ff366298000-7ff366299000 rw-p 0000e000 00:26 22804555                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/libcssystemutil.so
+7ff366299000-7ff366499000 rw-p 00000000 00:00 0 
+7ff366499000-7ff36649c000 ---p 00000000 00:00 0 
+7ff36649c000-7ff36689a000 rw-p 00000000 00:00 0 
+7ff36689a000-7ff36689d000 ---p 00000000 00:00 0 
+7ff36689d000-7ff366e9b000 rw-p 00000000 00:00 0 
+7ff366e9b000-7ff366e9e000 ---p 00000000 00:00 0 
+7ff366e9e000-7ff36729c000 rw-p 00000000 00:00 0 
+7ff36729c000-7ff36729f000 ---p 00000000 00:00 0 
+7ff36729f000-7ff36769d000 rw-p 00000000 00:00 0 
+7ff36769d000-7ff36769e000 r--s 00000000 08:04 814353                     /var/cache/fontconfig/6cfc7d49b27ba7d3eb71ab86e04def2c-le64.cache-3
+7ff36769e000-7ff36769f000 r--s 00000000 08:04 787375                     /var/cache/fontconfig/2678730374f88f8c6b5c0192ab5a46db-le64.cache-3
+7ff36769f000-7ff3676b8000 r--s 00000000 08:04 784383                     /var/cache/fontconfig/73a61b34dd8ca4d8a159807604ab432f-le64.cache-3
+7ff3676b8000-7ff3676b9000 r--s 00000000 08:04 814372                     /var/cache/fontconfig/46d51d90fe9d963f6f4186edb936a931-le64.cache-3
+7ff3676b9000-7ff3676ba000 r--s 00000000 08:04 814356                     /var/cache/fontconfig/b887eea8f1b96e1d899b44ed6681fc27-le64.cache-3
+7ff3676ba000-7ff3676bb000 r--s 00000000 08:04 814378                     /var/cache/fontconfig/860639f272b8b4b3094f9e399e41bccd-le64.cache-3
+7ff3676bb000-7ff3676bc000 r--s 00000000 08:04 814351                     /var/cache/fontconfig/211368abcb0ff835c229ff05c9ec01dc-le64.cache-3
+7ff3676bc000-7ff3676bd000 r--s 00000000 08:04 814355                     /var/cache/fontconfig/c46020d7221988a13df853d2b46304fc-le64.cache-3
+7ff3676bd000-7ff3676be000 r--s 00000000 08:04 814361                     /var/cache/fontconfig/fa2b533b7056bdadb961f088bc0a978b-le64.cache-3
+7ff3676be000-7ff3676c2000 r--s 00000000 08:04 814383                     /var/cache/fontconfig/b67b32625a2bb51b023d3814a918f351-le64.cache-3
+7ff3676c2000-7ff3676c6000 r--s 00000000 08:04 814382                     /var/cache/fontconfig/d3379abda271c4acd2ad0c01f565d0b0-le64.cache-3
+7ff3676c6000-7ff3676d6000 r--s 00000000 08:04 787408                     /var/cache/fontconfig/12b26b760a24f8b4feb03ad48a333a72-le64.cache-3
+7ff3676d6000-7ff3676df000 r--s 00000000 08:04 787540                     /var/cache/fontconfig/33315028185e8b9ecf55d3c7f93d9205-le64.cache-3
+7ff3676df000-7ff3676e4000 r--s 00000000 08:04 814332                     /var/cache/fontconfig/3df8979866e8848a59fe99e84294e911-le64.cache-3
+7ff3676e4000-7ff3676f6000 r--s 00000000 08:04 814440                     /var/cache/fontconfig/74717c444f6fd72454fa9c9c0ee01ca7-le64.cache-3
+7ff3676f6000-7ff367757000 r--s 00a99000 00:26 22804338                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.ibm.icu_54.1.1.v201501272100.jar
+7ff367757000-7ff36779a000 r--s 003a2000 00:26 22804384                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.ui.workbench_3.107.1.v20160120-2131.jar
+7ff36779e000-7ff3677a9000 r--s 000af000 00:26 22851496                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guiapplication_1.0.0.jar
+7ff3677a9000-7ff3677b9000 r--s 000fd000 00:26 22851447                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.application_1.0.0.jar
+7ff3677b9000-7ff3677c6000 r--s 0011a000 00:26 22851448                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.geommesh_1.0.0.jar
+7ff3677c6000-7ff3677d5000 r--s 000f8000 00:26 22851490                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.core_1.0.0.jar
+7ff3677d5000-7ff3677e4000 r--s 00090000 00:26 22851487                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.dbmigration_1.0.0.jar
+7ff3677e4000-7ff36780b000 r--s 002a5000 00:26 22851481                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guimph_1.0.0.jar
+7ff36780b000-7ff367810000 r--s 00031000 00:26 22804495                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.e4.ui.css.swt_0.12.0.v20150511-1003.jar
+7ff367810000-7ff367813000 ---p 00000000 00:00 0 
+7ff367813000-7ff367c11000 rw-p 00000000 00:00 0 
+7ff367c11000-7ff367c12000 r--s 00000000 08:04 787383                     /var/cache/fontconfig/df893b4576ad6107f9397134092c4059-le64.cache-3
+7ff367c12000-7ff367c13000 r--s 00000000 08:04 814374                     /var/cache/fontconfig/900402270e15d763a6e008bb2d4c7686-le64.cache-3
+7ff367c13000-7ff367c18000 r--s 00000000 08:04 814369                     /var/cache/fontconfig/46b47dbc682d2ca4191e148ea7bde7f2-le64.cache-3
+7ff367c18000-7ff367c1f000 r--s 00000000 08:04 814439                     /var/cache/fontconfig/928306c3ad40271d946e41014a49fc28-le64.cache-3
+7ff367c1f000-7ff367c26000 r--s 00000000 08:04 814368                     /var/cache/fontconfig/fa1582dab13e7e8e44e5a9424d309f0e-le64.cache-3
+7ff367c26000-7ff367c3f000 r--s 00214000 00:26 22851477                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.design_1.0.0.jar
+7ff367c3f000-7ff367c89000 r--s 00b4c000 00:26 22851465                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.resources_1.0.0.jar
+7ff367c8b000-7ff367c90000 r--s 0004f000 00:26 22851492                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guiappl_1.0.0.jar
+7ff367c90000-7ff367c9c000 r--s 00141000 00:26 22851454                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.maxwell_1.0.0.jar
+7ff367c9c000-7ff367ca6000 r--s 0037b000 00:26 22851458                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.sme_1.0.0.jar
+7ff367ca6000-7ff367cb9000 r--s 001cf000 00:26 22851483                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.multiphysics_1.0.0.jar
+7ff367cb9000-7ff367cbb000 r--s 0049b000 00:26 22804356                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.semicond_1.0.0.jar
+7ff367cbb000-7ff367cc6000 r--s 0007e000 00:26 22851440                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.model.edit_1.0.0.jar
+7ff367cce000-7ff367cd3000 r--s 00045000 00:26 22851459                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guipost_1.0.0.jar
+7ff367cd3000-7ff367cd9000 r--s 00082000 00:26 22851464                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.roptics_1.0.0.jar
+7ff367cdf000-7ff367ce2000 r--s 00000000 08:04 787406                     /var/cache/fontconfig/0b65734d4b05444408d43c6f04076891-le64.cache-3
+7ff367ce2000-7ff367ce5000 r--s 00000000 08:04 814352                     /var/cache/fontconfig/b3156a3b746fa248f533fda5763a8a74-le64.cache-3
+7ff367ce5000-7ff367cea000 r--s 00000000 08:04 814373                     /var/cache/fontconfig/cf88f444488d569f9535e4f0ee8ed9a1-le64.cache-3
+7ff367cea000-7ff367cf6000 r--s 00000000 08:04 814358                     /var/cache/fontconfig/18db0204b1f108dd01663673626fcd3d-le64.cache-3
+7ff367cf7000-7ff367d09000 r--s 00159000 00:26 22851449                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.migration_1.0.0.jar
+7ff367d11000-7ff367d24000 r--s 00345000 00:26 22804877                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/resources.jar
+7ff367d26000-7ff367d29000 r--s 00000000 08:04 814360                     /var/cache/fontconfig/cf2648471cd3c1408333626fc428bcc9-le64.cache-3
+7ff367d29000-7ff367d2d000 r--s 00000000 08:04 814435                     /var/cache/fontconfig/f5da82313d22ae5bf5bc6e539d256292-le64.cache-3
+7ff367d2d000-7ff367d31000 r--s 0002d000 00:26 22804479                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guidesign_1.0.0.jar
+7ff367d31000-7ff367d46000 r--s 0010e000 00:26 22804409                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.jface_3.11.1.v20160128-1644.jar
+7ff367d46000-7ff367d4d000 r--s 00045000 00:26 22851442                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.widgets.swt_1.0.0.jar
+7ff367d4d000-7ff367d55000 r--s 000b2000 00:26 22851478                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.solver_1.0.0.jar
+7ff367d55000-7ff367d60000 r--s 0007a000 00:26 22851480                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.nativeutil_1.0.0.jar
+7ff367d60000-7ff367d67000 r--s 00033000 00:26 22851488                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.communication_1.0.0.jar
+7ff367d67000-7ff367d6f000 r--s 0003a000 00:26 22851443                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.renderer_1.0.0.jar
+7ff367d6f000-7ff367d7f000 r--s 000b4000 00:26 22851450                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.widgets_1.0.0.jar
+7ff367d7f000-7ff367d87000 r--s 000ad000 00:26 22851489                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.physics_1.0.0.jar
+7ff367d87000-7ff367d96000 r--s 000eb000 00:26 22851476                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.util_1.0.0.jar
+7ff367d98000-7ff367d9d000 r--s 0015e000 00:26 22851460                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.heat_1.0.0.jar
+7ff367d9d000-7ff367da3000 r--s 00130000 00:26 22851469                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.aco_1.0.0.jar
+7ff367da3000-7ff367da8000 r--s 001af000 00:26 22851457                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.cfd_1.0.0.jar
+7ff367da8000-7ff367dbd000 r--s 0026f000 00:26 22804270                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.swt.gtk.linux.x86_64_3.104.2.v20160212-1350.jar
+7ff367dbd000-7ff367dd9000 r--s 00393000 00:26 22804691                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/ext/cldrdata.jar
+7ff367dd9000-7ff367de3000 r--s 00116000 00:26 22804696                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/ext/localedata.jar
+7ff367de6000-7ff367deb000 r--s 000d4000 00:26 22851462                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.chem_1.0.0.jar
+7ff367deb000-7ff367df6000 r--s 000e9000 00:26 22851461                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.solid_1.0.0.jar
+7ff367df6000-7ff367dfa000 r--s 00146000 00:26 22851451                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.acdc_1.0.0.jar
+7ff367dfa000-7ff367dfd000 r--s 000af000 00:26 22804425                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.pipe_1.0.0.jar
+7ff367dfd000-7ff367e00000 r--s 00000000 08:04 814357                     /var/cache/fontconfig/85f1cedf31c437d74e7f145ee32183f4-le64.cache-3
+7ff367e00000-7ff368000000 rw-p 00000000 00:00 0 
+7ff368000000-7ff368021000 rw-p 00000000 00:00 0 
+7ff368021000-7ff36c000000 ---p 00000000 00:00 0 
+7ff36c000000-7ff36c001000 r--s 00000000 08:04 814367                     /var/cache/fontconfig/47f48679023f44a4d1e44699a69464f6-le64.cache-3
+7ff36c002000-7ff36c004000 r--s 00006000 00:26 22804265                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guireaction_1.0.0.jar
+7ff36c004000-7ff36c006000 r--s 001cc000 00:26 22804379                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.mbd_1.0.0.jar
+7ff36c006000-7ff36c00a000 r--s 00040000 00:26 22851446                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.report_1.0.0.jar
+7ff36c00a000-7ff36c00b000 r--s 00000000 08:04 814379                     /var/cache/fontconfig/2881ed3fd21ca306ddad6f9b0dd3189f-le64.cache-3
+7ff36c00b000-7ff36c00c000 r--s 00000000 08:04 814380                     /var/cache/fontconfig/3c3fb04d32a5211b073874b125d29701-le64.cache-3
+7ff36c00c000-7ff36c00e000 r--s 00016000 00:26 22804271                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.plasma_1.0.0.jar
+7ff36c00e000-7ff36c017000 r--s 001a1000 00:26 22851482                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.bfc_1.0.0.jar
+7ff36c017000-7ff36c022000 r--s 0006e000 00:26 22804327                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/truezip-6.jar
+7ff36c025000-7ff36c02a000 r--s 00028000 00:26 22804436                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.e4.ui.workbench.swt_0.13.0.v20150504-0621.jar
+7ff36c02b000-7ff36c02f000 r--s 00093000 00:26 22851486                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.reaction_1.0.0.jar
+7ff36c02f000-7ff36c034000 r--s 00047000 00:26 22851472                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.nativemph_1.0.0.jar
+7ff36c034000-7ff36c03b000 r--s 00027000 00:26 22804487                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.api_1.0.0.jar
+7ff36c03b000-7ff36c044000 r--s 000a9000 00:26 22851468                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.bridge_1.0.0.jar
+7ff36c044000-7ff36c045000 r--s 00003000 00:26 22804295                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.e4.ui.di_1.1.0.v20150422-0725.jar
+7ff36c046000-7ff36c04b000 r--s 0003b000 00:26 22804368                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.help_3.6.0.v20130326-1254.jar
+7ff36c04b000-7ff36c051000 r--s 00048000 00:26 22804496                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.ui.forms_3.6.200.v20150506-2029.jar
+7ff36c051000-7ff36c053000 r--s 0000a000 00:26 22851485                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.mph_1.0.0.jar
+7ff36c053000-7ff36c055000 r--s 00031000 00:26 22851456                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.mems_1.0.0.jar
+7ff36c055000-7ff36c058000 rw-s 00000000 00:04 1867806                    /SYSV00000000 (deleted)
+7ff36c058000-7ff36c05f000 r--s 000a3000 00:26 22851471                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.particle_1.0.0.jar
+7ff36c060000-7ff36c064000 r--s 00025000 00:26 22804340                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.nativejni_1.0.0.jar
+7ff36c064000-7ff36c06b000 r--s 0006b000 00:26 22851466                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guigeommesh_1.0.0.jar
+7ff36c06b000-7ff36c06c000 r--s 00000000 08:04 814364                     /var/cache/fontconfig/e61abf8156cc476151baa07d67337cae-le64.cache-3
+7ff36c06c000-7ff36c06d000 r--s 00000000 08:04 787417                     /var/cache/fontconfig/991510d2da7f7b2bf8468002aae90060-le64.cache-3
+7ff36c06d000-7ff36c06f000 r--s 0009e000 00:26 22851445                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.rotordynamics_1.0.0.jar
+7ff36c071000-7ff36c077000 r--s 00041000 00:26 22804293                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.e4.ui.workbench_1.3.1.v20160203-0951.jar
+7ff36c077000-7ff36c079000 r--s 00000000 08:04 814375                     /var/cache/fontconfig/99a1ce9f8b6a0434aadb01d3779b0780-le64.cache-3
+7ff36c079000-7ff36c07f000 r--s 00050000 00:26 22804457                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.e4.ui.workbench.renderers.swt_0.13.0.v20150901-1347.jar
+7ff36c083000-7ff36c086000 r--s 00021000 00:26 22804357                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.e4.ui.workbench.addons.swt_1.2.0.v20150512-1414.jar
+7ff36c086000-7ff36c087000 r--s 00000000 00:26 22804443                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.security_1.0.0.jar
+7ff36c087000-7ff36c08a000 r--s 00015000 00:26 22851441                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.widget.swt.swt_1.0.0.jar
+7ff36c08a000-7ff36c08b000 r--s 00000000 00:26 22804473                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.securityutil_1.0.0.jar
+7ff36c08b000-7ff36c08d000 r--s 00039000 00:26 22804402                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.osgi.compatibility.state_1.0.100.v20150402-1551.jar
+7ff36c08d000-7ff36c090000 r--s 00024000 00:26 22804257                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.apache.batik.util_1.7.0.v201011041433.jar
+7ff36c090000-7ff36c093000 r--s 00022000 00:26 22851473                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guicapeopen_1.0.0.jar
+7ff36c093000-7ff36c095000 r--s 00009000 00:26 22804332                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guimaxwell_1.0.0.jar
+7ff36c095000-7ff36c097000 r--s 00000000 08:04 814362                     /var/cache/fontconfig/f9d379b867d7c69c85310a4f24e5228f-le64.cache-3
+7ff36c097000-7ff36c09e000 r--s 00055000 00:26 22804366                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.e4.ui.model.workbench_1.1.100.v20150407-1430.jar
+7ff36c0a1000-7ff36c0a7000 r--s 0002e000 00:26 22804399                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.e4.ui.css.core_0.11.0.v20150511-1937.jar
+7ff36c0a7000-7ff36c0a9000 r--s 00004000 00:26 22804417                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guibatch_1.0.0.jar
+7ff36c0a9000-7ff36c0aa000 r--s 00000000 08:04 814363                     /var/cache/fontconfig/b4d0b56f766d89640448751fcd18ec1e-le64.cache-3
+7ff36c0aa000-7ff36c0ad000 r--s 00018000 00:26 22851475                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.client_1.0.0.jar
+7ff36c0ad000-7ff36c0b0000 r--s 0001a000 00:26 22851455                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.gui_1.0.0.jar
+7ff36c0b0000-7ff36c0b6000 r--s 0004e000 00:26 22851495                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guiclient_1.0.0.jar
+7ff36c0b8000-7ff36c0b9000 r--s 00002000 00:26 22804432                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.e4.ui.workbench3_0.13.0.v20150422-0725.jar
+7ff36c0b9000-7ff36c0bd000 r--s 00029000 00:26 22804478                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.equinox.registry_3.6.0.v20150318-1503.jar
+7ff36c0bd000-7ff36c0be000 r--s 00003000 00:26 22804407                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guiphysics_1.0.0.jar
+7ff36c0be000-7ff36c0bf000 r--s 00000000 08:04 814438                     /var/cache/fontconfig/1248881498ac025e45c3042f6afe9284-le64.cache-3
+7ff36c0bf000-7ff36c0c0000 r--s 00004000 00:26 22804497                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guimphappl_1.0.0.jar
+7ff36c0c0000-7ff36c0c1000 r--s 00000000 08:04 787416                     /var/cache/fontconfig/d04038e664b0033ae700a78c51f179d3-le64.cache-3
+7ff36c0c1000-7ff36c0c4000 r--s 00000000 08:04 787535                     /var/cache/fontconfig/beeeeb3dfe132a8a0633a017c99ce0c0-le64.cache-3
+7ff36c0c4000-7ff36c0c6000 r--s 00007000 00:26 22804456                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.loader_1.0.0.jar
+7ff36c0c6000-7ff36c0c8000 r--s 00015000 00:26 22804446                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.capeopen_1.0.0.jar
+7ff36c0c8000-7ff36c0c9000 r--s 0000d000 00:26 22804339                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.systemutils_1.0.0.jar
+7ff36c0c9000-7ff36c0ca000 r--s 00001000 00:26 22804482                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guiopt_1.0.0.jar
+7ff36c0ca000-7ff36c0cb000 r--s 00004000 00:26 22804480                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guiheat_1.0.0.jar
+7ff36c0cb000-7ff36c0cd000 r--s 00009000 00:26 22804343                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guisolver_1.0.0.jar
+7ff36c0cd000-7ff36c0d1000 r--s 0004d000 00:26 22851474                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.batch_1.0.0.jar
+7ff36c0d1000-7ff36c0d3000 r--s 00012000 00:26 22804291                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.core.runtime_3.11.1.v20150903-1804.jar
+7ff36c0d3000-7ff36c2d3000 rw-p 00000000 00:00 0 
+7ff36c2d3000-7ff36c2d6000 ---p 00000000 00:00 0 
+7ff36c2d6000-7ff36c6d4000 rw-p 00000000 00:00 0 
+7ff36c6d4000-7ff36c6d7000 ---p 00000000 00:00 0 
+7ff36c6d7000-7ff36cad5000 rw-p 00000000 00:00 0 
+7ff36cad5000-7ff36cad8000 ---p 00000000 00:00 0 
+7ff36cad8000-7ff36ced6000 rw-p 00000000 00:00 0 
+7ff36ced6000-7ff36ced9000 ---p 00000000 00:00 0 
+7ff36ced9000-7ff36d2d7000 rw-p 00000000 00:00 0 
+7ff36d2d7000-7ff36d30c000 r--s 00000000 08:04 806634                     /var/run/nscd/db4a5MoW (deleted)
+7ff36d30c000-7ff36d31d000 r-xp 00000000 00:26 22804905                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libnio.so
+7ff36d31d000-7ff36d51c000 ---p 00011000 00:26 22804905                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libnio.so
+7ff36d51c000-7ff36d51d000 rw-p 00010000 00:26 22804905                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libnio.so
+7ff36d51d000-7ff36d533000 r-xp 00000000 00:26 22804916                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libnet.so
+7ff36d533000-7ff36d733000 ---p 00016000 00:26 22804916                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libnet.so
+7ff36d733000-7ff36d734000 rw-p 00016000 00:26 22804916                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libnet.so
+7ff36d734000-7ff36d748000 r--s 0012b000 00:26 22804491                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.osgi_3.10.102.v20160118-1700.jar
+7ff36d748000-7ff36d7d6000 rw-p 00000000 00:00 0 
+7ff36d7d6000-7ff36d7d9000 r-xp 00000000 08:04 1178902                    /usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-bmp.so
+7ff36d7d9000-7ff36d9d9000 ---p 00003000 08:04 1178902                    /usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-bmp.so
+7ff36d9d9000-7ff36d9da000 rw-p 00003000 08:04 1178902                    /usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-bmp.so
+7ff36d9da000-7ff36d9e4000 r-xp 00000000 00:26 22804535                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/ext/graphicsmagick/glnxa64/libltdl.so.7.3.0
+7ff36d9e4000-7ff36dbe3000 ---p 0000a000 00:26 22804535                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/ext/graphicsmagick/glnxa64/libltdl.so.7.3.0
+7ff36dbe3000-7ff36dbe4000 rw-p 00009000 00:26 22804535                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/ext/graphicsmagick/glnxa64/libltdl.so.7.3.0
+7ff36dbe4000-7ff36dbe9000 r-xp 00000000 08:04 1208537                    /usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.so
+7ff36dbe9000-7ff36dde9000 ---p 00005000 08:04 1208537                    /usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.so
+7ff36dde9000-7ff36ddea000 rw-p 00005000 08:04 1208537                    /usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.so
+7ff36ddea000-7ff36de14000 r-xp 00000000 08:04 1199322                    /usr/lib64/gtk-2.0/2.10.0/engines/libclearlooks.so
+7ff36de14000-7ff36e014000 ---p 0002a000 08:04 1199322                    /usr/lib64/gtk-2.0/2.10.0/engines/libclearlooks.so
+7ff36e014000-7ff36e015000 rw-p 0002a000 08:04 1199322                    /usr/lib64/gtk-2.0/2.10.0/engines/libclearlooks.so
+7ff36e015000-7ff36e03a000 r-xp 00000000 00:26 6635834                    /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/matlab-2016b/bin/glnxa64/libpng12.so.0.39.0
+7ff36e03a000-7ff36e23a000 ---p 00025000 00:26 6635834                    /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/matlab-2016b/bin/glnxa64/libpng12.so.0.39.0
+7ff36e23a000-7ff36e23b000 rw-p 00025000 00:26 6635834                    /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/matlab-2016b/bin/glnxa64/libpng12.so.0.39.0
+7ff36e23b000-7ff36e261000 r-xp 00000000 00:26 6634777                    /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/matlab-2016b/bin/glnxa64/libexpat.so.1.5.0
+7ff36e261000-7ff36e460000 ---p 00026000 00:26 6634777                    /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/matlab-2016b/bin/glnxa64/libexpat.so.1.5.0
+7ff36e460000-7ff36e463000 rw-p 00025000 00:26 6634777                    /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/matlab-2016b/bin/glnxa64/libexpat.so.1.5.0
+7ff36e463000-7ff36e4ee000 r-xp 00000000 00:26 6634780                    /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/matlab-2016b/bin/glnxa64/libfreetype.so.6.11.1
+7ff36e4ee000-7ff36e6ed000 ---p 0008b000 00:26 6634780                    /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/matlab-2016b/bin/glnxa64/libfreetype.so.6.11.1
+7ff36e6ed000-7ff36e6f3000 rw-p 0008a000 00:26 6634780                    /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/matlab-2016b/bin/glnxa64/libfreetype.so.6.11.1
+7ff36e6f3000-7ff36e6f4000 ---p 00000000 00:00 0 
+7ff36e6f4000-7ff36e7f4000 rw-p 00000000 00:00 0 
+7ff36e7f4000-7ff36e7f7000 ---p 00000000 00:00 0 
+7ff36e7f7000-7ff36ebf5000 rw-p 00000000 00:00 0 
+7ff36ebf5000-7ff36ebf8000 ---p 00000000 00:00 0 
+7ff36ebf8000-7ff36ecf6000 rw-p 00000000 00:00 0 
+7ff36ecf6000-7ff36ecf9000 ---p 00000000 00:00 0 
+7ff36ecf9000-7ff36edf7000 rw-p 00000000 00:00 0 
+7ff36edf7000-7ff36edfa000 ---p 00000000 00:00 0 
+7ff36edfa000-7ff36eef8000 rw-p 00000000 00:00 0 
+7ff36eef8000-7ff36eefb000 ---p 00000000 00:00 0 
+7ff36eefb000-7ff36f2f9000 rw-p 00000000 00:00 0 
+7ff36f2f9000-7ff36f2fc000 ---p 00000000 00:00 0 
+7ff36f2fc000-7ff36f6fa000 rw-p 00000000 00:00 0 
+7ff36f6fa000-7ff36f6fd000 ---p 00000000 00:00 0 
+7ff36f6fd000-7ff36fafb000 rw-p 00000000 00:00 0 
+7ff36fafb000-7ff36fafc000 ---p 00000000 00:00 0 
+7ff36fafc000-7ff370000000 rw-p 00000000 00:00 0 
+7ff370000000-7ff370025000 rw-p 00000000 00:00 0 
+7ff370025000-7ff374000000 ---p 00000000 00:00 0 
+7ff374000000-7ff374001000 r--s 00000000 00:26 22804447                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guiswt.swt_1.0.0.jar
+7ff374001000-7ff374002000 r--s 00004000 00:26 22804374                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.swt_3.104.2.v20160212-1350.jar
+7ff374002000-7ff374005000 r--s 00019000 00:26 22804285                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.equinox.common_3.7.0.v20150402-1709.jar
+7ff374005000-7ff374065000 rw-s 00000000 00:04 1802269                    /SYSV00000000 (deleted)
+7ff374065000-7ff374080000 r--s 00000000 08:04 3860                       /usr/share/mime/mime.cache
+7ff374081000-7ff374087000 r--s 0003f000 00:26 22804693                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/ext/sunjce_provider.jar
+7ff374087000-7ff37408b000 r--s 0003a000 00:26 22804695                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/ext/sunpkcs11.jar
+7ff37408b000-7ff37408c000 r--s 00002000 00:26 22804294                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.swtext_1.0.0.jar
+7ff37408c000-7ff37408d000 r--s 00003000 00:26 22804264                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.textrenderer_1.0.0.jar
+7ff37408d000-7ff37408f000 r--s 00039000 00:26 22851463                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.ssf_1.0.0.jar
+7ff37408f000-7ff374090000 rw-p 00000000 00:00 0 
+7ff374090000-7ff374091000 r--s 00012000 00:26 22804435                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guichem_1.0.0.jar
+7ff374091000-7ff374092000 r--s 00019000 00:26 22804405                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.rf_1.0.0.jar
+7ff374092000-7ff374094000 r--s 00014000 00:26 22804328                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.guiswt_1.0.0.jar
+7ff374094000-7ff374095000 r--s 00001000 00:26 22804287                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.opt_1.0.0.jar
+7ff374095000-7ff374096000 r--s 0001d000 00:26 22804459                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.microfluidics_1.0.0.jar
+7ff374096000-7ff374097000 r--s 00022000 00:26 22851493                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.woptics_1.0.0.jar
+7ff374097000-7ff37409c000 r--s 00098000 00:26 22804787                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/jsse.jar
+7ff37409c000-7ff374c9b000 rw-p 00000000 00:00 0 
+7ff374c9b000-7ff374e74000 r--s 03d2c000 00:26 22804768                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/rt.jar
+7ff374e74000-7ff379b6d000 rw-p 00000000 00:00 0 
+7ff379b6d000-7ff379b6e000 ---p 00000000 00:00 0 
+7ff379b6e000-7ff379c6e000 rw-p 00000000 00:00 0 
+7ff379c6e000-7ff379c6f000 ---p 00000000 00:00 0 
+7ff379c6f000-7ff379d6f000 rw-p 00000000 00:00 0 
+7ff379d6f000-7ff379d70000 ---p 00000000 00:00 0 
+7ff379d70000-7ff379e70000 rw-p 00000000 00:00 0 
+7ff379e70000-7ff379e71000 ---p 00000000 00:00 0 
+7ff379e71000-7ff379fc8000 rw-p 00000000 00:00 0 
+7ff379fc8000-7ff37a21c000 ---p 00000000 00:00 0 
+7ff37a21c000-7ff37a273000 rw-p 00000000 00:00 0 
+7ff37a273000-7ff37a4c6000 ---p 00000000 00:00 0 
+7ff37a4c6000-7ff37a583000 rw-p 00000000 00:00 0 
+7ff37a583000-7ff37a61c000 ---p 00000000 00:00 0 
+7ff37a61c000-7ff37a679000 rw-p 00000000 00:00 0 
+7ff37a679000-7ff37a9dd000 ---p 00000000 00:00 0 
+7ff37a9dd000-7ff37c0cd000 rwxp 00000000 00:00 0 
+7ff37c0cd000-7ff3899dd000 ---p 00000000 00:00 0 
+7ff3899dd000-7ff3899f7000 r-xp 00000000 00:26 22804887                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libzip.so
+7ff3899f7000-7ff389bf7000 ---p 0001a000 00:26 22804887                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libzip.so
+7ff389bf7000-7ff389bf8000 rw-p 0001a000 00:26 22804887                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libzip.so
+7ff389bf8000-7ff389c23000 r-xp 00000000 00:26 22804912                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libjava.so
+7ff389c23000-7ff389e22000 ---p 0002b000 00:26 22804912                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libjava.so
+7ff389e22000-7ff389e24000 rw-p 0002a000 00:26 22804912                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libjava.so
+7ff389e24000-7ff389e31000 r-xp 00000000 00:26 22804923                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libverify.so
+7ff389e31000-7ff38a030000 ---p 0000d000 00:26 22804923                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libverify.so
+7ff38a030000-7ff38a032000 rw-p 0000c000 00:26 22804923                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libverify.so
+7ff38a032000-7ff38ad00000 r-xp 00000000 00:26 22804891                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/server/libjvm.so
+7ff38ad00000-7ff38af00000 ---p 00cce000 00:26 22804891                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/server/libjvm.so
+7ff38af00000-7ff38afd9000 rw-p 00cce000 00:26 22804891                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/server/libjvm.so
+7ff38afd9000-7ff38b024000 rw-p 00000000 00:00 0 
+7ff38b024000-7ff38b034000 r-xp 00000000 00:26 22782687                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/bin/glnxa64/comsol_1312.so
+7ff38b034000-7ff38b233000 ---p 00010000 00:26 22782687                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/bin/glnxa64/comsol_1312.so
+7ff38b233000-7ff38b235000 rw-p 0000f000 00:26 22782687                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/bin/glnxa64/comsol_1312.so
+7ff38b235000-7ff3910ca000 r--p 00000000 08:04 1227097                    /usr/lib/locale/locale-archive
+7ff3910ca000-7ff3910ce000 rw-p 00000000 00:00 0 
+7ff3910ce000-7ff3910e4000 r-xp 00000000 00:26 22804615                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/gcc/libgcc_s.so.1
+7ff3910e4000-7ff3912e3000 ---p 00016000 00:26 22804615                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/gcc/libgcc_s.so.1
+7ff3912e3000-7ff3912e4000 rw-p 00015000 00:26 22804615                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/gcc/libgcc_s.so.1
+7ff3912e4000-7ff3912e6000 rw-p 00000000 00:00 0 
+7ff3912e6000-7ff3912e7000 r--s 00003000 00:26 22804441                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/com.comsol.nativebasicutil_1.0.0.jar
+7ff3912e7000-7ff3912ea000 r--s 0001a000 00:26 22804935                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/jce.jar
+7ff3912ea000-7ff3912ec000 r--s 0000b000 00:26 22804346                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/plugins/org.eclipse.equinox.launcher_1.3.100.v20150511-1540.jar
+7ff3912ec000-7ff391314000 rw-p 00000000 00:00 0 
+7ff391314000-7ff39131c000 rw-s 00000000 08:05 16122014                   /scratch/tmp/hsperfdata_gabgus/2663
+7ff39131c000-7ff391351000 r--s 00000000 08:04 799688                     /var/run/nscd/dbmB5jh7 (deleted)
+7ff391351000-7ff391352000 rw-p 00000000 00:00 0 
+7ff391352000-7ff391353000 r--p 00000000 00:00 0 
+7ff391353000-7ff391355000 r-xp 00000000 00:26 22804902                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libjsig.so
+7ff391355000-7ff391554000 ---p 00002000 00:26 22804902                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libjsig.so
+7ff391554000-7ff391555000 rw-p 00001000 00:26 22804902                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/libjsig.so
+7ff391555000-7ff391556000 rw-p 00000000 00:00 0 
+7ff391556000-7ff391649000 r-xp 00000000 00:26 22804613                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/gcc/libstdc++.so.6.0.20
+7ff391649000-7ff391848000 ---p 000f3000 00:26 22804613                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/gcc/libstdc++.so.6.0.20
+7ff391848000-7ff391851000 r--p 000f2000 00:26 22804613                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/gcc/libstdc++.so.6.0.20
+7ff391851000-7ff391853000 rw-p 000fb000 00:26 22804613                   /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/gcc/libstdc++.so.6.0.20
+7ff391853000-7ff39186a000 rw-p 00000000 00:00 0 
+7ffc40db4000-7ffc40db7000 ---p 00000000 00:00 0 
+7ffc40db7000-7ffc40fb4000 rw-p 00000000 00:00 0                          [stack]
+7ffc40fe8000-7ffc40fe9000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -Dosgi.splashPath=platform:/base/plugins/com.comsol.util/ -Dosgi.clean=true -Dosgi.configuration.cascaded=true -Dosgi.checkConfiguration=true -Dosgi.sharedConfiguration.area=file:configuration/comsol -Dosgi.sharedConfiguration.area.readOnly=true -Dosgi.configuration.area=@user.home/.comsol/v53a/configuration/comsol -Dosgi.instance.area=@user.home/.comsol/v53a/workspace/comsol -Declipse.security= -Djava.security.policy=${osgi.install.area}/bin/glnxa64/comsol.policy -Dcs.logoutput=file -Dcs.logfileprefix=comsol -Dcs.client=true -Xss4m -Xms40m -Xmx2g -XX:MaxMetaspaceSize=512m 
+java_command: <unknown>
+java_class_path (initial): /nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/bin/glnxa64//../../plugins/org.eclipse.equinox.launcher_1.3.100.v20150511-1540.jar
+Launcher Type: generic
+
+Environment Variables:
+PATH=/chalmers/sw/sup64/matlab-2016b/bin:/chalmers/users/gabgus/miniconda2/bin:/chalmers/users/gabgus/.vcs4/select:/chalmers/sw/vcs/core/bin:/chalmers/sw/sup64/phc/b/binh:/chalmers/sw/sup/phc/b/binh:/bin:/usr/bin:/usr/sbin:/usr/kerberos/bin:/usr/X11R6/bin:/usr/local/bin:/chalmers/sw/sup64/phc/b/binl:/chalmers/sw/sup/phc/b/binl:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin
+USERNAME=gabgus
+LD_LIBRARY_PATH=/nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64/server:/nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/java/glnxa64/jre/lib/amd64:/nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/ext/graphicsmagick/glnxa64/:/chalmers/sw/sup64/matlab-2016b/bin/glnxa64:/nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/ext/cadimport/glnxa64:/nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64:/nfs4/sol.ita.chalmers.se/groups/manual03/sup/sup64/comsol-5.3.1.348/installed/lib/glnxa64/gcc:/
+LD_PRELOAD=
+SHELL=/bin/bash
+DISPLAY=:0.0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0xac7800], sa_mask[0]=11111111111111111111111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0xac7800], sa_mask[0]=11111111111111111111111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libGraphicsMagick.so+0xd0ed4], sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGPIPE: SIG_IGN, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGXFSZ: [libGraphicsMagick.so+0xd0ed4], sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGILL: [libcsnutil.so+0x96610], sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGUSR1: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGUSR2: [libjvm.so+0x9221d0], sa_mask[0]=00000000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: [libjvm.so+0x9235d0], sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGINT: [libjvm.so+0x9235d0], sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGTERM: [libjvm.so+0x9235d0], sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGQUIT: [libjvm.so+0x9235d0], sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+
+
+---------------  S Y S T E M  ---------------
+
+OS:Red Hat Enterprise Linux Workstation release 6.9 (Santiago)
+
+uname:Linux 2.6.32-754.3.5.el6.x86_64 #1 SMP Thu Aug 9 11:56:22 EDT 2018 x86_64
+libc:glibc 2.12 NPTL 2.12 
+rlimit: STACK 10240k, CORE 0k, NPROC 500, NOFILE 4096, AS infinity
+load average:0.29 0.10 0.03
+
+/proc/meminfo:
+MemTotal:       32968628 kB
+MemFree:         1690528 kB
+Buffers:          267664 kB
+Cached:         26174276 kB
+SwapCached:            0 kB
+Active:         24245328 kB
+Inactive:        6181568 kB
+Active(anon):    3989460 kB
+Inactive(anon):    67440 kB
+Active(file):   20255868 kB
+Inactive(file):  6114128 kB
+Unevictable:          32 kB
+Mlocked:              32 kB
+SwapTotal:       7812092 kB
+SwapFree:        7812092 kB
+Dirty:              1160 kB
+Writeback:             0 kB
+AnonPages:       3985036 kB
+Mapped:           417636 kB
+Shmem:             71952 kB
+Slab:             467896 kB
+SReclaimable:     389456 kB
+SUnreclaim:        78440 kB
+KernelStack:       11968 kB
+PageTables:        63160 kB
+NFS_Unstable:         52 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    24296404 kB
+Committed_AS:    9068048 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:      178896 kB
+VmallocChunk:   34359537660 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:   1339392 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      227328 kB
+DirectMap2M:    12263424 kB
+DirectMap1G:    20971520 kB
+
+
+CPU:total 4 (4 cores per cpu, 1 threads per core) family 6 model 158 stepping 9, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, rtm, 3dnowpref, lzcnt, tsc, tscinvbit, bmi1, bmi2, adx
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i5-7600 CPU @ 3.50GHz
+stepping	: 9
+microcode	: 132
+cpu MHz		: 1400.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 0
+cpu cores	: 4
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch ida arat epb xsaveopt pln pts dtherm hwp hwp_noitfy hwp_act_window hwp_epp invpcid_single pti ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx
+bogomips	: 7007.98
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i5-7600 CPU @ 3.50GHz
+stepping	: 9
+microcode	: 132
+cpu MHz		: 800.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 1
+cpu cores	: 4
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch ida arat epb xsaveopt pln pts dtherm hwp hwp_noitfy hwp_act_window hwp_epp invpcid_single pti ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx
+bogomips	: 7007.98
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i5-7600 CPU @ 3.50GHz
+stepping	: 9
+microcode	: 132
+cpu MHz		: 800.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 2
+cpu cores	: 4
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch ida arat epb xsaveopt pln pts dtherm hwp hwp_noitfy hwp_act_window hwp_epp invpcid_single pti ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx
+bogomips	: 7007.98
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i5-7600 CPU @ 3.50GHz
+stepping	: 9
+microcode	: 132
+cpu MHz		: 3501.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 3
+cpu cores	: 4
+apicid		: 6
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch ida arat epb xsaveopt pln pts dtherm hwp hwp_noitfy hwp_act_window hwp_epp invpcid_single pti ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx
+bogomips	: 7007.98
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 32968628k(1690528k free), swap 7812092k(7812092k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.112-b15) for linux-amd64 JRE (1.8.0_112-b15), built on Sep 22 2016 21:10:53 by "java_re" with gcc 4.3.0 20080428 (Red Hat 4.3.0-8)
+
+time: Wed Nov 21 09:24:33 2018
+elapsed time: 13 seconds (0d 0h 0m 13s)
+

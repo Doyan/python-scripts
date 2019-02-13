@@ -15,54 +15,67 @@ fluent Temperature fields
 import numpy as np, matplotlib.pyplot as plt
 
 import pandas as pd
-import os
+
 from scipy.interpolate import griddata
-import subprocess
+
+from datetime import datetime
+
+import os
+import shutil
+import tarfile
+
+
+
+
 # -------------------------------------------------------
 # Paths
+os.chdir('/chalmers/users/gabgus/python-scripts/masterProject')
 
 # path to save structured collection of data
-savepath= './datafiles/kfiles/'
+savepath= '/scratch/gabgus/fluent/kgenerator/parsed/'
 
 # path to folder with saved fluent runs
 runpath = '/scratch/gabgus/fluent/kgenerator/runs/' 
 
-# path to fluent runscript and associated journal files
-scriptname = '/scratch/gabgus/fluent/kgenerator/krun.sh'
-stencilpath = '/scratch/gabgus/fluent/kgenerator/journal_stencil.jou'
-journalpath = '/scratch/gabgus/fluent/kgenerator/active_journal.jou'
-
 # path to multiphase simulation data
-mfdatapath = './datafiles/mfdata/'
+mfdatapath='/scratch/gabgus/mfdata_all/meshed/'
+
+# -------------------------------------------------------------------------
+# Global variables
+
+wLimits =  {'w0': ['error' , np.nan, 0.255, 0.180, 0.225, 0.255, np.nan, 0.255, np.nan],
+            'w1': ['error' , np.nan, 0.285, 0.210, 0.255, 0.285, np.nan, 0.285, np.nan],
+            'wy': 0.3,
+            'hasWall': [False, False, True, True, True, True, False, True, False]}
 
 # -------------------------------------------------------------------------
 # Functions
 
+# load multiphase mesh
+def loadMmesh(caseNo):
+    M = np.load('{}c{}_mesh.npy'.format(mfdatapath,caseNo))
+    g = np.load('{}c{}_gridpoints.npy'.format(mfdatapath,caseNo))
+    t = np.load('{}c{}_times.npy'.format(mfdatapath,caseNo))
+    return M,g,t
 
-# convenience function to generate foldername string
-def genfonam(knumber):
-    return runpath + 'k' + str(knumber) + '/'
-
-# convenience function to generate knumber from foldername string
-def genknumber(folderpath):
-    return os.path.basename(os.path.dirname(folderpath)).split('k')[1]
+# get slices to apply on multiphase mesh make it correspond to k-domain
+def getSlice(caseNo):
+    Klimits = {'x0': ['error' , 15, 15, 15, 15, 'missing', 15, 15, 24], 
+           'x1': ['error' , 51, 51, 51, 51, 'missing', 51, 51, 76],
+           'y1': ['error' , 38, 38, 38, 38, 'missing', 32, 32, 60],
+           'y0': ['error' , 6, 6, 6, 6, 'missing', 0, 0, 0]}
+    
+    xslice=slice(Klimits['x0'][caseNo],Klimits['x1'][caseNo])  #max66
+    yslice=slice(Klimits['y0'][caseNo],Klimits['y1'][caseNo]) #max67
+    zslice=1            #max86
+    return xslice, yslice, zslice
 
 # parse through and sort contents of folder according to timestep 
 # for easy access by later functions
-def sortKfolder(folderpath,toffset=0):
-    
-    filelist = os.listdir(folderpath)
-    
-    tscaling = round(float(filelist[0].split('_')[1]),6)
-    times = [ round(float(file.split('ts-')[1]) * tscaling + toffset,4) for file in filelist]
-    files = [folderpath + file for file in filelist]
-    
-
-    #times = np.array(times) * tscaling + toffset   
-
-    fileindex=list(sorted(zip(times,files)))
-    tfreq = float(fileindex[1][1].split('ts-')[1]) - float(fileindex[0][1].split('ts-')[1])
-    return fileindex, tscaling, tfreq
+def sortKfolder(folderpath):
+    filelist = [folderpath + file for file in os.listdir(folderpath)]
+    times = [float(filename.split('-')[1]) for filename in os.listdir(folderpath)]
+    return list(sorted(zip(times,filelist)))
 
 # load fluent data from a file given timestep
 def loadTimeStep(fileindex,stepnum):
@@ -76,84 +89,64 @@ def loadTimeStep(fileindex,stepnum):
     T = np.array(df.temp)
     return x,y,T
 
-
-# interpolate unordered fluent data onto structured callable grid
-# inserts nan where grid extends onto area not covered by fluent
-def getOnGrid(x,y,T):
-    # Spec boundary of grid
-    x0 = 0.0
-    x1 = 0.54
-    y0 = 0.0
-    y1 = 0.4200001
-
-    # Spec wall extent for masking 
-    wallxmin = 0.255
-    wallxmax = 0.285
-    wally = 0.15
-
-    # Spec cell width
-    dcell = 0.015
-
-    # create uniform grid axis points
-    gx = np.arange(x0+dcell/2,x1-dcell/2,dcell)
-    gy = np.arange(y0+dcell/2,y1-dcell/2,dcell)
-
-
-    # make meshgrid from grid axes
-    xi, yi = np.meshgrid(gx,gy)# plot fluent grid for inspection
-
-    # interpolate fluent grid onto structured python grid
-
-    zi = griddata((x,y),T,(xi,yi),method='nearest')
-
-    # create mask to remove values "inside wall"
-    mask = (xi > wallxmin) & (xi < wallxmax) & (yi > y1 - wally)
-
-    zi[mask] = np.nan
-    return (xi,yi,zi), (gx, gy)
-
-# Make average along y-coordinate
-def yAverage(z0):
-   Nj = z0.shape[0]
-   Ni = z0.shape[1]
+def getkMesh(caseNo):
+    M,g,t = loadMmesh(caseNo)
     
-   xbar = []
-   for i in range(Ni):
-       xsum = 0
-       n = 0
-       for j in range(Nj):
-           if not np.isnan(z0[j][i]):
-               xsum += z0[j][i]
-               n = n + 1
-               
-       xbar.append(xsum / n)
-   return xbar
+    xslice, yslice, zslice = getSlice(caseNo)
+
+    x2d=M[0][yslice,xslice,zslice]
+    y2d=M[1][yslice,xslice,zslice]
+    
+    dcell = np.diff(g[0]).mean()
+    x0 = x2d[0][0]
+    
+    xi = x2d - x0 + dcell/2
+    yi = y2d
+    
+    return (xi,yi), dcell,t
+    
 
 # Interpolate all fluent grids in folder onto ordered grid and stack into 
 # array with order Temp[time][x][y] 
 def packKfolder(folderpath):    
-    fileindex,tscaling,tfreq = sortKfolder(folderpath)
+    fileindex = sortKfolder(folderpath)
+    
+    caseNo = int(folderpath.split('/')[-4].split('case')[1])
+    
+    (xi,yi), dcell,t_mf = getkMesh(caseNo)
     
     zlist = []
-    zbar = []
-    for sampleNo in range(len(fileindex)):
-        x,y,T = loadTimeStep(fileindex,sampleNo)
+    t = []
+    for sampleNo,post in enumerate(fileindex):
+        time = np.round(post[0],4)
+        if time in np.round(t_mf,decimals=4):
+            
+            x,y,T = loadTimeStep(fileindex,sampleNo)
+            
+            Ti = griddata((x,y),T,(xi,yi),method='nearest')
+            
+            # create mask to remove values "inside wall"
+            if wLimits['hasWall'][caseNo]:
+    
+                # Spec wall extent for masking 
+                wallxmin = wLimits['w0'][caseNo]
+                wallxmax = wLimits['w1'][caseNo]
+                wally = wLimits['wy']
+    
+                mask = (xi > wallxmin) & (xi < wallxmax) & (yi > wally)
+                Ti[mask] = np.nan
         
-        M, l = getOnGrid(x,y,T)
-        (xi,yi,z0) = M
-        
-        xbar = yAverage(z0)
-        zlist.append(z0)
-        zbar.append(xbar)
-
-    zM = np.dstack(zlist).T
-    barM = np.squeeze(np.dstack(zbar).T)
-    return zM, barM, (xi,yi), l, (tscaling,tfreq)
+            zlist.append(Ti)
+            t.append(time)
+    zM = np.array(zlist)
+    t = np.array(t)
+    return zM,(xi,yi),t
 
 
 # shoehorn all relevant data into numpy-arrays and save using .npy format
 # files are prefixed with k and stored according to case info.    
 def saveData(caseNo,kfrac,knumber,overwrite=True,include_static=True):
+    
     # create path for nested folder-structure
     fspec= 'case{}/q{}/'.format(caseNo,kfrac)
     
@@ -161,13 +154,9 @@ def saveData(caseNo,kfrac,knumber,overwrite=True,include_static=True):
     savefolder = savepath + fspec 
    
     
-    
-    zM, barM, grid, l, tdata = packKfolder(runfolder)
-    (tscaling, tfreq) = tdata
-    (gx,gy) = l
-    grid = np.dstack(grid).T
-    
-    
+    # pack the folder and do minor rearrangement of the data before saving.
+    zM,grid,t = packKfolder(runfolder)
+
     # prefix created files with their k-number 
     prefix = savefolder + '{}_'.format(knumber)
    
@@ -180,329 +169,232 @@ def saveData(caseNo,kfrac,knumber,overwrite=True,include_static=True):
     
     # save temperature fields
     np.save(prefix + '2D-Temp',zM)
-    np.save(prefix + '1D-Temp',barM)
-    
-    
-    # save gridfiles if needed
-    if include_static:
-        casefolder= savepath + fspec.split('/')[0] + '/'
-        try:
-            saved_grid = np.load(casefolder + '2D-grid.npy')
-            if not np.array_equiv(saved_grid,grid):
-                print('Saved grid not equal to parsed grid!\n Saving copy')
-            
-                np.save(casefolder + '2D-grid_q{}_k{}'.format(kfrac,knumber),grid)
-                np.save(casefolder + 'x-coords_q{}_k{}'.format(kfrac,knumber),gx)
-                np.save(casefolder + 'y-coords_q{}_k{}'.format(kfrac,knumber),gy)
-    
-        except FileNotFoundError:
-            np.save(casefolder + '2D-grid',grid)
-            np.save(casefolder + 'x-coords',gx)
-            np.save(casefolder + 'y-coords',gy)
-    
-    # append tdata to its own registry-file
-    tdatapath=savefolder + 'tdata.csv'
-    
-    try: 
-        tdf = pd.read_csv(tdatapath,index_col='k')
-    except FileNotFoundError:
-        tdf = pd.DataFrame(columns=['k','ts','freq'])
-        tdf=tdf.set_index('k')
-       
-    tdf.loc[knumber] = {'freq': tfreq, 'ts': tscaling}
-    tdf.to_csv(tdatapath)
     
     return
 
 
 # check what k's we have already parsed through, 
 # returns set which can be checked against
-#def checkDone(savepath):
-#    savelist=[]
-#    caselist = os.listdir(savepath)
-#    for case in caselist:
-#        qlist = os.listdir(savepath + case)
-#        for quota in qlist:
-#            q=1
-#    
-#    done = set()
-#    for saved in savelist:
-#        k = saved.split('_')[0]
-#        if not k in done:
-#            done.add(k)
-#    return done
+def getParsed():
+    exclude=set(['gridfiles','mfdata','tdata.csv','backup'])
+    done = set()
+    caselist = [case for case in os.listdir(savepath) if not case in exclude]
+    for case in caselist:
+        casenum=case.split('case')[1]
+        qlist = os.listdir(savepath + case)
 
-## Function to make sure we have parsed all runs so far
-#def saveAll(runpath,savepath):
-#    runlist = os.listdir(runpath)
-#
-#    done = checkDone(savepath)
-#
-#    for runfolder in runlist:
-#        k = runfolder.split('k')[1]
-#        if not k in done:
-#            print('processed k:' + k) 
-#            folderpath = runpath+runfolder + '/'
-#            saveData(savepath,folderpath)
-#    return checkDone(savepath)
+        for q in qlist:
+            klist = [file.split('_')[0] for file in os.listdir(savepath + case + '/' + q) if not file in exclude]
+            #remove duplicates
+            klist = list(set(klist))
+            for k in klist:
+                runstring = 'c{}_{}_k{}'.format(casenum,q,k)
+                done.add(runstring)
+    return done
 
-
-
-
-## Request k to be added to parsed collection. Runs fluent if needed.
-#def addK(caseNo,knumber,Kfrac):
-#    done = checkDone(savepath)
-#    if str(knumber) in done:
-#        print('k = ' + str(knumber) + ' already exists in savepath')
-#        return
-#    else: 
-#        print('Making fluent run for k = ' + str(knumber) + ' W/mK \n')
-#        print('please wait...')
-#        ecode,args = requestK(knumber,scriptname)
-#        folderpath= genfonam(knumber)
-#        saveData(savepath,folderpath)
-#        if ecode == 0:
-#            print('\nSuccesfully added k = ' + str(knumber) + ' W/mK')
-#            return
-#        else:
-#            print('\nk-generation failed')
-#            return 1
+# Check to see what runs we have stored in the run directory
+# returns set which can be checked against
+def getRuns():
+    done = set()
+    caselist = [case for case in os.listdir(runpath)]
+    for case in caselist:
+        casenum=case.split('case')[1]
+        qlist = os.listdir(runpath + case)
+        for q in qlist:
+            klist = [file for file in os.listdir(runpath + case + '/' + q)]
+            for k in klist:
+                runstring = 'c{}_{}_{}'.format(casenum,q,k)
+                done.add(runstring)
+    return done
+    
+def rmRun(caseNo,kfrac,knumber):
+    runstring = 'c{}_q{}_k{}'.format(caseNo,kfrac,knumber)
+    runs = getRuns()
+    if runstring in runs:
+        ans = input('Really clear run {}? (y/n)'.format(runstring))
+    
+        if ans == 'y':     
+            rundir = '{}case{}/q{}/k{}/'.format(runpath,caseNo,kfrac,knumber)
+            shutil.rmtree(rundir)
+        else:
+            print('run not removed')
+        return
+    print('Run {} is not in collection, cannot remove.'.format(runstring))
+    return
 
 # -------------------------------------------------------------------------
 # Functions for working with Fluent 
 
-## request for new runfolder to be made by fluent 
-def requestK(caseNo,knumber,kfrac):
-    current= os.getcwd()
-    scriptdir=os.path.dirname(scriptname)
+## Request k to be added to parsed collection. Runs fluent if needed.
+def addRun(caseNo,knumber,kfrac,verbose=True, keepruns=False):
     
-    os.chdir(scriptdir)
+    runstring = 'c{}_q{}_k{}'.format(caseNo,kfrac,knumber)
+    parsed = getParsed()
+    runs = getRuns()
+    ecode = 0
+    if verbose:
+        print('\n')
+    if runstring in parsed:
+        if verbose:
+            print('requested case: ' + runstring + ' is already in parsed collection')
+        return 0
+    elif runstring in runs:
+        if verbose:
+            print('parsing saved run for case: ' + runstring)
+        saveData(caseNo,kfrac,knumber)
     
-    c=subprocess.run([scriptname,str(caseNo) + ' ' + str(knumber) + ' ' + str(kfrac)])
+    else: 
+        if verbose:
+            print('Making fluent run for case: ' + runstring)
+            print('please wait...')
+        try:
+            ecode = requestK(caseNo,knumber,kfrac)
+        except NameError:
+            from k_generator import runCase as requestK
+            ecode = requestK(caseNo,knumber,kfrac)
+                
+        saveData(caseNo,kfrac,knumber)
     
-    os.chdir(current)
+    if verbose:
+        if ecode == 0:
+            print('\nSuccesfully added case ' + runstring + ' to collection')
+        else: 
+            print('\n case generation failed')
     
-    return c.returncode, c.args
-
-
-
-#-------------------------------------------------------------------------- 
-# Retrieval functions
-                    
-# function to retrieve k-data in 1 or 2-D together with its time related data.
-def loadK(case,knumber,kfrac,dim='1d'):
-    fspec= 'case{}/q{}/'.format(caseNo,kfrac)
+    if not keepruns:
+        rundir = '{}case{}/q{}/k{}/'.format(runpath,caseNo,kfrac,knumber)
+        shutil.rmtree(rundir)
     
-    savefolder = savepath + fspec 
-    casefolder= savepath + fspec.split('/')[0] + '/'
-    # choice of dimension
-    if (dim == '1d') or (dim == '1D') or (dim < 2):
-        filename = savefolder + '{}_1D-Temp.npy'.format(knumber)
-        gridname = casefolder + 'x-coords.npy'
-    elif (dim == '2d') or (dim == '2D') or (dim < 3):
-        filename = savefolder + '{}_2D-Temp.npy'.format(knumber)
-        gridname = casefolder + 'grid.npy'
-    else:
-        print('\ninvalid dimension')
-        
-    # load data    
-    kdata = np.load(filename)
-    grid = np.load(gridname)
+    return ecode
+
+# add cases in a grid defined by the values in klist and qlist
+def addCaseGrid(case,klist,qlist,verbose=False):
+    N=len(qlist)*len(klist)
     
-    # retrieve time info
-    tdata = pd.read_csv(savefolder + 'tdata.csv',index_col='k')
-    tfreq = tdata.loc[knumber].freq
-    tscaling = tdata.loc[knumber].ts
+    tstart = datetime.now().time()
     
-
-    
-    return kdata, tfreq, tscaling, grid
-
-#----- Functions for handling MF Data ---------------------------------------        
-
-# list multiphase folder and return sorted array of times and filenames
-def sortMFolder(folderpath,tscaling,toffset):
-    filelist=os.listdir(folderpath)
-
-    tsteps = []
-    for file in filelist:
-        tsteps.append(file.split('_')[2].split('.')[0])
-
-    times = [round(float(tstep)*tscaling + toffset,4) for tstep in tsteps]
-
-    fileindex = list(sorted(zip(times,filelist)))
-    return fileindex
-
-# read a certain timestep file in a certain casefolder and return lists 
-def fetchMdata(caseNo,sampleNo):
-
-    folderpath = mfdatapath + 'case0' + str(caseNo) + '/'
-
-
-    # value to scale integer from filename with
-    tscaling = 1e-6
-
-    # value to add to captured time to offset time before averaging process
-    toffsets=[0,-3.6,-3.3,-3.3,-3.5]
-    toffset = toffsets[caseNo]
-
-
-    fileindex = sortMFolder(folderpath,tscaling,toffset)
-
-    filename = fileindex[sampleNo][1]
-    time = fileindex[sampleNo][0]
-    df = pd.read_csv(folderpath+filename,names=['x','Ti','Tavg'])
-
-    # unpack into arrays
-    x = np.array(df.x)
-    Ti = np.array(df.Ti)
-    Tavg = np.array(df.Tavg)
-    
-    dcell = np.diff(x)[0]
-    x0 = x[0]
-    x = x - x0 + dcell/2 + dcell
-    
-    
-    return x, Ti, Tavg, time
-        
-# -------------- Main loop ---------------------------------------------------
-#%%
-
-caseNo=2
-kfrac=0.5
-
-sampleNo = 100
-
-
-
-fileindex,_,_ = sortKfolder(runpath + 'case2/q0.5/k2000/')
-
-x,y,T=loadTimeStep(fileindex,sampleNo)
-
-M,l=getOnGrid(x,y,T)
-
-zbar = yAverage(M[2])
-
-
-
-knumber=2000
- 
-kdata,tfreq,tscaling,grid = loadK(caseNo,knumber,kfrac)
-
-
-T0 = []
-T1 = []
-Sno = []
-
-kT0 = []
-kT1 = []
-
-for sno in range(230):
-    mx,mT,_,time = fetchMdata(caseNo,sno)
-    T0.append(mT[0])
-    T1.append(mT[-1])
-    Sno.append(sno)
-    ts = sno +1
-    kT0.append(kdata[ts][1])
-    kT1.append(kdata[ts][-2])
-
-Sno=np.array(Sno)
-kT0=np.array(kT0)
-
-kT1=np.array(kT1)
-
-
-x0=grid[0]
-
-mx, mT,_, time = fetchMdata(caseNo,sampleNo)
-
-ts = sampleNo + 1
+    print('{} - Processing {} cases'.format(tstart,N))
+    i=1
+    for q in qlist:
+        for k in klist:
+            print('doing case {} / {}'.format(i,N))
+            addRun(case,k,q,verbose)
             
-            
-
-
-
-## ------------ Plotting -------------------------------------
-#
-def furbish():
-    wallpos = [0,0,18,16,23]
-    
-    dcell = 0.015
-    
-    wxmin = dcell*(wallpos[caseNo] - 1)
-    wxmax = dcell*(wallpos[caseNo] + 1)
-    
-    lkmin = dcell*(wallpos[caseNo] - 5)
-    lkmax = dcell*(wallpos[caseNo] + 5)
-    
-    if not caseNo == 1:
-        plt.plot([wxmin,wxmin],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
-        plt.plot([wxmax,wxmax],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
-    
-        plt.plot([lkmin,lkmin],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
-        plt.plot([lkmax,lkmax],[1123.15,1073.15],'--',color=[0.8,0.8,0.8])
-    
-    
-    plt.xlabel('x-coordinate [m]')
-    plt.title('Temperature gradient at t = ' + str(time) + 's')
-    plt.xlim(0.0,0.54)
+            i +=1
+        print ('current time:')
+        print(datetime.now().time())
+        print('fraction done')
+        print(float(i)/float(N))
     return
 
-kT=zbar
+# function to remove all runs from fluent runfolder
+def rmAllRuns():
+    excepts=set('backup')
+    caselist = [case for case in os.listdir(runpath) if case not in excepts]
+    
+    ans = input('Really clear all K runs? (y/n)')
+    
+    if ans == 'y':
+        for case in caselist:
+            shutil.rmtree(runpath + case)
+            os.mkdir(runpath + case)
+        print('All runs cleared')
+    else:
+        print('Runs not cleared')
+    return
 
-plt.plot(grid,kT)
-plt.plot(mx,mT)
-furbish()
+def rmLogs(force=False):
+    logpath=runpath.split('runs/')[0] + 'logs/'
+    
+    if force:
+        ans='y'
+    else:    
+        ans = input('Really clear all K logs? (y/n)')
+    
+    if ans == 'y':
+        shutil.rmtree(logpath)
+        os.mkdir(logpath)
+        print('Logfolder cleared')
+    else:
+        print('Logs not cleared')
+    return
+    
 
-plt.figure()
-plt.plot(Sno,T0,Sno,T1)
+# function to remove all parsed runs from save folder
+def rmAllParsed():
+    excepts=set(['gridfiles','mfdata','backup'])
+    caselist = [case for case in os.listdir(savepath) if case not in excepts]
+    
+    ans = input('Really clear K collection? (y/n)')
+    
+    if ans == 'y':
+        for case in caselist:
+            shutil.rmtree(savepath + case)
+            os.mkdir(savepath + case)
+        print('Collection cleared')
+    else:
+        print('Collection not cleared')
+    return
+
+# make a backup tarfile of selected folders in parsed collection
+def makeBackup(backupname,dirlist):
+    TAR_FILENAME = savepath +'backup/' + backupname + '.tar.gz'
+
+    current= os.getcwd()
+    os.chdir(savepath)
+    
+    with tarfile.open(TAR_FILENAME,'w:gz', format=tarfile.PAX_FORMAT) as tar_file:
+        print('Creating archive... Please wait..\n' )
+        print('Time at start: {}'.format(datetime.now().time()))
+        for folder in dirlist:
+            tar_file.add(folder)
+            print('{} - Done adding: "{}"'.format(datetime.now().time(),folder))
+
+    os.chdir(current)
+    return
+
+# restore a certain backup of selected folders
+def restoreBackup(backupname):
+    print('\nExtracting tarball... Please wait... \n')
+    current= os.getcwd()
+    
+    tar_filename=savepath + 'backup/' + backupname + '.tar.gz'
+    tar = tarfile.open(tar_filename)
+    
+    os.chdir(savepath)
+    tar.extractall()
+    tar.close()
+    os.chdir(current)
+    print('Backup restored!')
+    return
+
+# -----------------------------------------------------------------------------
+# just for testing
+
+# function to retrieve Temp-data in 2-D for a given k-case.
+def loadK(caseNo,knumber,q,yesplease=False): 
+    runstring = 'c{}_q{}_k{}'.format(caseNo,q,knumber)
+    if not runstring in getParsed():
+        print('\ncase: ' + runstring + ' not in parsed collection \n Cannot load.')
+        ans = 'y' #input('\nMake fluent run for it? (y/n) ')
+        if (ans == 'y'):
+            ecode=addRun(caseNo,knumber,q)
+            if ecode == 1:
+                print('Run failed for case: {} \n Case not added\n Cannot load.'.format(runstring))
+                return
+        else:
+            print('Not running case, Cannot load')
+            return
+            
+    
+    fspec= 'case{}/q{}/'.format(caseNo,q)
+    savefolder = savepath + fspec
+    filename = savefolder + '{}_2D-Temp.npy'.format(knumber)
+    
+    return np.load(filename)
 
 
-dT=0
-plt.plot(Sno+1,kT0-dT,Sno+1,kT1+dT)
 
-plt.plot([Sno[0],Sno[-1]],[1123.15,1123.15],'r--')
-
-plt.plot([Sno[0],Sno[-1]],[1073.15,1073.15],'b--')
-plt.xlim(0,200)
-
-#Low
-#plt.ylim(1070,1090)
-
-#high
-#plt.ylim(1110,1124)
-
-
-## plot interpolated grid as surface
-#plt.contourf(xi,yi,z0,10,cmap='bwr', vmin=1073.15, vmax=1123.15)
-#plt.colorbar()
-#
-#plt.contour(xi,yi,z0,33,colors='black', vmin=1073.15, vmax=1123.15)
-#
-#plt.ylabel('y-coordinate [m]')
-#furbish()
-#plt.ylim(0.0,0.42)
-#plt.show() 
-#    
-#plt.plot(gx,xbar)
-#plt.plot([0,0.51],[1123.15,1073.15],'k--')
-
-#
-#plt.ylabel('Temperature [K]')
-#furbish()
-#plt.show()
-#plt.grid(linestyle='-.',color=[0.9,0.9,0.9])
-
-
-# plot fluent grid for inspection
-#plt.plot(x,y,'b.')
-#
-#plt.plot(gx,np.ones_like(gx)*gy[17],'r.')
-#plt.plot(np.ones_like(gy)*gx[15],gy,'y.')
-#plt.plot(np.ones_like(gy)*gx[18],gy,'y.')
-#
-#plt.xlim(0.0,0.51)
-#plt.ylim(0.0,0.42)
-#plt.show()
-
+# -------------- Main loop ---------------------------------------------------
+#%%
 

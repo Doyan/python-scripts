@@ -5,19 +5,21 @@ Created on Fri Nov 17 20:37:42 2017
 @author: Gabriel
 """
 import numpy as np, matplotlib.pyplot as plt
+import pandas as pd
 from scipy.optimize import fsolve
 from scipy.integrate import ode
 
 # --------------------------------------------------
            
 rho = {'water': 1000, 'air': 1.2, 'glass': 2560, 'oil': 915}# kg/m3 Densities
-my = {'water': 0.001, 'air': 1.8e-5, 'oil': 0.0574}         # Pa s Viscosities 
+my = {'water': 0.001, 'air': 1.8e-5, 'oil': 0.0574,'dirty': 0.0125}         # Pa s Viscosities 
 
 dsphere=0.0005      # m diameter of glass sphere
-dbubble=0.15e-2     # m diameter of air bubble
+dbubble=0.00488     # m diameter of air bubble
 
 g=9.81          # m/s2 acceleration due to gravity 
-sigma=71.95e-3  # N/m surface tension water-air 
+#sigma=71.95e-3  # N/m surface tension water-air 
+sigma = 0.073
 
 kappa=my['air']/my['water'] # viscosity quota for hadamard drag law 
 
@@ -27,7 +29,10 @@ expData=np.genfromtxt('exptData.dat')
 texp=expData[:,0]
 vexp=expData[:,1]
 
-# -------------------------------------------------
+
+bexpdata = pd.read_csv('bubble_data.csv')
+
+# ---------------------------------------------
 # Selection of properties
 
 psphere={'rhof': 1000, 'rhop': 2560, 'myf': 0.001, 'dp': 0.0005}
@@ -46,6 +51,8 @@ def Fd(vp,p,draglaw):
     dp=p['dp']
         
     Rep=np.abs(vp)*rhof*dp/myf
+    Eo=g*np.abs(p['rhof']-p['rhop'])*dp**2/sigma
+    
     
     cd_stokes=24/Rep
     
@@ -64,6 +71,8 @@ def Fd(vp,p,draglaw):
         f=D*(1+0.15*(D*Rep)**0.687) + (0.0175*D**2)/(1 +4.25e4*(D*Rep)**(-1.16))
         cd=cd_stokes*f*( (2/3 + kappa)/(1 + kappa) )
         #cd=cd_stokes*(1+0.15*Rep**0.687)*( (2/3 + kappa)/(1 + kappa) )
+    elif draglaw == 'toniyama':
+        cd = max([min([16/Rep*(1+0.15*Rep**0.687),cd_stokes*2]),(8/3)*(Eo/(Eo+4))])
     else:
         raise ValueError('Invalid Drag law')
         
@@ -259,6 +268,12 @@ t,y = bwe(f,tint,dt,1e-10)
 ax1.plot(t,y,label='Backward Euler')
 ax2.plot(t,y,label='Backward Euler')
 
+f = lambda vp: dvdt(vp,Cam,pbubble,'hadamard')
+t,y = fwe(f,tint,dt)
+taup,vtau=findTau(t,y)
+
+p,po=plotSol(t,y,r'H-D drag, $v_{term}=$' + '{:f}'.format(y[-1]) +' m/s')
+po[0].set_label(r'$\tau_p = $' + '{:f}'.format(taup) + 'ms')
 plt.suptitle('--- Different numerical schemes, dt=' + str(dt*1000) +'ms ---')
 
 ax1.set_title('Entire profile')
@@ -318,9 +333,9 @@ plt.savefig('images/velo-air.pdf')
 #%%
 # -----------------------------------------------------------------------------
 # Start bubble calcs
-pbubble={'rhof': rho['water'], 'rhop': rho['air'], 'myf': my['water'], 'dp': dbubble}
+pbubble={'rhof': rho['water'], 'rhop': rho['air'], 'myf': my['dirty'], 'dp': dbubble}
 
-tint=[0.,0.03]
+tint=[0.,0.32]
 dt=(tint[1]-tint[0])/1000
 
 #Cam=cam(pbubble)
@@ -349,10 +364,19 @@ taup,vtau=findTau(t,y)
 p,po=plotSol(t,y,r'H-D drag, $v_{term}=$' + '{:f}'.format(y[-1]) +' m/s')
 po[0].set_label(r'$\tau_p = $' + '{:f}'.format(taup) + 'ms')
 
-plt.title('Rising bubble, Added mass force included')
-plt.legend()
-plt.savefig('images/velo-bubble.pdf')
+Cam=cam(pbubble)
+f = lambda vp: dvdt(vp,Cam,pbubble,'toniyama')
+t,y = fwe(f,tint,dt)
+taup,vtau=findTau(t,y)
 
+p,po=plotSol(t,y,r'Toni drag, $v_{term}=$' + '{:f}'.format(y[-1]) +' m/s')
+po[0].set_label(r'$\tau_p = $' + '{:f}'.format(taup) + 'ms')
+plt.plot(bexpdata.time,bexpdata.velocity,'k--')
+
+plt.title('Rising bubble, Added mass force included')
+#plt.legend()
+plt.savefig('images/velo-bubble.pdf')
+plt.show()
 #------------------------------------------------------------------------------
 # Bubble in oil
 pbubble['rhof']=rho['oil']
@@ -450,7 +474,7 @@ plt.savefig('images/force.pdf')
 # -----------------------------------------------------------------------------
 # Weber shit
 
-pbubble={'rhof': rho['water'], 'rhop': rho['air'], 'myf': my['water'], 'dp': dbubble}
+pbubble={'rhof': rho['water'], 'rhop': rho['air'], 'myf': my['dirty'], 'dp': dbubble}
 Cam=cam(pbubble)
 f = lambda vp: dvdt(vp,Cam,pbubble,'tran-cong')
 t,y = fwe(f,tint,dt)
@@ -488,5 +512,50 @@ plt.figure(9)
 
 forcePlot(t,-y,psand,'sand falling')
 plt.legend(loc=(0.59,0.55))
+
+
+#%%
+# -----------------------------------------------------------------------------
+plt.figure(10)
+# Start bubble calcs
+pbubble={'rhof': rho['water'], 'rhop': rho['air'], 'myf': my['dirty'], 'dp': dbubble}
+plotSol(np.array(bexpdata.time)*1000,np.array(bexpdata.velocity),'Experimental data')
+
+tint=[0.,0.32]
+dt=(tint[1]-tint[0])/1000
+
+
+
+Cam=cam(pbubble)
+f = lambda vp: dvdt(vp,Cam,pbubble,'schiller-naumann')
+t,y = fwe(f,tint,dt)
+taup,vtau=findTau(t,y)
+
+p,po=plotSol(t,y,r'S-N drag, $v_{term}=$' + '{:f}'.format(y[-1]) +' m/s')
+po[0].set_label(r'$\tau_p = $' + '{:f}'.format(taup) + 'ms')
+
+
+Cam=cam(pbubble)
+f = lambda vp: dvdt(vp,Cam,pbubble,'toniyama')
+t,y = fwe(f,tint,dt)
+taup,vtau=findTau(t,y)
+
+
+p,po=plotSol(t,y,r'Toni drag, $v_{term}=$' + '{:f}'.format(y[-1]) +' m/s')
+po[0].set_label(r'$\tau_p = $' + '{:f}'.format(taup) + 'ms')
+
+
+plt.legend()
+
+
+
+
+
+
+
+
+
+
+
 
 
