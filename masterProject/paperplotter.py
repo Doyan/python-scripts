@@ -8,6 +8,8 @@ Script to generate plots for paper on lateral bed dispersion.
 @author: gabgus
 """
 
+chalmerspath = '/chalmers/users/gabgus/'
+path = chalmerspath
 
 import numpy as np, matplotlib.pyplot as plt
 
@@ -55,11 +57,6 @@ udiff30cm =[0.306, 0.306, 0.306, 0.306, 0.306, 0.306, 0.473, 0.473, 0.473, 0.473
 0.473, 0.473, 0.639, 0.639, 0.639, 0.639, 0.639, 0.639]
 
 
-
-
-
-
-
 # Shi and Fan correlation
 
 def shifan(udiff,hmf,dp,rhof,rhop,myf):
@@ -81,7 +78,7 @@ plt.plot(udiff_nowall,nowall,'o',label='exp-nowall')
 plt.xlabel('$u-u_{mf}$ [m/s]')
 plt.ylabel('$D_L$ $[m^2/s]$')
 plt.legend()
-#plt.savefig('./images/fig1.pdf')
+plt.savefig( path + 'Pictures/python/fig1.pdf')
 
 plt.figure()
 plt.plot(udiff30cm,open30cm,'o',label='exp-30cm')
@@ -90,7 +87,6 @@ plt.plot(0.3,0.0004,'o',label='nozzles under wall')
 plt.plot([0.3],[0.002],'bo',label= 'nozzles')    
 plt.plot([0.3],[0.0024],'bx',label= 'nozzles-qdata')
 plt.plot(udiff_nowall,nowall,'o',label='exp-nowall')
-
 
 plt.xlabel('$u-u_{mf}$ [m/s]')
 plt.ylabel('$D_L$ $[m^2/s]$')

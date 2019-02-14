@@ -474,43 +474,68 @@ def k_uni(k,q):
 #    
     
 
+
+# load velocity data for choosen case
 caseNo=1
-sNo=10
-yval=7
 scalar='xvel'
 
+Smat,M,t = loadMdata(caseNo,scalar=scalar)
 
 
-Smat,M,t, = loadMdata(caseNo,scalar=scalar)
+# Cut away the crazy nozzle. And the nozzle paths. And the space above the bed. 
+vinst=Smat[:,6:42,:,:60]
 
-S=Smat.mean(axis=0);
-#S=Smat[sNo]
 
-Ssurf=S[yval,:,:]
-X = M[0,yval,:,:]
-Z = M[2,yval,:,:]
+vinst=vinst[:,30,10,20]
+
+vbar = vinst.mean()
+
+vdot = vinst-vbar
+
+def RL(kdot,vinst,vbar,vdot):
+    top=0
+    ksum=0
+    
+    if type(kdot) == 'int':
+        kmax=kdot
+    else:
+        kmax=kdot[-1]
+    
+    for k in range(len(vinst)-kmax):
+        top = top + (vinst[k] - vbar)*(vinst[k+kdot] - vbar)
+        ksum+=1
+    top=top/ksum
+    
+    return top/np.mean(vdot**2)
+
+karr=np.arange(25)
+
+
+TL=np.trapz(RL(karr,vinst,vbar,vdot))
+
+DT= np.mean(vdot**2)*TL
+
+
+plt.plot(t[karr],RL(karr,vinst,vbar,vdot))
+plt.title('$R_L$')
+plt.xlabel('time [s]')
+
+DTlist=[]
+Klist=[]
+for K in range(2,40):    
+    karr=np.arange(K)
+    TL=np.trapz(RL(karr,vinst,vbar,vdot))
+    DT=np.mean(vdot**2)*TL
+    DTlist.append(DT)
+    Klist.append(K)
 
 plt.figure()
-plt.contourf(X,Z,Ssurf,30,cmap='RdBu_r')
-plt.colorbar()
-plt.xlabel('x-coordinate [m]')
-plt.ylabel('y-coordinate [m]')
-#plt.title('Volume fraction at t={:.2f} y={:.2f} mm'.format(t[sNo],M[1,yval,0,0]*1000))
-plt.title('Time averaged {} at y={:.2f} mm'.format(dispnames[scalar],M[1,yval,0,0]*1000))
+plt.plot(Klist,DTlist)
+plt.title('$D_T$')
+plt.xlabel('time lag [s]')
 
-Sx=Ssurf.mean(axis=1)
-#plt.savefig('./paper/xvel_tavg_low_c1.pdf')
-plt.figure()
-plt.plot(M[0,0,:,0],Sx,label='y={:.2f} mm'.format(M[1,yval,0,0]*1000))
 
-ybar,gx,t = get1ddata(caseNo,scalar=scalar)
 
-plt.plot(gx,ybar.mean(axis=0),label='volume fraction weighted mean')
-plt.legend()
-plt.xlabel('x-coordinate [m]')
-plt.ylabel('volume fraction')
-plt.title('Time averaged y-velocity along x' )
-#plt.savefig('./paper/bpaths_velox_1d_low_c1.pdf')
 
 
 
