@@ -343,7 +343,7 @@ def get1ddata(caseNo,scalar='temp'):
     
     if caseNo < 6:
         yslice=slice(6,250)
-        zslice=slice(0,60)
+        zslice=slice(0,80)
     else:
         yslice=slice(0,250)
         zslice=slice(0,250)
@@ -441,98 +441,114 @@ def k_uni(k,q):
 #               q: 0.1 - 0.1 --> 1.2
 #
 
-#for cno in [1,2,3,4]:
-#    #dlist = np.append(np.array([0.0001]),np.arange(0.0005,0.0045,0.0005))
-#    #qlist = np.arange(np.array([0.0005]),0.15,0.45,0.01)
-#    dlist=np.append(np.array([0.0005]),np.arange(0.001,0.015,0.001))
-#    qlist=np.arange(0.1,1.2,0.1)
-#    _,_, _,keff,_ = plotQsignal(cno,False)
-#    Deff=keff/1100/2600/0.51
+for cno in [1,2,3,4]:
+    #dlist = np.append(np.array([0.0001]),np.arange(0.0005,0.0045,0.0005))
+    #qlist = np.arange(np.array([0.0005]),0.15,0.45,0.01)
+    dlist=np.append(np.array([0.0005]),np.arange(0.001,0.01,0.001))
+    qlist=np.arange(0.1,1.2,0.1)
+    _,_, _,keff,_ = plotQsignal(cno,False)
+    Deff=keff/1100/2600/0.51
+
+    #adddgrid(cno,dlist,qlist)
+    dnumber,q,Z = getResponse(cno,dlist,qlist,scalar='uds',xmask=slice(0,36))
+    print('D = {} m2/s'.format(dnumber))
+    print('D_eff = {} m2/s'.format(Deff))
+    
+for cno in [6,7]:
+    dlist = np.arange(0.007,0.02,0.00025)
+    qlist = np.arange(0.2,1.1,0.05)
+    
+    #adddgrid(cno,dlist,qlist)
+    dnumber,q,Z = getResponse(cno,dlist,qlist,scalar='uds')
+    print('D = {} m2/s'.format(dnumber))
+    print('D_uni = {} m2/s'.format(k_uni(dnumber,q)))
+
+for cno  in [8]:
+    dlist = np.arange(0.015,0.03,0.00025)
+    qlist = np.arange(0.4,1.1,0.05)
+    
+    #adddgrid(cno,dlist,qlist)
+    dnumber,q,Z = getResponse(cno,dlist,qlist,scalar='uds')
+    print('D = {} m2/s'.format(dnumber))
+    print('D_uni = {} m2/s'.format(k_uni(dnumber,q)))
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Momentum calc
+    
+## load velocity data for choosen case
+#caseNo=1
+#scalar='xvel'
 #
-#    #adddgrid(cno,dlist,qlist)
-#    dnumber,q,Z = getResponse(cno,dlist,qlist,scalar='uds',xmask=slice(0,36))
-#    print('D = {} m2/s'.format(dnumber))
-#    print('D_eff = {} m2/s'.format(Deff))
-    
-#for cno in [6,7]:
-#    dlist = np.arange(0.007,0.02,0.00025)
-#    qlist = np.arange(0.2,1.1,0.05)
-#    
-#    #adddgrid(cno,dlist,qlist)
-#    dnumber,q,Z = getResponse(cno,dlist,qlist,scalar='uds')
-#    print('D = {} m2/s'.format(dnumber))
-#    print('D_uni = {} m2/s'.format(k_uni(dnumber,q)))
+#Smat,M,t = loadMdata(caseNo,scalar=scalar)
 #
-#for cno  in [8]:
-#    dlist = np.arange(0.015,0.03,0.00025)
-#    qlist = np.arange(0.4,1.1,0.05)
+#
+## Cut away the crazy nozzle. And the nozzle paths. And the space above the bed. 
+#vinst=Smat[:,6:42,:,:60]
+#
+#
+#vinst=vinst[:,30,10,20]
+#
+#vbar = vinst.mean()
+#
+#vdot = vinst-vbar
+#
+#def RL(kdot,vinst,vbar,vdot):
+#    top=0
+#    ksum=0
 #    
-#    #adddgrid(cno,dlist,qlist)
-#    dnumber,q,Z = getResponse(cno,dlist,qlist,scalar='uds')
-#    print('D = {} m2/s'.format(dnumber))
-#    print('D_uni = {} m2/s'.format(k_uni(dnumber,q)))
+#    if type(kdot) == 'int':
+#        kmax=kdot
+#    else:
+#        kmax=kdot[-1]
 #    
-    
-
-
-# load velocity data for choosen case
-caseNo=1
-scalar='xvel'
-
-Smat,M,t = loadMdata(caseNo,scalar=scalar)
-
-
-# Cut away the crazy nozzle. And the nozzle paths. And the space above the bed. 
-vinst=Smat[:,6:42,:,:60]
-
-
-vinst=vinst[:,30,10,20]
-
-vbar = vinst.mean()
-
-vdot = vinst-vbar
-
-def RL(kdot,vinst,vbar,vdot):
-    top=0
-    ksum=0
-    
-    if type(kdot) == 'int':
-        kmax=kdot
-    else:
-        kmax=kdot[-1]
-    
-    for k in range(len(vinst)-kmax):
-        top = top + (vinst[k] - vbar)*(vinst[k+kdot] - vbar)
-        ksum+=1
-    top=top/ksum
-    
-    return top/np.mean(vdot**2)
-
-karr=np.arange(25)
-
-
-TL=np.trapz(RL(karr,vinst,vbar,vdot))
-
-DT= np.mean(vdot**2)*TL
-
-
-plt.plot(t[karr],RL(karr,vinst,vbar,vdot))
-plt.title('$R_L$')
-plt.xlabel('time [s]')
-
-DTlist=[]
-Klist=[]
-for K in range(2,40):    
-    karr=np.arange(K)
-    TL=np.trapz(RL(karr,vinst,vbar,vdot))
-    DT=np.mean(vdot**2)*TL
-    DTlist.append(DT)
-    Klist.append(K)
-
-plt.figure()
-plt.plot(Klist,DTlist)
-plt.title('$D_T$')
-plt.xlabel('time lag [s]')
+#    for k in range(len(vinst)-kmax):
+#        top = top + (vinst[k] - vbar)*(vinst[k+kdot] - vbar)
+#        ksum+=1
+#    top=top/ksum
+#    
+#    return top/np.mean(vdot**2)
+#
+#karr=np.arange(25)
+#
+#
+#TL=np.trapz(RL(karr,vinst,vbar,vdot))
+#
+#DT= np.mean(vdot**2)*TL
+#
+#
+#plt.plot(t[karr],RL(karr,vinst,vbar,vdot))
+#plt.title('$R_L$')
+#plt.xlabel('time [s]')
+#
+#DTlist=[]
+#Klist=[]
+#for K in range(2,40):    
+#    karr=np.arange(K)
+#    TL=np.trapz(RL(karr,vinst,vbar,vdot))
+#    DT=np.mean(vdot**2)*TL
+#    DTlist.append(DT)
+#    Klist.append(K)
+#
+#plt.figure()
+#plt.plot(Klist,DTlist)
+#plt.title('$D_T$')
+#plt.xlabel('time lag [s]')
 
 
 

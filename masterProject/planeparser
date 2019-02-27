@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Feb 22 13:51:56 2019
+Script to read a textfile produced by a fluent UDF containing data from two planes 
+appended over time with delimiters for each new timestep.
+@author: gabgus
+"""
+
+import numpy as np
+import os
+import matplotlib.pyplot as plt
+from scipy.interpolate import griddata
+# -----------------------------------------------------------------------------
+path = '/scratch/gabgus/fluent/henriks/noWall/'
+
+current=os.getcwd()
+
+highlist = [path + file for file in os.listdir(path) if 'high_plane' in file]
+lowlist = [path + file for file in os.listdir(path) if 'low_plane' in file]
+
+def sniffDelim(listpath):
+    t=[]
+    #  read node datafile line by line
+    with open(listpath) as file:
+        line = file.readline()
+        cnt = 1
+        nocells=0
+        nt=0
+        while line:
+            # Find every timestep delimiter and count number of timesteps 
+            if '#' in line:
+                nt +=1
+                # excavate the actual times from the delimiter strings
+                t.append(float(line.split(' ')[-1]))
+                
+                # get the number of cells for this node from the line number 
+                # at the start of the second timestep
+                if cnt > 1 and nocells == 0:
+                    nocells=cnt-2
+                    
+            line = file.readline()
+            cnt+=1
+            
+        # Identify empty nodes and mark them as such
+        if cnt-1 == nt:
+            nocells = 0
+    return nocells,nt,t
+
+
+# Read all the data in each node file and split it 
+# according to how many timesteps there is 
+harrays=[]
+for entry in highlist:
+    nocells,nt,t = sniffDelim(entry)
+    if nocells > 0:    
+        raw=np.loadtxt(entry,delimiter=' ')
+        harrays.append(np.split(raw,nt))
+
+# merge the data from each node
+hplane = np.concatenate((harrays),axis=1)
+
+
+# make mesh from the points in the data
+xpoints=np.unique(hplane[0][:,0])
+zpoints=np.unique(hplane[0][:,1])
+
+xi,zi = np.meshgrid(xpoints,zpoints)
+
+# interpolate the velocity of interest onto the created mesh
+vi = griddata((hplane[-1][:,0],hplane[0][:,1]),hplane[-1][:,2],(xi,zi),method='nearest')
+
+plt.figure()
+plt.contourf(xi,zi,vi,20,cmap='viridis')
+
+# 11703,11955,11697
+#  11688,11964,11694
