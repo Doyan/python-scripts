@@ -145,7 +145,7 @@ def packKfolder(folderpath):
 
 # shoehorn all relevant data into numpy-arrays and save using .npy format
 # files are prefixed with k and stored according to case info.    
-def saveData(caseNo,kfrac,knumber,overwrite=True,include_static=True):
+def saveData(caseNo,kfrac,knumber,overwrite=True,include_static=True,dim1=False):
     
     # create path for nested folder-structure
     fspec= 'case{}/q{}/'.format(caseNo,kfrac)
@@ -168,7 +168,11 @@ def saveData(caseNo,kfrac,knumber,overwrite=True,include_static=True):
         return
     
     # save temperature fields
-    np.save(prefix + '2D-Temp',zM)
+    if dim1:
+        z1d = np.nanmean(zM,axis=1)
+        np.save(prefix + '1D-Temp',z1d)
+    else:
+        np.save(prefix + '2D-Temp',zM)
     
     return
 
@@ -226,7 +230,7 @@ def rmRun(caseNo,kfrac,knumber):
 # Functions for working with Fluent 
 
 ## Request k to be added to parsed collection. Runs fluent if needed.
-def addRun(caseNo,knumber,kfrac,verbose=True, keepruns=False):
+def addRun(caseNo,knumber,kfrac,verbose=True, keepruns=False,dim1=False):
     
     runstring = 'c{}_q{}_k{}'.format(caseNo,kfrac,knumber)
     parsed = getParsed()
@@ -241,7 +245,7 @@ def addRun(caseNo,knumber,kfrac,verbose=True, keepruns=False):
     elif runstring in runs:
         if verbose:
             print('parsing saved run for case: ' + runstring)
-        saveData(caseNo,kfrac,knumber)
+        saveData(caseNo,kfrac,knumber,dim1=dim1)
     
     else: 
         if verbose:
@@ -253,7 +257,7 @@ def addRun(caseNo,knumber,kfrac,verbose=True, keepruns=False):
             from k_generator import runCase as requestK
             ecode = requestK(caseNo,knumber,kfrac)
                 
-        saveData(caseNo,kfrac,knumber)
+        saveData(caseNo,kfrac,knumber,dim1=dim1)
     
     if verbose:
         if ecode == 0:
@@ -268,7 +272,7 @@ def addRun(caseNo,knumber,kfrac,verbose=True, keepruns=False):
     return ecode
 
 # add cases in a grid defined by the values in klist and qlist
-def addCaseGrid(case,klist,qlist,verbose=False):
+def addCaseGrid(case,klist,qlist,verbose=False,dim1=False):
     N=len(qlist)*len(klist)
     
     tstart = datetime.now().time()
@@ -278,7 +282,7 @@ def addCaseGrid(case,klist,qlist,verbose=False):
     for q in qlist:
         for k in klist:
             print('doing case {} / {}'.format(i,N))
-            addRun(case,k,q,verbose)
+            addRun(case,k,q,verbose,dim1=dim1)
             
             i +=1
         print ('current time:')

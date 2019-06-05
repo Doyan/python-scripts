@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri May  3 11:53:27 2019
+
+Script to produce a plot which exemplifies the bad adherence to 
+the boundary condition that the k-fit method shows  
+
+@author: gabgus
+"""
+
+
+
+
+import comparator as C
+import numpy as np
+import matplotlib.pyplot as plt
+
+mtemp = C.mtemp
+
+# -----------------------------------------------------------------------------
+
+caseNo = 10
+scalar='temp'
+
+
+x1 = C.Klimits['x1'][caseNo]
+x0 = C.Klimits['x0'][caseNo]
+            
+knumber = 10000
+
+ybar, gx,t  =  C.get1ddata(caseNo,scalar=scalar)
+            
+xslice = slice(x0,x1)
+kbar = C.heateq1D(gx[xslice],t,knumber, vof_s=C.vof_s[caseNo],mtemp=mtemp[caseNo],Tcorr=0)
+    
+
+fig, ax = plt.subplots(2,1, sharex=True)
+fig.set_size_inches(8,6)
+           
+sampleNos= [0,1,4, 20, 80, 100]
+cmap = plt.get_cmap('Set2')
+
+
+for i,sNo in enumerate(sampleNos):
+    norm_idx = (i+1)/(len(sampleNos)+1)
+    
+    
+    ax[0].plot(gx[xslice],kbar[sNo],'.-',label=f't={t[sNo]}',markersize=4)
+    ax[1].plot(gx[xslice],ybar[sNo][xslice],'.-',label=f't={t[sNo]}',markersize=5)
+
+ax[0].legend(ncol=3,loc='lower left')
+ax[1].legend(ncol=3,loc='lower left')
+
+fig.text(0.65,0.83,'Analytic')
+fig.text(0.65,0.42,'Simulated')
+
+fig.suptitle('Analytic vs Simulated temperature profiles')
+
+for axes in ax:
+    axes.grid()
+    axes.plot([gx[x0-2],gx[x1+2]],[mtemp[caseNo]]*2,'k--',alpha=0.5)
+    axes.plot([(gx[x1]-gx[x0])/2+gx[x0],(gx[x1]-gx[x0])/2+gx[x0]],[mtemp[caseNo]+25,mtemp[caseNo]-25],'k--',alpha=0.5)
+    axes.plot([gx[x0],gx[x1]],[mtemp[caseNo]+25,mtemp[caseNo]-25],'k--',alpha=0.3)
+    axes.set_ylabel('Temperature [K]')
+    axes.set_xlim(gx[x0-1],gx[int(x1)])
+    axes.set_ylim(mtemp[caseNo]-26,mtemp[caseNo]+26)
+
+ax[-1].set_xlabel('x-coordinate [m]')
+fig.savefig('paper/k-bad-fit.pdf',bbox_inches='tight')

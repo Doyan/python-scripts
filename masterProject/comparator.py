@@ -13,7 +13,6 @@ across several different timesteps
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-import os
 
 #from k_packer import getParsed, addRun
 # -------------------------------------------------------------------------
@@ -25,8 +24,8 @@ dfolder = '/scratch/gabgus/fluent/dgenerator/parsed/'
 dispnames= {'xvel' : 'x velocity',      'yvel' : 'y velocity', 'zvel' :'z velocity',
                  'uds' : 'passive scalar',  'temp' : 'temperature', 'vof' : 'volume fraction' }
 
-Klimits = {'x0': ['error' , 15, 15, 15, 15, 'missing', 15, 15, 24], 
-           'x1': ['error' , 51, 51, 51, 51, 'missing', 51, 51, 76],
+Klimits = {'x0': ['error' , 15, 15, 15, 15, 'missing', 15, 15, 24, 15, 39], 
+           'x1': ['error' , 51, 51, 51, 51, 'missing', 51, 51, 76, 117, 161],
            'y1': ['error' , 38, 38, 38, 38, 'missing', 32, 32, 60],
            'y0': ['error' , 6, 6, 6, 6, 'missing', 0, 0, 0]}
 
@@ -35,8 +34,11 @@ Dlimits = {'x0': ['error' , 0, 0, 0, 0, 'missing', 0, 0, 0],
            'y1': ['error' , 38, 38, 38, 38, 'missing', 32, 32, 60],
            'y0': ['error' , 6, 6, 6, 6, 'missing', 0, 0, 0]}
 
-mtemp=[1098.15,1098.15,1098.15,1098.15,1098.15,1098.15,1098.15,1098.15,1173.15]
-
+mtemp=[1098.15,1098.15,1098.15,1098.15,1098.15,1098.15,1098.15,1098.15,1173.15,1098.15,1173.15]
+T_corr = [0, 6.306872451566851, 5.3540075157914675, 4.373735506945324, 4.3369793592667065, 
+          0, 6.0586538121410785, 7.311308672258872, 8.704318690193022, 
+          3.4443079201319757, 3.4807829930635554]
+vof_s=[0 ,0.5422 ,0.5401, 0.5414, 0.5404, 0, 0.5281, 0.5263, 0.3141, 0.5279, 0.3132]
 # -------------------------------------------------------------------------
 
 def loadMdata(caseNo,scalar='temp'):
@@ -81,9 +83,9 @@ def resetKlib():
 
 
 
-def addkgrid(caseNo,klist,qlist,verbose=False):
+def addkgrid(caseNo,klist,qlist,verbose=False,dim1=False):
     from k_packer import addCaseGrid
-    addCaseGrid(caseNo,klist,qlist,verbose)
+    addCaseGrid(caseNo,klist,qlist,verbose,dim1=dim1)
     return
 
 
@@ -115,6 +117,31 @@ def loadK(caseNo,knumber,kfrac):
     
     return np.load(filename)
 
+def loadK1D(caseNo,knumber,kfrac): 
+    runstring = 'c{}_q{}_k{}'.format(caseNo,kfrac,knumber)
+    if not runstring in getkParsed():
+        print('\ncase: ' + runstring + ' not in parsed collection \n Cannot load.')
+        ans = input('\nMake fluent run for it? (y/n) ')
+        if ans == 'y':
+            from k_packer import addRun as addKRun
+            ecode=addKRun(caseNo,knumber,kfrac)
+            if ecode == 1:
+                print('Run failed for case: {} \n Case not added\n Cannot load.'.format(runstring))
+                return
+        else:
+            print('Not running case, Cannot load')
+            return
+            
+    
+    fspec= 'case{}/q{}/'.format(caseNo,kfrac)
+    
+    savefolder = kfolder + fspec 
+   
+    filename = savefolder + '{}_1D-Temp.npy'.format(knumber)
+    
+    return np.load(filename)
+
+
 
 
 # -------------------------------------------------------------------------
@@ -133,9 +160,9 @@ def resetDlib():
     rmLogs()
     return
 
-def adddgrid(caseNo,dlist,qlist,verbose=False):
+def adddgrid(caseNo,dlist,qlist,verbose=False,dim1=False):
     from d_packer import addCaseGrid
-    addCaseGrid(caseNo,dlist,qlist,verbose)
+    addCaseGrid(caseNo,dlist,qlist,verbose,dim1=dim1)
     return
 
 
@@ -165,6 +192,29 @@ def loadD(caseNo,dnumber,dfrac):
     
     return np.load(filename)
 
+def loadD1D(caseNo,dnumber,dfrac): 
+    runstring = 'c{}_q{}_d{}'.format(caseNo,np.round(dfrac,4),np.round(dnumber,7))
+    if not runstring in getdParsed():
+        print('\ncase: ' + runstring + ' not in parsed collection \n Cannot load.')
+        ans = input('\nMake fluent run for it? (y/n) ')
+        if ans == 'y':
+            from d_packer import addRun as addDRun
+            ecode=addDRun(caseNo,dnumber,dfrac)
+            if ecode == 1:
+                print('Run failed for case: {} \n Case not added\n Cannot load.'.format(runstring))
+                return
+        else:
+            print('Not running case, Cannot load')
+            return
+            
+    
+    fspec= 'case{}/q{}/'.format(caseNo,dfrac)
+    
+    savefolder = dfolder + fspec 
+   
+    filename = savefolder + '{}_1D-Conc.npy'.format(dnumber)
+    
+    return np.load(filename)
 
 
 # -------------------------------------------------------------------------
@@ -182,9 +232,9 @@ class MidpointNormalize(matplotlib.colors.Normalize):
         return np.ma.masked_array(np.interp(value, x, y))
 
 
-def plot2d(x2d,y2d,zbar,time,scalar='temp', cmap = 'RdBu_r'):
+def plot2d(caseNo,x2d,y2d,zbar,time,scalar='temp', cmap = 'RdBu_r'):
     midpoints= {'xvel' : 0.0,   'yvel' : 0.0,    'zvel' : 0.0,
-                 'uds' : 0.5,   'temp' : 1098.15, 'vof' : 0.63/2 }
+                 'uds' : 0.5,   'temp' : mtemp[caseNo], 'vof' : 0.63/2 }
     dispnames= {'xvel' : 'x velocity', 'yvel' : 'y velocity', 'zvel' :'z velocity',
                  'uds' : 'passive scalar',   'temp' : 'temperature', 'vof' : 'volume fraction' }
     
@@ -219,11 +269,9 @@ def plot2d(x2d,y2d,zbar,time,scalar='temp', cmap = 'RdBu_r'):
         vmin = midpoints[scalar] - maxdiff
         vmax = midpoints[scalar] + maxdiff
         
-    
-    
     norm=MidpointNormalize(vmin,vmax, midpoint=midpoints[scalar]) 
     
-    plt.contourf(x2d,y2d,zbar,20,cmap=cmap,norm=norm)
+    plt.contourf(x2d,y2d,zbar,30,cmap=cmap,norm=norm)
     plt.colorbar()
     plt.contour(x2d,y2d,zbar,60,cmap=cmap,norm=norm)
     plt.xlabel('x-coordinate [m]')
@@ -265,11 +313,11 @@ def plotQsignal(caseNo,plot=True):
     qtime = np.load('{}c{}_qtime.npy'.format(mfdatapath,caseNo))
     qmid =(qin+qut)/2
 
-    A=[0,0.6,0.6,0.6,0.6,0,0.6,0.6,0.2]
-    dx = [0,0.525,0.525,0.525,0.525,0,0.525,0.525,0.306]
+    A=[0,0.6,0.6,0.6,0.6,0,0.6,0.6,0.2,0.6,0.2]
+    dx = [0,0.525,0.525,0.525,0.525,0,0.525,0.525,0.306,1.50,0.72]
     dT = 50.0
 
-    sslice=slice(int(0.8*len(qtime)),len(qtime))
+    sslice=slice(int(0.5*len(qtime)),len(qtime))
 
     q = qmid[sslice]
     qtime=qtime[sslice]
@@ -282,15 +330,22 @@ def plotQsignal(caseNo,plot=True):
 
 
 
-    N = int(0.2*len(qx))
+    N = int(0.1*len(qx))
     qroll= moving_average(qx,N)
+    
+    keff_roll = qroll * dx[caseNo] / dT
     
     if plot:
         plt.plot(qtime,qx)
         plt.plot(qtime[N-1:],qroll)
         print('qx = {} MW/m2'.format(qx.mean()/1e6))
         plt.show()
-        plt.plot(qtime,keff)
+        plt.plot(qtime,keff,label='raw')
+        plt.plot(qtime[N-1:],keff_roll,label='rolling mean')
+        plt.plot([qtime[0],qtime[-1]],[keff.mean(),keff.mean()],'--',label='mean')
+        plt.xlabel('Time [s]')
+        plt.ylabel('$k_{eff}$ [W/m/K]')
+        plt.title('Effective conduction over time')
     return qx.mean(), q_int, keff, keff.mean(),k_int
 
 
@@ -358,19 +413,31 @@ def get1ddata(caseNo,scalar='temp'):
     zdotsum=np.nansum(zdot,axis=1)
     ybar = zdotsum/vofsum
     
+    if caseNo in [1,2,3,4] and scalar=='uds':
+            ybar = ybar[85:]
+            t = t[85:] - t[84]
+    
     
     gx = M[0,0,:,0]
+    
+    if caseNo == 9:
+        ybar = ybar[1:]
+        t = t[1:]
+    
     return ybar,gx,t
 
 def getdeviation1d(caseNo,knumber,q,ybar,scalar='temp',tslice=slice(0,500),xmask=slice(0,500)):
     if scalar == 'temp':
-        kdata = loadK(caseNo,knumber,q)
+        kdata = loadK1D(caseNo,knumber,q)
     elif scalar == 'uds':
-        kdata = loadD(caseNo,knumber,q)
+        kdata = loadD1D(caseNo,knumber,q)
+        if caseNo in [1,2,3,4]:
+            kdata = kdata[:len(ybar)]
     else:
         print('no stored scalar field for scalar {}'.format(scalar))
    
-    kbar = np.nanmean(kdata[tslice], axis = 1)
+    kbar = kdata[tslice]
+    
     ybar = ybar[tslice]
 
     if scalar == 'temp':
@@ -432,125 +499,155 @@ def k_uni(k,q):
     kuni=k*q*alpha/(q*alpha*L15/L + alpha*L24/L + L3/L)
     return kuni
     
+def fourier1d(gx,t,D,N=100):
+    n=np.arange(1,N)
+    x=gx
+    
+    L = gx[-1] + gx[1] - gx[0]
+    
+    a = 1/n*np.sin(n*np.pi/2)
+    b = np.cos(np.pi/L*np.outer(n,x))
+    c = np.exp(-D*np.outer((n*np.pi/L)**2,t))
+    
+    return 1/2 - 2/np.pi * np.einsum('i,ij,ih',a,b,c)
+
+def heateq1D(gx,t,knumber,vof_s=0.5, N=100, mtemp=1098.15,Tcorr=5):
+    k =  np.arange(0,N)
+    n = k + 1
+    gx = gx - gx[0]
+    x = gx
+    
+    Th = mtemp + 25 - Tcorr
+    Tc = mtemp -25 + Tcorr # K
+    T0 = mtemp   # K
+    
+    rho_s = 2613.0
+    rho= rho_s*vof_s # kg/m3 bulk density of bed 
+    
+    cp = 1203.0 # J/kgK bed material cp
+
+    alpha = knumber/(rho*cp)
+    
+    L = gx[-2] + gx[1] - gx[0]
+    
+    a = 1/n*((T0-Th) - (T0-Tc)*(-1)**n)
+    b = np.sin(np.pi/L*np.outer(n,x))
+    c = np.exp(-alpha*np.outer((n*np.pi/L)**2,t))
+    
+    S = (Tc - Th)/L* x + Th
+    
+    return S + 2/np.pi * np.einsum('i,ij,ih',a,b,c)
+
+def getHomoDiff(caseNo,ybar,gx,t,D,tslice=slice(0,500),xmask=slice(0,500),scalar='uds',
+                Tcorr='default',tol=0.0000001):
+    
+    if Tcorr == 'default':
+        Tcorr=T_corr[caseNo]
+    
+    
+    if scalar == 'temp':
+        
+        xslice=slice(Klimits['x0'][caseNo],Klimits['x1'][caseNo])
+        kdata = heateq1D(gx[xslice],t,D, vof_s=vof_s[caseNo],mtemp=mtemp[caseNo],Tcorr=Tcorr)
+        
+        kdata = kdata[tslice]
+        ybar = ybar[tslice]
+        
+        
+        diff = np.abs(np.diff(kdata,axis=0)).mean(axis=1)
+        if all(diff > tol):
+            i_end=500
+            kbar = kdata[tslice]
+            ybar = ybar[tslice,xslice]
+        
+        else:
+            i_end = np.where(diff < tol)[0][0]
+            kss = kdata[i_end:].mean(axis=0)
+            yss = ybar[i_end,xslice].mean(axis=0)
+        
+            Nss=3
+            tslice = slice(0,i_end+Nss)
+            kbar = kdata[tslice]
+            ybar = ybar[tslice,xslice]
+            kbar[-Nss:] = kss
+            ybar[-Nss:] = yss
+
+    else:
+        kbar = fourier1d(gx,t,D)
+        
+        kbar = kbar[tslice]
+        ybar = ybar[tslice]
+
+    terr=np.abs(ybar[:,xmask] - kbar[:,xmask])
+
+    xerr = np.mean(terr,axis=0)
+    
+    errtot = xerr.mean(axis=0)
+    return errtot
+
 
 
 # -------------------------------------------------------------------------
 
 #%%3
-# base grid=    d: 0.001 - 0.001 - -> 0.034 
-#               q: 0.1 - 0.1 --> 1.2
+
 #
-
-for cno in [1,2,3,4]:
-    #dlist = np.append(np.array([0.0001]),np.arange(0.0005,0.0045,0.0005))
-    #qlist = np.arange(np.array([0.0005]),0.15,0.45,0.01)
-    dlist=np.append(np.array([0.0005]),np.arange(0.001,0.01,0.001))
-    qlist=np.arange(0.1,1.2,0.1)
-    _,_, _,keff,_ = plotQsignal(cno,False)
-    Deff=keff/1100/2600/0.51
-
-    #adddgrid(cno,dlist,qlist)
-    dnumber,q,Z = getResponse(cno,dlist,qlist,scalar='uds',xmask=slice(0,36))
-    print('D = {} m2/s'.format(dnumber))
-    print('D_eff = {} m2/s'.format(Deff))
-    
-for cno in [6,7]:
-    dlist = np.arange(0.007,0.02,0.00025)
-    qlist = np.arange(0.2,1.1,0.05)
-    
-    #adddgrid(cno,dlist,qlist)
-    dnumber,q,Z = getResponse(cno,dlist,qlist,scalar='uds')
-    print('D = {} m2/s'.format(dnumber))
-    print('D_uni = {} m2/s'.format(k_uni(dnumber,q)))
-
-for cno  in [8]:
-    dlist = np.arange(0.015,0.03,0.00025)
-    qlist = np.arange(0.4,1.1,0.05)
-    
-    #adddgrid(cno,dlist,qlist)
-    dnumber,q,Z = getResponse(cno,dlist,qlist,scalar='uds')
-    print('D = {} m2/s'.format(dnumber))
-    print('D_uni = {} m2/s'.format(k_uni(dnumber,q)))
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Momentum calc
-    
-## load velocity data for choosen case
 #caseNo=1
-#scalar='xvel'
 #
-#Smat,M,t = loadMdata(caseNo,scalar=scalar)
+#scalar = 'temp'
 #
+#ybar,gx,t = get1ddata(caseNo,scalar)
 #
-## Cut away the crazy nozzle. And the nozzle paths. And the space above the bed. 
-#vinst=Smat[:,6:42,:,:60]
+#knumber = 0.0015*1200*2600*vof_s[caseNo]
+#x1 = Klimits['x1'][caseNo]
+#x0 = Klimits['x0'][caseNo]
 #
+#xslice = slice(x0,x1)
+#sNo=50
 #
-#vinst=vinst[:,30,10,20]
+#kbar = heateq1D(gx[xslice],t,knumber, vof_s=vof_s[caseNo],mtemp=mtemp[caseNo],Tcorr=T_corr[caseNo]-2)
 #
-#vbar = vinst.mean()
+#print(ybar[sNo,-1])
+#print(kbar[sNo,-1])
 #
-#vdot = vinst-vbar
-#
-#def RL(kdot,vinst,vbar,vdot):
-#    top=0
-#    ksum=0
-#    
-#    if type(kdot) == 'int':
-#        kmax=kdot
-#    else:
-#        kmax=kdot[-1]
-#    
-#    for k in range(len(vinst)-kmax):
-#        top = top + (vinst[k] - vbar)*(vinst[k+kdot] - vbar)
-#        ksum+=1
-#    top=top/ksum
-#    
-#    return top/np.mean(vdot**2)
-#
-#karr=np.arange(25)
+#plt.plot(gx[xslice],ybar[sNo][xslice],'-o')
+#plt.plot(gx[xslice],kbar[sNo]-3,'-o')
+#plt.plot(gx[32],[1090],'ks')
 #
 #
-#TL=np.trapz(RL(karr,vinst,vbar,vdot))
-#
-#DT= np.mean(vdot**2)*TL
+#plt.show()
 #
 #
-#plt.plot(t[karr],RL(karr,vinst,vbar,vdot))
-#plt.title('$R_L$')
-#plt.xlabel('time [s]')
 #
-#DTlist=[]
-#Klist=[]
-#for K in range(2,40):    
-#    karr=np.arange(K)
-#    TL=np.trapz(RL(karr,vinst,vbar,vdot))
-#    DT=np.mean(vdot**2)*TL
-#    DTlist.append(DT)
-#    Klist.append(K)
+#tol = 0.002
+#diff = np.abs(np.diff(kbar,axis=0)).mean(axis=1)
 #
-#plt.figure()
-#plt.plot(Klist,DTlist)
-#plt.title('$D_T$')
-#plt.xlabel('time lag [s]')
-
-
+#
+#plt.plot(t[1:],diff)
+#plt.plot([t[1],t[-1]],[tol,tol],'k--')
+#plt.ylim(0,0.2)
+#
+#xmask = slice(5,25)
+#kline=kbar[sNo]
+#yline=ybar[sNo][xslice]
+#grid=gx[xslice]
+#
+#grid=grid[xmask]
+#kline=kline[xmask]
+#yline=yline[xmask]
+#
+#
+#plt.show()
+#i = 0
+#for kpoint,ypoint in zip(kline,yline):
+#    err = kpoint - ypoint
+#    plt.plot(grid[i],err,'ro')
+#    i+=1
+#
+#
+#plt.ylim(-5,5)
+##
+#plt.show()
 
 
 

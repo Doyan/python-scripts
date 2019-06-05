@@ -15,10 +15,10 @@ import shutil
 import subprocess
 
 # -------------------------------------------------------------------------
-datapath = "/media/TOSHIBA EXT/BioShare/pp/noWall"
-exportpath = '/scratch/gabgus/mfdata_all/pp_real/noWall'
-
-casfile='/scratch/gabgus/mfdata_all/setteValidation-2-copy.cas'
+#datapath = "/media/TOSHIBA EXT/BioShare/pp/noWall"
+#exportpath = '/scratch/gabgus/mfdata_all/pp_real/noWall'
+#
+#casfile='/scratch/gabgus/mfdata_all/setteValidation-2-copy.cas'
 
 def pullData(datapath,casfile,exportpath,overwrite=False):
     
@@ -34,7 +34,7 @@ def pullData(datapath,casfile,exportpath,overwrite=False):
             os.mkdir(exportpath)
         else:
             print('No action taken, error')
-    exceptions=set(['pp_wWall_getReal.dat','bioshare_pp_wWall.dat'])
+    exceptions=set(['pp_wWall_getReal.dat','bioshare_pp_wWall.dat','longx.dat','sette_large.dat'])
     filelist= [file for file in os.listdir(datapath) if file.endswith('.dat') and file not in exceptions ]
     times = [filename.split('-')[2].split('.dat')[0] for filename in filelist]
         
@@ -52,8 +52,8 @@ def pullData(datapath,casfile,exportpath,overwrite=False):
             exportname= '{}dat_{}.csv'.format(exportpath,time)
             
             journal.write('/file/export ascii {} , yes\n'.format(exportname))
-            #journal.write('udm-1\n')
-            #journal.write('udm-2\n')
+            journal.write('udm-1\n')
+            journal.write('udm-2\n')
             journal.write('phase-2-temperature\n')
             journal.write('phase-2-vof\n')
             journal.write('phase-2-x-velocity\n')
@@ -73,28 +73,38 @@ def pullData(datapath,casfile,exportpath,overwrite=False):
         else:
             print('\n\n Error in fluent run. \n check logfile and redo export.')
     os.chdir(current)
-    return ecode
+    return ecode, datalist
 
-dbase="/media/TOSHIBA EXT/BioShare/"
-dpaths=[dbase + 'dysorDataSave/case01/',
-        dbase + 'dysorDataSave/case02/',
-        dbase + 'dysorDataSave/case03/',
-        dbase + 'dysorDataSave/case04/',
-        dbase + 'pp/wWall/']
+dbase="/media/TOSHIBA EXT/BioShare/larger_domains/"
+#dpaths=[dbase + 'dysorDataSave/case01/',
+#        dbase + 'dysorDataSave/case02/',
+#        dbase + 'dysorDataSave/case03/',
+#        dbase + 'dysorDataSave/case04/',
+#        dbase + 'pp/wWall/']
+dpaths=[dbase + 'sette_kluster/dat/',
+        dbase + 'noWall_kluster/dat/']
 
-ebase="/scratch/gabgus/mfdata_all/"
-epaths=[ebase + 'dysor/case01/',
-        ebase + 'dysor/case02/',
-        ebase + 'dysor/case03/',
-        ebase + 'dysor/case04/',
-        ebase + 'pp_real/wWall/']
 
-casfiles=['dysor_case1_extract.cas',
-          'dysor_case2_extract.cas',
-          'dysor_case3_extract.cas',
-          'dysor_case4_extract.cas',
-          'pp_wWall_getReal_unloaded.cas']
 
+#ebase="/scratch/gabgus/mfdata_all/"
+ebase="/scratch/gabgus/mfdata_all/larger_domains/"
+#epaths=[ebase + 'dysor/case01/',
+#        ebase + 'dysor/case02/',
+#        ebase + 'dysor/case03/',
+#        ebase + 'dysor/case04/',
+#        ebase + 'pp_real/wWall/']
+epaths=["{}sette/".format(ebase),
+        "{}noWall/".format(ebase)]
+
+
+#casfiles=['dysor_case1_extract.cas',
+#          'dysor_case2_extract.cas',
+#          'dysor_case3_extract.cas',
+#          'dysor_case4_extract.cas',
+#          'pp_wWall_getReal_unloaded.cas']
+
+casfiles=['sette_large_unloaded.cas',
+          'pp_noWall_unloaded.cas']
 
 def packQsignal(fileindex,dcell,prefix):
     Q1=[]
@@ -111,7 +121,6 @@ def packQsignal(fileindex,dcell,prefix):
     np.save('/scratch/gabgus/mfdata_all/meshed/{}_qut'.format(prefix),np.array(Q2))
     np.save('/scratch/gabgus/mfdata_all/meshed/{}_qtime'.format(prefix),np.array(t))
     return
-
 
 for dpath,epath,cas in zip(dpaths,epaths,casfiles):
     pullData(dpath,cas,epath,overwrite=True)

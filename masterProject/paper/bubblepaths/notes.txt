@@ -2,12 +2,12 @@ Regarding bubblepaths:
 
 It is clear in both the case with porous plate and with nozzles that the bubbles that form have enough space to be sufficiently resolved. If the "main bubblepaths" formed have enough room is trickier to answer. 
 
-To identify bubblepaths there could be 3 different quantities of interest. Either identifie the zones with lower density, the zones with highest y-velocity or the zones where the x-velocity changes sign. 
+To identify bubblepaths there could be 3 different quantities of interest. Either identify the zones with lower density, the zones with highest y-velocity or the zones where the x-velocity changes sign. 
 
 For the case with the nozzles it is rather clear cut. The nozzles stabilise the bubble paths onto the same grid as the nozzles. All three ways of identification concur. This conclusion is backed by reasoning from Olsson,Pallares et al 2010.
 
-For the porous plate arrangement however the methods clash. With some good will one could possibly identify 5-6 zones of low volume fraction merging into 5-4 higher up in the bed. Or 1-2 larger zones if one applies a more coarse filter in ones eyes. The y-velocity gives the same result more or less.However the x-velocity tells a different story. 
-Due to the natural flow pattern in a bed with this aspect ratio, a pattern whichHandbook of multiphase flow refers to as gulf-streaming,there is only one place in the bed where the velocity changes sign. And thus only one mixing zone. How to judge?
+For the porous plate arrangement however the methods clash. With some good will one could possibly identify 5-6 zones of low volume fraction merging into 5-4 higher up in the bed. Or 1-2 larger zones if one applies a more coarse filter in ones eyes. The y-velocity gives the same result more or less. However the x-velocity tells a different story. 
+Due to the natural flow pattern in a bed with this aspect ratio, a pattern which Handbook of multiphase flow refers to as gulf-streaming,there is only one place in the bed where the velocity changes sign. And thus only one mixing zone. How to judge?
 
 A side note:
 

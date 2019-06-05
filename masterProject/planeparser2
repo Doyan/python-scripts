@@ -1,0 +1,185 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Feb 28 09:30:33 2019
+
+@author: gabgus
+"""
+
+import numpy as np
+import os
+import h5py
+import matplotlib.pyplot as plt
+from scipy.interpolate import griddata
+# -----------------------------------------------------------------------------
+h5path = '/scratch/gabgus/fluent/henriks/noWall/planes/'
+datapath = '/media/TOSHIBA EXT/BioShare/larger_domains/noWall_kluster/planes/planes_9/' 
+
+current=os.getcwd()
+
+
+path = datapath
+
+highlist = [path + file for file in os.listdir(path) if 'high_plane' in file]
+lowlist = [path + file for file in os.listdir(path) if 'low_plane' in file]
+filelist= highlist+lowlist 
+
+path = h5path
+
+# fetch the last time already stored
+with h5py.File(path + 'plane_data.h5','r') as f:
+    last_no = f.attrs['last_no'][-1]
+    last_time  = f['time'][last_no]
+
+def makeRegister(filelist,last_time):
+    # Parse through the nodefiles and note the start of each timestep
+    # to allow fast reading, also note each time. 
+    first_idx=0
+    nodelists=[]
+    for i,nodefile in enumerate(filelist):
+        nodelist = []
+        print('indexing file  "{}"'.format(nodefile))
+        with open(nodefile,'r') as file:
+            pos=0
+            for line in file:
+                pos += len(line)
+                if '#' in line:
+                    t = float(line.split(' ')[-1])
+                    nodelist.append([t,pos-len(line)])
+                    
+                    # mark the point of overlap with previous export
+                    if (t > last_time - 1e-6) and (t < last_time + 1e-6):
+                        first_idx = len(nodelist)
+        nodelists.append(nodelist)
+    
+    # sort out the files with actual data in them.
+    register={'high': [], 'low': []}
+    minnt=9e10
+    maxnt=0
+    for file,nodelist in zip(filelist,nodelists):
+        aS=nodelist[1][1]-nodelist[0][1]
+        if aS > 80:
+            if 'high' in file:
+                register['high'].append([file,nodelist])
+            else:
+                register['low'].append([file,nodelist])
+            # while we're looping also find out the min and max 
+            # number of timesteps saved by the nodes
+            minnt=min(len(nodelist),minnt)
+            maxnt=max(len(nodelist),maxnt)
+    return register,minnt,first_idx
+
+ 
+def pickdt(dtno,register,minnt,elevation='high'): 
+    array=[]
+    
+    if dtno >= minnt:
+        print('Timestep number out of saved range')
+        return
+    
+    for nodefile,nodelist in register[elevation]:
+        with open(nodefile,'r') as file:
+            file.seek(nodelist[dtno][1])
+            if dtno == len(nodelist) - 1:
+                data = file.readlines()[1:]
+            else:
+                data = file.readlines(nodelist[dtno+1][1]-nodelist[dtno][1])[1:-1]
+            array.append(np.loadtxt(data))
+    cells = np.concatenate(array)
+    return cells
+            
+def makeMesh(cells):
+    xpoints = np.unique(cells[:,0])
+    zpoints = np.unique(cells[:,1])
+    xi,zi = np.meshgrid(xpoints,zpoints)
+    return xi,zi
+
+
+def carryOver(readFrom,readTo,enterAt,register,elevation='high',meshname='half', yes=False):
+    if not yes:
+        if not (input('Are you sure you want to parse? (y/n)') == 'y'):
+            print('avoiding parse')
+            return 
+    
+    with h5py.File(path + 'plane_data.h5','a') as f:
+        for dtno in range(readFrom,readTo):
+            print(dtno)
+            cells =  pickdt(dtno,register,readTo,elevation=elevation)
+            
+            xi = f['mesh'][meshname]['xi']
+            zi = f['mesh'][meshname]['zi']
+            
+            vx = griddata((cells[:,0],cells[:,1]),cells[:,2],(xi,zi),method='nearest')
+            vy = griddata((cells[:,0],cells[:,1]),cells[:,3],(xi,zi),method='nearest')
+            vz = griddata((cells[:,0],cells[:,1]),cells[:,4],(xi,zi),method='nearest')
+            
+            entry = dtno + enterAt - readFrom
+            
+            for scalar,data in zip(['xv','yv','zv'],[vx,vy,vz]):
+                f[elevation][meshname][scalar][entry] = data
+            f['time'][entry]=register[elevation][0][1][dtno][0]
+        endpoint = enterAt+readTo-readFrom-1
+    return endpoint
+
+register,minnt,first_idx = makeRegister(filelist,last_time)
+#%%
+
+with h5py.File(path + 'plane_data.h5','a') as f:
+    for elevation in ['high','low']:
+        mesh='half'
+        idim=f['mesh'][mesh]['xi'].shape[0]
+        jdim=f['mesh'][mesh]['xi'].shape[1]
+        for scalar in ['xv','yv','zv']:
+            f[elevation][mesh][scalar].resize((last_no + minnt + 1,idim,jdim))
+
+ 
+
+for elevation in ['high','low']:    
+    new_last = carryOver(first_idx,minnt,last_no + 1,register,elevation=elevation,yes=True)
+
+
+with h5py.File(path + 'plane_data.h5','a') as f:
+    f.attrs['last_no'] = np.append(f.attrs['last_no'],new_last)
+
+new_last=last_no
+with h5py.File(path + 'plane_data.h5','r') as f:
+    N=new_last
+    n= int(N/2)
+    data= f['high/half/xv'][0:N,20,20] - f['high/half/xv'][0:N,20,20].mean(axis=0)
+    ps=np.abs(np.fft.fft(data))**2
+    freqs=np.fft.fftfreq(data.size,5e-5)
+    idx=np.argsort(freqs)
+    plt.semilogy(freqs[0:n],ps[0:n])
+    plt.xlim(-.1,100)
+    plt.title('Power spectral density for case 9')
+    plt.xlabel('Sampling frequency  [Hz]')
+    plt.ylabel('Counts (energy)/Hz')
+    #plt.ylim(0,0.002)
+    Etot=np.trapz(ps[0:n],freqs[0:n])
+    array=[]
+    for i in range(n):
+        array.append(np.trapz(ps[0:i],freqs[0:i])/Etot)
+    plt.figure()
+    plt.plot(freqs[0:n],array)
+    plt.plot([freqs[0],freqs[n]],[1,1])
+    plt.xlim(0,20)
+    plt.ylim(0.5,1.001)
+    plt.title('Integrated power spectral density for case 9')
+    plt.xlabel('Sampling frequency  [Hz]')
+    plt.ylabel('Fraction of total energy in flow')
+
+#with h5py.File(path + 'plane_data.h5','a') as f:    
+#    plane = f['old_low'][0][0:11438]
+#    xpoints=np.unique(plane[:,0])
+#    zpoints=np.unique(plane[:,1])
+#    xi,zi = np.meshgrid(xpoints,zpoints)
+#    print(xi[:,::2].shape) 
+#    for dtno in range(32450):
+#        print(dtno)
+#        plane=f['old_low'][dtno][0:11438]
+#        vy = griddata((plane[:,0],plane[:,1]),plane[:,3],(xi,zi),method='nearest')
+#        vz = griddata((plane[:,0],plane[:,1]),plane[:,4],(xi,zi),method='nearest')
+#        f['low/half/yv'][dtno] = vy[:,::2]
+#        f['low/half/zv'][dtno] = vz[:,::2]
+
+
