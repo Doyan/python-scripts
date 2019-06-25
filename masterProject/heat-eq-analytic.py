@@ -72,19 +72,19 @@ def u(x,t,k,L=L):
     alpha = k/(rho*cp)    
     return v(x,t,alpha,L) + S(x,L)
 
-#N = 200
-#x = np.linspace(0,L,N)
-#
-#T = u(x,t,k)
-#
-#ax=plt.figure(1,[6,7])
-#
-#plt.xlabel('L [m]')
-#plt.ylabel('T [$\degree C$]')
-#plt.title('Solution to the 1D heat equation at t = ' +str(t) + 's')
-#plt.plot(x,T-273.15)
-#plt.plot([0,L],[Th-273.15,Tc-273.15],'k--')
-#plt.grid()
+N = 200
+x = np.linspace(0,L,N)
+
+T = u(x,t,k)
+
+ax=plt.figure(1,[6,7])
+
+plt.xlabel('L [m]')
+plt.ylabel('T [$\degree C$]')
+plt.title('Solution to the 1D heat equation at t = ' +str(t) + 's')
+plt.plot(x,T-273.15)
+plt.plot([0,L],[Th-273.15,Tc-273.15],'k--')
+plt.grid()
 
 #%%
 # Calculation of accumulated deviation from simulated solution
@@ -92,8 +92,8 @@ def u(x,t,k,L=L):
 
 caseNo=2
 
-datapath = './datafiles/case0' + str(caseNo) + '/'
-
+#datapath = './datafiles/case0' + str(caseNo) + '/'
+datapath = ''
 # value to scale integer from filename with
 tscaling = 1e-6
 
@@ -189,13 +189,13 @@ def plotKguess(sampleNo,k):
 
 
 
-times,dflist,Llist,x0list,dcelllist = getDflist()
-
-L = Llist[0] -dcelllist[0]   
-
-plotKguess(229,25000)
-print(dcelllist[0])
-## array of k-values to try
+#times,dflist,Llist,x0list,dcelllist = getDflist()
+#
+#L = Llist[0] -dcelllist[0]   
+#
+#plotKguess(229,25000)
+#print(dcelllist[0])
+### array of k-values to try
 #krange = [2389, 2390, 2390.5] 
 #
 ##  loop to try each value and settle for the one with least deviation
