@@ -19,8 +19,8 @@ savepath='/scratch/gabgus/mfdata_all/meshed/'
 
 
 readSpecs={'mfolder': '/scratch/gabgus/mfdata_all/',
-           'delims': [0,1,1,1,1,0,1,1,1], 
-           'ending': ['error','.csv','.csv','.csv','.csv','missing','.csv','.csv','.csv']}
+           'delims': [0,1,1,1,1,0,1,1,1,1,1], 
+           'ending': ['error','.csv','.csv','.csv','.csv','missing','.csv','.csv','.csv','.csv','.csv']}
 
 readSpecs['foldername'] = ['error', 
          readSpecs['mfolder'] + 'dysor/case01/',
@@ -30,17 +30,19 @@ readSpecs['foldername'] = ['error',
          'missing',
          readSpecs['mfolder'] + 'pp_real/noWall/', 
          readSpecs['mfolder'] + 'pp_real/wWall/',
-         readSpecs['mfolder'] + 'sette/']
+         readSpecs['mfolder'] + 'sette/',
+         readSpecs['mfolder'] + 'larger_domains/noWall/',
+         readSpecs['mfolder'] + 'larger_domains/sette/']
            
-Wlimits =  {'w0': ['error' , np.nan, 0.4875, 0.4125, 0.4575, 0.4875, np.nan, 0.4875, np.nan],
-           'w1': ['error' , np.nan, 0.5175, 0.4425, 0.4875, 0.5175, np.nan, 0.5175, np.nan],
+Wlimits =  {'w0': ['error' , np.nan, 0.4875, 0.4125, 0.4575, 0.4875, np.nan, 0.4875, np.nan,np.nan,np.nan],
+           'w1': ['error' , np.nan, 0.5175, 0.4425, 0.4875, 0.5175, np.nan, 0.5175, np.nan,np.nan,np.nan],
            'wy': 0.3,
-           'hasWall': [False, False, True, True, True, True, False, True, False]}
+           'hasWall': [False, False, True, True, True, True, False, True, False, False, False]}
 
-tInfo = {'toffset': ['error', 3.6, 3.3 , 3.3, 3.5, 'missing', 5.0, 5.0, 4.5],
-         'Tstart': ['error',0,0,0,0,'missing',50,50,29],
-         'noSamples' : ['error',193,191,191,188,'missing',787,756,196],
-         'sstep': ['error',1,1,1,1,'missing',4,4,1]}
+tInfo = {'toffset': ['error', 3.6, 3.3 , 3.3, 3.5, 'missing', 5.0, 5.0, 4.5, 5.45, 2.75],
+         'Tstart': ['error',0,0,0,0,'missing',50,50,29,108,55],
+         'noSamples' : ['error',193,191,191,188,'missing',787,756,196,520,207],
+         'sstep': ['error',1,1,1,1,'missing',4,4,1,1,1]}
 
 
 # -------------------------------------------------------------------------
@@ -128,7 +130,7 @@ def packScalar(caseNo,scalar):
     sstep=tInfo['sstep'][caseNo]
 
     for i in range(Tstart,noSamples,sstep):
-    
+        print('{:.3f}'.format((float(i) - Tstart) / (noSamples-Tstart)))
         x,y,z,s,time = loadTimestep(caseNo,filelist,i,quantity=scalar)
 
         Si =  griddata((x,y,z),s,M,method='nearest')
@@ -179,12 +181,46 @@ def loadMdata(caseNo,scalar='temp'):
     return Smat,M,g,t
     
 
+def packQsignal(fileindex,dcell,prefix):
+    Q1=[]
+    Q2=[]
+    t=[]
+    for i,(time,file) in enumerate(fileindex):
+        data=pd.read_csv(file)
+        data.columns=[name.strip() for name in data.columns]
+        Q1.append(data['udm-1'].sum()*(dcell**3))
+        Q2.append(data['udm-2'].sum()*(dcell**3))
+        t.append(time)
+
+    np.save('/scratch/gabgus/mfdata_all/meshed/{}_qin'.format(prefix),np.array(Q1))
+    np.save('/scratch/gabgus/mfdata_all/meshed/{}_qut'.format(prefix),np.array(Q2))
+    np.save('/scratch/gabgus/mfdata_all/meshed/{}_qtime'.format(prefix),np.array(t))
+    return
+
+
 # -------------------------------------------------------------------------
     
 #
-for caseNo in [1,2,3,4,7]:
+for caseNo in [9,10]:
     for scalar in ['temp','vof','uds','xvel','yvel']:
         saveScalar(caseNo,scalar)
+    
+    filelist = sortCsvByTime(caseNo)
+    x,y,z,s,time = loadTimestep(caseNo,filelist,0,quantity=scalar)
+
+    M,g,dcell = makeMesh(x,y,z)
+    
+    prefix = 'c{}'.format(caseNo)
+    packQsignal(filelist,dcell,prefix)
+
+
+
+
+
+
+
+
+
 
 # Smat,M,g,t,dcell=packScalar(7,'temp')
 

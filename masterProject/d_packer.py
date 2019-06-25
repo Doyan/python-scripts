@@ -137,7 +137,7 @@ def packDfolder(folderpath):
 
 # shoehorn all relevant data into numpy-arrays and save using .npy format
 # files are prefixed with d and stored according to case info.    
-def saveData(caseNo,q,dnumber,overwrite=True,include_static=True):
+def saveData(caseNo,q,dnumber,overwrite=True,include_static=True,dim1=False):
     
     # create path for nested folder-structure
     fspec= 'case{}/q{}/'.format(caseNo,q)
@@ -159,9 +159,14 @@ def saveData(caseNo,q,dnumber,overwrite=True,include_static=True):
         print('Case already exists, not overwritten')
         return
     
-    # save concentration fields
-    np.save(prefix + '2D-Conc',zM)
     
+    # save concentration fields
+    if dim1:
+        z1d = np.nanmean(zM,axis=1)
+        np.save(prefix + '1D-Conc',z1d)
+    else:
+        np.save(prefix + '2D-Conc',zM)
+        
     return
 
 # check what k's we have already parsed through, 
@@ -217,7 +222,7 @@ def rmRun(caseNo,q,dnumber):
 # Functions for working with Fluent 
 
 ## Request k to be added to parsed collection. Runs fluent if needed.
-def addRun(caseNo,dnumber,q,verbose=True, keepruns=False):
+def addRun(caseNo,dnumber,q,verbose=True, keepruns=False,dim1=False):
     
     runstring = 'c{}_q{}_d{}'.format(caseNo,q,dnumber)
     parsed = getParsed()
@@ -232,7 +237,7 @@ def addRun(caseNo,dnumber,q,verbose=True, keepruns=False):
     elif runstring in runs:
         if verbose:
             print('parsing saved run for case: ' + runstring)
-        saveData(caseNo,q,dnumber)
+        saveData(caseNo,q,dnumber,dim1=dim1)
     
     else: 
         if verbose:
@@ -244,7 +249,7 @@ def addRun(caseNo,dnumber,q,verbose=True, keepruns=False):
             from d_generator import runCase as requestD
             ecode = requestD(caseNo,dnumber,q)
                 
-        saveData(caseNo,q,dnumber)
+        saveData(caseNo,q,dnumber,dim1=dim1)
     
     if verbose:
         if ecode == 0:
@@ -258,7 +263,7 @@ def addRun(caseNo,dnumber,q,verbose=True, keepruns=False):
     return ecode
 
 # add cases in a grid defined by the values in klist and qlist
-def addCaseGrid(case,dlist,qlist,verbose=False):
+def addCaseGrid(case,dlist,qlist,verbose=False,dim1=False):
     N=len(qlist)*len(dlist)
     tstart=datetime.now().time()
     print('{} - Processing {} cases'.format(tstart,N))
@@ -266,7 +271,7 @@ def addCaseGrid(case,dlist,qlist,verbose=False):
     for q in qlist:
         for d in dlist:
             print('doing case {} / {}'.format(i,N))
-            addRun(case,np.round(d,7),np.round(q,5),verbose)
+            addRun(case,np.round(d,7),np.round(q,5),verbose,dim1=dim1)
             
             i +=1
         print ('current time:')

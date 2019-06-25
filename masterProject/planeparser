@@ -8,70 +8,97 @@ appended over time with delimiters for each new timestep.
 """
 
 import numpy as np
-import os
+import h5py
 import matplotlib.pyplot as plt
-from scipy.interpolate import griddata
 # -----------------------------------------------------------------------------
-path = '/scratch/gabgus/fluent/henriks/noWall/'
-
-current=os.getcwd()
-
-highlist = [path + file for file in os.listdir(path) if 'high_plane' in file]
-lowlist = [path + file for file in os.listdir(path) if 'low_plane' in file]
-
-def sniffDelim(listpath):
-    t=[]
-    #  read node datafile line by line
-    with open(listpath) as file:
-        line = file.readline()
-        cnt = 1
-        nocells=0
-        nt=0
-        while line:
-            # Find every timestep delimiter and count number of timesteps 
-            if '#' in line:
-                nt +=1
-                # excavate the actual times from the delimiter strings
-                t.append(float(line.split(' ')[-1]))
-                
-                # get the number of cells for this node from the line number 
-                # at the start of the second timestep
-                if cnt > 1 and nocells == 0:
-                    nocells=cnt-2
-                    
-            line = file.readline()
-            cnt+=1
-            
-        # Identify empty nodes and mark them as such
-        if cnt-1 == nt:
-            nocells = 0
-    return nocells,nt,t
+path = '/scratch/gabgus/fluent/henriks/noWall/planes/'
 
 
-# Read all the data in each node file and split it 
-# according to how many timesteps there is 
-harrays=[]
-for entry in highlist:
-    nocells,nt,t = sniffDelim(entry)
-    if nocells > 0:    
-        raw=np.loadtxt(entry,delimiter=' ')
-        harrays.append(np.split(raw,nt))
-
-# merge the data from each node
-hplane = np.concatenate((harrays),axis=1)
-
-
-# make mesh from the points in the data
-xpoints=np.unique(hplane[0][:,0])
-zpoints=np.unique(hplane[0][:,1])
-
-xi,zi = np.meshgrid(xpoints,zpoints)
-
-# interpolate the velocity of interest onto the created mesh
-vi = griddata((hplane[-1][:,0],hplane[0][:,1]),hplane[-1][:,2],(xi,zi),method='nearest')
+## interpolate the velocity of interest onto the created mesh
+meshname='half'
+elevation='high'
+with h5py.File(path + 'plane_data.h5','r') as f:    
+   maxN = f.attrs['last_no']
+   xi = f['mesh'][meshname]['xi'][:]
+   zi = f['mesh'][meshname]['zi'][:]
+   vi = f[elevation][meshname]['xv'][0:maxN]
+   t = f['time'][0:maxN]
+#%%
+#
 
 plt.figure()
-plt.contourf(xi,zi,vi,20,cmap='viridis')
+plt.contourf(xi,zi,vi[:].mean(axis=0),20,cmap='RdBu_r')
+plt.colorbar()
+#
+## 11703,11955,11697
+##  11688,11964,11694
+#%%
+n=5
+vinst = vi[::n,7,25]
+print(vinst.shape)
 
-# 11703,11955,11697
-#  11688,11964,11694
+vbar = vinst.mean(axis=0)
+
+vdot = vinst-vbar
+
+print(np.mean(vdot**2))
+
+def RL(kdot,vinst,vbar,vdot):
+    top=0
+    bot=0
+    ksum=0
+    
+    if type(kdot) == 'int':
+        kmax=kdot
+    else:
+        kmax=kdot[-1]
+        
+    for k in range(int(len(vinst) - kmax)):
+        top = top + (vinst[k] - vbar)*(vinst[k+kdot] - vbar)
+        bot  = bot+ (vinst[k] -vbar)**2
+        ksum +=1
+    
+    top=top/ksum
+    bot=bot/ksum
+    
+    return top/bot
+
+N=int(maxN*0.3)#10050
+karr=np.arange(int(N/n))
+
+TL=np.trapz(RL(karr,vinst,vbar,vdot))
+
+DT= np.mean(vdot**2)*TL
+
+plt.figure()
+plt.plot()
+plt.plot(karr*n*5e-5,RL(karr,vinst,vbar,vdot))
+plt.plot([karr[0]*n*5e-5,karr[-1]*n*5e-5],[0.0,0.0],'--k')
+plt.title('$R_L$')
+plt.xlabel('time [s]')
+plt.grid()
+DTlist=[]
+Klist=[]
+print(RL(karr[0:2],vinst,vbar,vdot))
+
+for K in np.linspace(1,N/n):# 5000,6000,7000,8000,9000]:    
+    karr=np.arange(int(K))
+    TL=np.trapz(RL(karr,vinst,vbar,vdot),x=karr*n*5e-5)
+    DT=np.mean(vdot**2)*TL
+    DTlist.append(DT)
+    Klist.append(K*5e-5*n)
+
+plt.figure()
+plt.plot(Klist,DTlist)
+plt.title('$D_T$')
+plt.xlabel('time lag [s]')
+
+
+
+print(DTlist[-1])
+
+
+
+
+
+

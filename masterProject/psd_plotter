@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Apr 17 15:28:28 2019
+
+@author: gabgus
+"""
+
+import h5py
+import numpy as np, matplotlib.pyplot as plt
+
+# -----------------------------------------------------------------------------
+path = '/scratch/gabgus/fluent/henriks/noWall/planes/'
+
+
+direction= 'x'
+x=40
+z=20
+
+with h5py.File(path + 'plane_data.h5','r') as f:
+    new_last = f.attrs['last_no'][-1]
+    N=new_last
+    data = f['high/half/{}v'.format(direction)][0:N,x,z] #- f['high/half/xv'][0:N,x,z].mean(axis=0)
+    t = f['time'][0:N]
+#%%
+
+data = data
+
+plt.figure()
+plt.plot(t,data)
+plt.xlabel('Time  [s]')
+plt.ylabel('x-velocity [m/s]')
+plt.title('x-velocity over time at a single point.')
+plt.savefig('paper/characterisation/xvel.pdf',bbox_inches ='tight')
+
+n= int(N/2)
+ps=np.abs(np.fft.fft(data))**2
+freqs=np.fft.fftfreq(data.size,5e-5)
+idx=np.argsort(freqs)
+
+plt.figure()
+plt.semilogy(freqs[0:n],ps[0:n])
+plt.xlim(-.1,100)
+plt.title('PSD for the single point x-velocity')
+plt.xlabel('Frequency  [Hz]')
+plt.ylabel('Power density $[(m/s)^2 / Hz]$')
+plt.ylim(0.1,1e9)
+plt.savefig('paper/characterisation/psd.pdf',bbox_inches ='tight')
+
+
+Etot=np.trapz(ps[0:n],freqs[0:n])
+array=[]
+for i in range(n):
+    array.append(np.trapz(ps[0:i],freqs[0:i])/Etot)
+
+for zoom in [(20,0.85,'zoom_out'),(2,0.01,'zoom_in')]:
+    plt.figure()
+    plt.plot(freqs[0:n],array,label = 'PSD integral')  
+    plt.plot([freqs[0],freqs[n]],[1,1],label = '100%')
+    plt.plot([freqs[0],freqs[n]],[0.99,0.99],'k--',alpha=0.2,label = '99%')
+    plt.xlim(0,zoom[0])
+    plt.ylim(zoom[1],1.001)
+    plt.grid()
+    plt.title('Integrated power spectral density for case 9')
+    plt.xlabel('Frequency  [Hz]')
+    plt.ylabel('Fraction of total energy')
+    plt.legend(loc='lower right')
+    plt.savefig('paper/characterisation/psd_int_{}.pdf'.format(zoom[2]),bbox_inches ='tight')

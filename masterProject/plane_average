@@ -1,0 +1,132 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Apr  5 14:14:13 2019
+
+@author: gabgus
+"""
+
+import numpy as np
+import h5py
+import matplotlib.pyplot as plt
+# -----------------------------------------------------------------------------
+path = '/scratch/gabgus/fluent/henriks/noWall/planes/'
+
+
+## interpolate the velocity of interest onto the created mesh
+meshname='half'
+elevation='high'
+direction = 'x'
+
+for elevation in ['high','low']:
+    for direction in ['x','y','z']:
+        
+        with h5py.File(path + 'plane_data.h5','r') as f:    
+           maxN = f.attrs['last_no'][-1]
+           xi = f['mesh'][meshname]['xi'][:]
+           zi = f['mesh'][meshname]['zi'][:]
+           vi = f[elevation][meshname][direction + 'v'][0:maxN]
+           t = f['time'][0:maxN]
+        #%%
+        
+        def RL(kdot,v_inst,vbar,vdot):
+            top=0
+            bot=0
+            ksum=0
+            
+            if type(kdot) == 'int':
+                kmax=kdot
+            else:
+                kmax=kdot[-1]
+                
+            for k in range(int(len(v_inst) - kmax)):
+                top = top + (v_inst[k] - vbar)*(vinst[k+kdot] - vbar)
+                bot  = bot+ (v_inst[k] - vbar)**2
+                ksum +=1
+            
+            top=top/ksum
+            bot=bot/ksum
+            
+            return top/bot
+        
+        def autocorr3(x,lags):
+            '''fft, pad 0s, non partial'''
+        
+            n=len(x)
+            # pad 0s to 2n-1
+            ext_size=2*n-1
+            # nearest power of 2
+            fsize=2**np.ceil(np.log2(ext_size)).astype('int')
+        
+            xp=x-np.mean(x)
+            var=np.var(x)
+        
+            # do fft and ifft
+            cf=np.fft.fft(xp,fsize)
+            sf=cf.conjugate()*cf
+            corr=np.fft.ifft(sf).real
+            corr=corr/var/n
+        
+            return corr[:len(lags)]
+        
+        
+        n=8
+        frac=0.4
+        DTlist = []
+        
+        dpath = 'DTfolder/'
+        fracs = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]
+        
+        i = 0
+        for frac in fracs:
+            i += 1
+            #print(frac)
+            DTMat = np.zeros_like(xi)
+            for x in range(vi.shape[2]):
+                
+                for z in range(vi.shape[1]):    
+                    #print(z/vi.shape[1])
+                    vinst = vi[::n,z,x]
+                    
+                    vbar = vinst.mean(axis=0)
+                
+                    vdot = vinst-vbar
+                
+                    N=int(maxN*frac)
+                    karr=np.arange(int(N/n))
+                    
+                    #TL=np.trapz(RL(karr,vinst,vbar,vdot),x=karr*n*5e-5)
+                    TL=np.trapz(autocorr3(vinst,karr),x=karr*n*5e-5)
+                    DT=np.mean(vdot**2)*TL
+                    
+                    DTMat[z,x] = DT
+            
+            np.save(dpath + 'DTMat_{}_{}_{}_26ish_fft'.format(elevation,direction,frac),DTMat)
+            print(i/len(fracs))
+        
+        zslice=slice(0,vi.shape[2])
+        
+        plt.contourf(xi,zi,DTMat)
+        plt.colorbar()
+        
+        plt.xlabel('x - direction [m]')
+        plt.xlabel('z - direction [m]')
+        plt.title('Local Turbulent dispersion over plane in bed.')
+        
+        plt.show()
+
+
+#%%
+
+
+    
+
+
+
+
+
+
+
+
+
+

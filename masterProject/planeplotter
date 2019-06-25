@@ -1,0 +1,141 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Feb 22 13:51:56 2019
+Script to read a textfile produced by a fluent UDF containing data from two planes 
+appended over time with delimiters for each new timestep.
+@author: gabgus
+"""
+
+import numpy as np
+import h5py
+import matplotlib.pyplot as plt
+# -----------------------------------------------------------------------------
+path = '/scratch/gabgus/fluent/henriks/noWall/planes/'
+
+
+## interpolate the velocity of interest onto the created mesh
+meshname='half'
+elevation='low'
+with h5py.File(path + 'plane_data.h5','r') as f:    
+   maxN = f.attrs['last_no'][-1]
+   xi = f['mesh'][meshname]['xi'][:]
+   zi = f['mesh'][meshname]['zi'][:]
+   vi = f[elevation][meshname]['xv'][0:maxN]
+   t = f['time'][0:maxN]
+#%%
+#
+
+plt.figure(1)
+plt.contourf(xi,zi,vi[:].mean(axis=0),20,cmap='RdBu_r')
+plt.colorbar()
+#
+## 11703,11955,11697
+##  11688,11964,11694
+#%%
+n=8
+vinst = vi[::n,40,20]
+print(vinst.shape)
+
+vbar = vinst.mean(axis=0)
+
+vdot = vinst-vbar
+
+print(np.mean(vdot**2))
+
+def RL(kdot,vinst,vbar,vdot):
+    top=0
+    bot=0
+    ksum=0
+    
+    if type(kdot) == 'int':
+        kmax=kdot
+    else:
+        kmax=kdot[-1]
+        
+    for k in range(int(len(vinst) - kmax)):
+        top = top + (vinst[k] - vbar)*(vinst[k+kdot] - vbar)
+        bot  = bot+ (vinst[k] -vbar)**2
+        ksum +=1
+    
+    top=top/ksum
+    bot=bot/ksum
+    
+    return top/bot
+
+
+def autocorr3(x,lags):
+    '''fft, pad 0s, non partial'''
+
+    n=len(x)
+    # pad 0s to 2n-1
+    ext_size=2*n-1
+    # nearest power of 2
+    fsize=2**np.ceil(np.log2(ext_size)).astype('int')
+
+    xp=x-np.mean(x)
+    var=np.var(x)
+
+    # do fft and ifft
+    cf=np.fft.fft(xp,fsize)
+    sf=cf.conjugate()*cf
+    corr=np.fft.ifft(sf).real
+    corr=corr/var/n
+
+    return corr[:len(lags)]
+
+
+maxfrac=0.3
+
+plt.figure(2,(8,5))
+for frac in [0.05, 0.1, 0.15,0.2,0.25,0.3,0.4]:
+    N=int(maxN*frac)#10050
+    karr=np.arange(int(N/n))
+    
+    col=[0.1,0.1,0.4,(1.1-frac*2)]
+    #plt.figure()
+    plt.plot()
+    #plt.plot(karr*n*5e-5,RL(karr,vinst,vbar,vdot),color=col)
+    plt.plot(karr*n*5e-5,autocorr3(vinst,karr),color=col)
+    plt.plot([karr[-2:-1]*n*5e-5],RL(karr[-2:-1],vinst,vbar,vdot),'.',color=col)
+
+xrange=[karr[0]*n*5e-5,karr[-1]*n*5e-5]
+xrange=[0.01,karr[-1]*5e-5*n]
+
+plt.plot(xrange,[0.0,0.0],'--k')
+plt.ylabel('$R_L(t\')$',fontsize=12)
+plt.xlabel('time lag[s]')
+plt.grid()
+plt.title('Lagrangian autocorrelation function')
+DTlist=[]
+Klist=[]
+print(RL(karr[0:2],vinst,vbar,vdot))
+plt.grid()
+plt.xlim(0,6.0)
+#plt.savefig('/chalmers/users/gabgus/Desktop/to_David/RL-curve.pdf')
+#%%
+
+frac=0.4
+N=int(maxN*frac)#10050
+for K in np.linspace(1,N/n):# 5000,6000,7000,8000,9000]:    
+    karr=np.arange(int(K))
+    #TL=np.trapz(RL(karr,vinst,vbar,vdot),x=karr*n*5e-5)
+    TL=np.trapz(autocorr3(vinst,karr),x=karr*n*5e-5)
+    DT=np.mean(vdot**2)*TL
+    DTlist.append(DT)
+    Klist.append(K*5e-5*n)
+
+plt.figure()
+plt.plot(Klist,DTlist)
+plt.title('$D_T$')
+plt.xlabel('time lag [s]')
+plt.grid()
+
+
+print(DTlist[-1])
+
+
+
+
+
+
