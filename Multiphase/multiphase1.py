@@ -229,6 +229,7 @@ plt.savefig('images/tau-rho.pdf')
 
 
 # Generate numerical demo
+pbubble={'rhof': rho['water'], 'rhop': rho['air'], 'myf': my['dirty'], 'dp': dbubble}
 
 tint=[0.,0.3]
 dt=(tint[1]-tint[0])/100
