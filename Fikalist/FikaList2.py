@@ -56,10 +56,10 @@ def makeFikaSequence(nameList,scoreList,days):
     ho=1
     return ho
 #
-#names, fikaScore, kitchenScore = readDataBase(fikalistPath)
-#
-#for i in range(len(names)):
-#    print('{0:8}\t\t{1:8}\t{2:8}'.format(names[i],fikaScore[i],kitchenScore[i]))
+names, fikaScore, kitchenScore = readDataBase(fikalistPath)
+
+for i in range(len(names)):
+    print('{0:8}\t\t{1:8}\t{2:8}'.format(names[i],fikaScore[i],kitchenScore[i]))
 
 
 
