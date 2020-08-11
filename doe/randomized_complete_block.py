@@ -72,25 +72,87 @@ def contrast_evaluation(y,ci_mat):
     
 
 def contrasts_Scheffe(y,alpha,ci_mat):
-    return
+    P0, F_tup, MS_tup, SS_tup, df_tup = anova(y)
+    
+    a,b = y.shape
+    
+    yidbar = np.average(y,axis=1)
+    MS_error = MS_tup[2]
+    df_error = df_tup[2]
+    df_a = df_tup[0]
+    
+    
+    results = []
+    conf_intervals = []
+    for ci in ci_mat:
+        C = np.sum(ci*yidbar)
+        S_C = np.sqrt(MS_error*np.sum(ci**2/b))
+        
+        F_alpha = stats.f.isf(alpha, df_a, df_error)
+        
+        S_alpha = S_C*np.sqrt(df_a*F_alpha)
+        
+        results.append(np.abs(C) > S_alpha)
+        conf_intervals.append((C - S_alpha, C + S_alpha))
+    
+    
+    return results,conf_intervals
 
 
-def estimate_missing_values(y):
-    return y_complete, df_error_reduced
+
+def estimate_missing_value(y,i,j):
+    y[i,j] = 0
+    a,b = y.shape
+    
+    ydd = np.sum(np.nansum(y))
+    yid = np.nansum(y,axis=1)
+    ydj = np.nansum(y,axis=0)
+    
+    value = (a*yid[i]+b*ydj[j]-ydd)/((a-1)*(b-1))
+    
+    y[i,j] = value
+    
+    return y
+
+def estimate_all_missing_values(y,tol=1e-6):
+    missing = np.argwhere(np.isnan(y))
+    
+    y_est = y.copy()
+    n_missing= len(missing)
+    
+    yddbar = np.average(np.nanmean(y))
+    
+    estimations = [[0.,0.]]
+    check = 100
+    while check > tol:
+        for k,pair in enumerate(missing):
+            
+            estimation = np.zeros(n_missing)
+            i,j = (pair[0], pair[1])
+            
+            y_est = estimate_missing_value(y_est, i, j)
+            estimation[k] = y_est[i,j]
+        
+        estimations.append(estimation)
+        check = sum(np.abs(estimations[-1] - estimations[-2])/yddbar)
+        print('running')
+    
+    df_error_reduced = n_missing
+    return y_est, df_error_reduced
 
 # =============================================================================
     
-#y = np.array([[90.3, 89.2, 98.2, 93.9, 87.4, 97.9],
-#              [92.5, 89.5, 90.6, 94.7, 87.0, 95.8],
-#              [85.5, 90.8, 89.6, 86.2, 88.0, 93.4],
-#              [82.5, 89.5, 85.6, 87.4, 78.9, 90.7]])
+# y = np.array([[90.3, 89.2, 98.2, 93.9, 87.4, 97.9],
+#               [92.5, 89.5, 90.6, 94.7, 87.0, 95.8],
+#               [85.5, 90.8, 89.6, 86.2, 88.0, 93.4],
+#               [82.5, 89.5, 85.6, 87.4, 78.9, 90.7]])
 
 
 y = np.array([[685,792,838,875],
               [722,806,893,953],
               [733,802,880,941],
               [811,888,952,1005],
-              [828,920,978,1023]])
+              [828,920,978,1023]],dtype=float)
 
 
 

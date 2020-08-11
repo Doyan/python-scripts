@@ -36,28 +36,79 @@ def anova(y):
     
     F0 = MS_treat/MS_error
     
-    F_dist = stats.f.sf(F0, df_treat, df_error)
+    P0 = stats.f.sf(F0, df_treat, df_error)
     
-    F_tup  = (F0,F_dist)
+    F_tup  = (F0)
     MS_tup = (MS_treat,MS_error)
-    SS_tup = (SS_total,SS_treat,SS_error)
-    df_tup = (df_total,df_treat,df_error)
+    SS_tup = (SS_treat,SS_error,SS_total)
+    df_tup = (df_treat,df_error,df_total)
     
-    return F_tup, MS_tup, SS_tup, df_tup 
+    return P0, F_tup, MS_tup, SS_tup, df_tup 
 
 
 def mui_ci(y,alpha,i):
-    F,MS,SS,df= anova(y)
+    P0,F,MS,SS,df= anova(y)
     
     ni = y.shape[1] - np.isnan(y).sum(1)
     n_repl = ni[i]
     
-    t_val = stats.t.isf(alpha/2,df[-1])
-    radius = t_val*np.sqrt(MS[-1]/n_repl)
+    t_val = stats.t.isf(alpha/2,df[1])
+    radius = t_val*np.sqrt(MS[1]/n_repl)
     
     y_pred = np.nanmean(y[i,:]) 
     
     return (y_pred - radius,y_pred+radius) 
+
+
+def contrast_evaluation(y,ci_mat):
+    P0, F_tup, MS_tup, SS_tup, df_tup = anova(y)
+    
+    ni = y.shape[1] - np.isnan(y).sum(1)
+    
+    
+    yidbar = np.average(y,axis=1)
+    MS_error = MS_tup[1]
+    df_error = df_tup[1]
+    
+    F_values = []
+    P_values = []
+    for ci in ci_mat: 
+        num = np.sum(ci*yidbar)**2
+        denum = MS_error*np.sum(ci**2/ni)
+        F0 = num/denum
+        F_values.append(F0)
+        P_values.append(stats.f.sf(F0, 1, df_error))
+    return F_values, P_values    
+    
+
+def contrasts_Scheffe(y,alpha,ci_mat):
+    P0, F_tup, MS_tup, SS_tup, df_tup = anova(y)
+    
+    ni = y.shape[1] - np.isnan(y).sum(1)
+    
+    yidbar = np.average(y,axis=1)
+    MS_error = MS_tup[1]
+    df_error = df_tup[1]
+    df_a = df_tup[0]
+    
+    
+    results = []
+    conf_intervals = []
+    for ci in ci_mat:
+        C = np.sum(ci*yidbar)
+        S_C = np.sqrt(MS_error*np.sum(ci**2/ni))
+        
+        F_alpha = stats.f.isf(alpha, df_a, df_error)
+        
+        S_alpha = S_C*np.sqrt(df_a*F_alpha)
+        
+        results.append(np.abs(C) > S_alpha)
+        conf_intervals.append((C - S_alpha, C + S_alpha))
+    
+    
+    return results,conf_intervals
+
+
 
 
 def plot_residuals_rtime(y,y_order):
@@ -86,6 +137,8 @@ def plot_residuals_rtime(y,y_order):
 
     
     return fig,ax
+
+
 
 
 def plot_residuals_predicted(y):
