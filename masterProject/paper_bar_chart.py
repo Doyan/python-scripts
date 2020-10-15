@@ -46,21 +46,21 @@ ax.grid(linestyle = '--', alpha=0.5,zorder=0,axis='y')
 
 rects1 = ax.bar(index+ bar_width*1, D_fits, bar_width,
                 alpha=opacity, color='b',
-                label='D-fit',zorder=40)
+                label='M2',zorder=40)
 
 
 rects2 = ax.bar(index + bar_width*2, q_signal, bar_width,
                 alpha=opacity, color='g',
-                label='q-signal',zorder=41)
+                label='M3',zorder=41)
 
 
 rects3 = ax.bar(index + bar_width*3, k_fits, bar_width,
                 alpha=opacity, color='r',
-                label='k-fit',zorder=42)
+                label='M1',zorder=42)
 
 rects4 = ax.bar(index + bar_width*4, vdotmethod, bar_width,
                 alpha=opacity, color='y',
-                label='D_T',zorder=43)
+                label='M4',zorder=43)
 
 #rects5 = ax.bar(index + bar_width*0, exp, bar_width,
 #                alpha=opacity, color='k',

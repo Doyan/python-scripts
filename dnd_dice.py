@@ -9,12 +9,12 @@ import numpy as np
 
 
 
-
+# 5
 def d(N,n=1):
     
     ans = []
     for n in range(n):
-        ans.append(np.random.randint(1,N))
+        ans.append(np.random.randint(1,N+1))
     return np.array(ans)
 
 def d4():
@@ -29,5 +29,31 @@ def d10():
 
 def d20() :
     return np.random.randint(1,20)
+
+
+
+
+
+
+
+"""
+
+1
+------
+1
+--
+10
+--
+13
+--
+12
+--
+
+
+
+
+
+
+"""
 
 

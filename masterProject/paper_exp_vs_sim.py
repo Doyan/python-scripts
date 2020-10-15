@@ -143,11 +143,11 @@ plt.plot(sette_uq,h02,'o',label='Experiment')
 
 symbols = ['s','x']
 colors = ['g','r']
-name=['D-fit','q-signal']
+name=['M2','M3']
 
 for i,method in enumerate([dvalues, d_qsignal]):
-    plt.plot(sim_x[1],method[6],symbols[i],color=colors[i],alpha=0.5,label=f'{name[i]}')
-    plt.plot(sim_x[1],method[8],symbols[i],color=colors[i],label=f'{name[i]} large')
+    plt.plot(sim_x[1],method[6],symbols[i],color=colors[i],alpha=0.4,label=f'{name[i]}')
+    plt.plot(sim_x[1],method[8],symbols[i],color=colors[i],label=f'{name[i]} large domain')
 
 plt.legend()
 plt.grid(alpha=0.4)
@@ -170,7 +170,7 @@ plt.plot(np.repeat(exp_x[1],2),nowallLP,'o',label='Experimental')
 #plt.errorbar(np.repeat(exp_x[1],1),mean_exp,yerr=err_exp, fmt='o',label='Experimental')
 
 plt.plot(np.repeat(sim_x[1],2),[dvalues[0],d_qsignal[0]],'s',label='Nozzles')
-plt.plot(np.repeat(sim_x[1],4),[dvalues[5],dvalues[7],d_qsignal[5],d_qsignal[7]],'x',label='Porous plate')
+plt.plot(np.repeat(sim_x[1],4),[dvalues[5],dvalues[7],d_qsignal[5],d_qsignal[7]],'mx',label='Porous plate')
 
 plt.legend(loc='upper right')
 plt.xlabel('$u/u_{mf}$ [-]')
@@ -194,8 +194,8 @@ plt.figure(4,(4,4))
 plt.plot(np.repeat(exp_x[1],2),nowallLP,'o',label='Experimental')
 #plt.errorbar(np.repeat(exp_x[1],1),mean_exp,yerr=err_exp, fmt='o',label='Experimental')
 
-plt.plot(np.repeat(sim_x[1],1),[dvalues[0]],'s',label='Method 2')
-plt.plot(np.repeat(sim_x[1],1),[d_qsignal[0]],'x',label='Method 3')
+plt.plot(np.repeat(sim_x[1],1),[dvalues[0]],'gs',label='M2')
+plt.plot(np.repeat(sim_x[1],1),[d_qsignal[0]],'rx',label='M3')
 #plt.plot(np.repeat(sim_x[1],4),[dvalues[5],dvalues[7],d_qsignal[5],d_qsignal[7]],'x',label='Porous plate')
 
 plt.legend(loc='upper left')
