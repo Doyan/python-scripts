@@ -22,45 +22,72 @@ import matplotlib.pyplot as plt
 
 
 
-def anova(y,random=(0,1)):
-    a,b,n = y.shape
+def anova(y,blocks_random=True):
     
-    yddd = np.sum(y,axis=(0,1,2))
-    yidd = np.sum(y,axis=(1,2))
-    yijd = np.sum(y,axis=2)
-    
-    df_a = a - 1
-    df_bwa = a*(b - 1)
-    df_error = a*b*(n - 1)
-    df_total = a*b*n - 1
-    
-    SS_a = 1/(b*n)*np.sum(yidd**2) - yddd**2/(a*b*n)
-    SS_bwa = 1/n*np.sum(yijd**2,axis=(0,1)) - 1/(b*n)*np.sum(yidd**2)
-    SS_error = np.sum(np.sum(y**2,axis=2),axis=(0,1)) - 1/n*np.sum(yijd**2,axis=(0,1))
-    SS_total = np.sum(np.sum(y**2,axis=2),axis=(0,1)) - yddd**2/(a*b*n)
-    
-    MS_a = SS_a/df_a
-    MS_bwa = SS_bwa/df_bwa
-    MS_error = SS_error/df_error
+    try:
+        a,b,n = y.shape
+    except ValueError:
+        y = y.reshape((*y.shape,1))
+        
+        a,b,n = y.shape
+        
+        
+        
+        yddd = np.sum(y,axis=(0,1,2))
+        yidd = np.sum(y,axis=(1,2))
+        yijd = np.sum(y,axis=2)
     
     
-    F = stats.f.sf
+    df = np.array([a -1,a*(b-1),a*b*(n-1),a*b*n -1],dtype=float)
+        
+    SS =  np.zeros_like(df)
+    
+    SS[0] = 1/(b*n)*np.sum(yidd**2) - yddd**2/(a*b*n)
+    SS[1] = 1/n*np.sum(yijd**2,axis=(0,1)) - 1/(b*n)*np.sum(yidd**2)
+    SS[2] = np.sum(np.sum(y**2,axis=2),axis=(0,1)) - 1/n*np.sum(yijd**2,axis=(0,1))
+    SS[3] = np.sum(np.sum(y**2,axis=2),axis=(0,1)) - yddd**2/(a*b*n)
     
     
-    Fdict = {(0,0): [MS_a/MS_error,MS_bwa/MS_error],
-             (0,1): [MS_a/MS_bwa,MS_bwa/MS_error],
-             (1,1): [MS_a/MS_bwa,MS_bwa/MS_error]}
+    MS = SS/df 
+    MS[-1] = np.nan
     
-    Pdict = {(0,0): [F(Fdict[(0,0)][0],df_a,df_error),
-                      F(Fdict[(0,0)][1],df_bwa,df_error)],
-              (0,1): [F(Fdict[(0,1)][0],df_a,df_bwa),
-                      F(Fdict[(0,0)][1],df_bwa,df_error)],
-              (1,1): [F(Fdict[(0,1)][0],df_a,df_bwa),
-                      F(Fdict[(0,0)][1],df_bwa,df_error)]}
+    F0 = MS/MS[-2]
+    F0[-2] = np.nan
+    
+    P0 = np.empty_like(F0)
+    for i,f in enumerate(F0):
+        if not np.isnan(f):
+            P0[i] = stats.f.sf(f,df[i],df[-2])
+        else:
+            P0[i] = np.nan
+    
+    if blocks_random:
+        F0[0] = MS[0]/MS[1]
+        P0[0] = stats.f.sf(F0[0],df[0],df[1])
     
     
-    return Pdict[random],Fdict[random],(MS_a,MS_bwa,MS_error),(SS_a,SS_bwa,SS_error,SS_total),(df_a,df_bwa,df_error,df_total)
+    index = 'A B(A) Error Total'.split(' ')
+    
+    
+    return SS,df,MS,F0,P0,index
 
+def print_anova(anova_res,width=(10,4,10,10,10),decimals=(2,0,2,4,9)):
+    SS,df,MS,F0,P0,index = anova_res
+    
+    arrays = [SS,df,MS,F0,P0]
+    
+    labels = ['SS', 'df','MS','F0','P0']
+    
+    header = f'\n{"Source":<8}\t'
+    for j,label in enumerate(labels):
+        header += f'{label:<{width[j]}}\t'
+    
+    print(header)
+    for i,name in enumerate(index):
+        s = f'{name:<8}\t'
+        for j,array in enumerate(arrays):
+            s += f'{round(array[i],decimals[j]):<{width[j]}}\t'
+        print(s)
 
 
 
@@ -150,9 +177,9 @@ def plot_residuals_ab(y,axis=0):
 
 
 
-y = np.array([[[26,28,28],[28,28,27]],
-             [[25,26,29],[31,30,29]],
-             [[33,29,31],[30,31,33]]],dtype=float)
+# y = np.array([[[26,28,28],[28,28,27]],
+#              [[25,26,29],[31,30,29]],
+#              [[33,29,31],[30,31,33]]],dtype=float)
 
 
 def pure_error_per_treatment(y):
@@ -162,5 +189,17 @@ def pure_error_per_treatment(y):
     Si = np.sum((y - yijdbar_mat)**2,axis=(1,2))
     return Si/(y.shape[0] -1) 
 
+y = np.array([[[59,57],[46,48]],
+     [[46,48],[45,46]],
+     [[49,48],[34,35]],
+     [[53,52],[46,44]],
+     [[39,40],[38,37]]])
 
 
+
+
+y = np.array([[6,5,7,3,5,8,5,5,4,5,4,6,5,3,2,7,6,8,6,7],
+             [7,8,5,9,5,8,6,4,6,7,6,99,5,7,4,6,8,5,8,7]])
+
+res = anova(y)
+print_anova(res)
