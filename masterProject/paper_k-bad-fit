@@ -46,8 +46,8 @@ for i,sNo in enumerate(sampleNos):
     norm_idx = (i+1)/(len(sampleNos)+1)
     
     
-    ax[0].plot(gx[xslice],kbar[sNo],'.-',label=f't={t[sNo]}',markersize=4)
-    ax[1].plot(gx[xslice],ybar[sNo][xslice],'.-',label=f't={t[sNo]}',markersize=5)
+    ax[0].plot(gx[xslice],kbar[sNo],'.-',label=f't={t[sNo]}s',markersize=4)
+    ax[1].plot(gx[xslice],ybar[sNo][xslice],'.-',label=f't={t[sNo]}s',markersize=5)
 
 ax[0].legend(ncol=3,loc='lower left')
 ax[1].legend(ncol=3,loc='lower left')

@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 #from k_packer import getParsed, addRun
 # -------------------------------------------------------------------------
 
-mfdatapath='/scratch/gabgus/mfdata_all/meshed/'
+mfdatapath='D:\\meshed\\'
 kfolder = '/scratch/gabgus/fluent/kgenerator/parsed/'
 dfolder = '/scratch/gabgus/fluent/dgenerator/parsed/'
 
