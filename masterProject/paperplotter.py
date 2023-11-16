@@ -7,7 +7,7 @@ Script to generate plots for paper on lateral bed dispersion.
 
 @author: gabgus
 """
-
+#%%
 chalmerspath = '/chalmers/users/gabgus/'
 path = chalmerspath
 
