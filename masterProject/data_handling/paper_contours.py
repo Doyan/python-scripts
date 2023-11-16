@@ -5,7 +5,7 @@ Created on Wed Apr 17 14:49:14 2019
 
 @author: gabgus
 """
-
+#%%
 import numpy as np, matplotlib.pyplot as plt
 import comparator as c
 
